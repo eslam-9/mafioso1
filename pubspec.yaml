@@ -1,0 +1,59 @@
+name: mafioso
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Localization
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  
+  # State Management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+  
+  # Navigation
+  go_router: ^14.6.2
+  
+  # HTTP & API
+  dio: ^5.7.0
+  
+  # Animations
+  flutter_animate: ^4.5.0
+  
+  # Audio
+  audioplayers: ^6.1.0
+  
+  # Fonts
+  google_fonts: ^6.2.1
+  
+  # Connectivity
+  connectivity_plus: ^6.1.0
+  
+  # Local Storage
+  shared_preferences: ^2.3.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  mockito: ^5.4.4
+  build_runner: ^2.4.8
+  riverpod_generator: ^2.6.2
+  custom_lint: ^0.7.0
+  riverpod_lint: ^2.6.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/audio/
+    - assets/images/
+    - assets/data/
