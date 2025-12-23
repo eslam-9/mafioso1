@@ -7,9 +7,9 @@ import '../viewmodels/game_setup_viewmodel.dart';
 import '../viewmodels/story_viewmodel.dart';
 import '../viewmodels/role_reveal_viewmodel.dart';
 import '../viewmodels/game_viewmodel.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// API Key - TODO: Move to environment variables
-const String geminiApiKey = 'AIzaSyCFx0OktsGdOLV-6emYx1nibbMkmQJ5uQM';
+String geminiApiKey = dotenv.env['GEMINI_API_KEY']!;
 
 // Services Providers
 final geminiServiceProvider = Provider<GeminiService>((ref) {
@@ -35,24 +35,22 @@ final storyRepositoryProvider = Provider<StoryRepository>((ref) {
 });
 
 // ViewModel Providers
-final gameSetupViewModelProvider =
-    ChangeNotifierProvider<GameSetupViewModel>((ref) {
+final gameSetupViewModelProvider = ChangeNotifierProvider<GameSetupViewModel>((
+  ref,
+) {
   return GameSetupViewModel();
 });
 
-final storyViewModelProvider =
-    ChangeNotifierProvider<StoryViewModel>((ref) {
-  return StoryViewModel(
-    storyRepository: ref.watch(storyRepositoryProvider),
-  );
+final storyViewModelProvider = ChangeNotifierProvider<StoryViewModel>((ref) {
+  return StoryViewModel(storyRepository: ref.watch(storyRepositoryProvider));
 });
 
-final roleRevealViewModelProvider =
-    ChangeNotifierProvider<RoleRevealViewModel>((ref) {
-  return RoleRevealViewModel();
-});
+final roleRevealViewModelProvider = ChangeNotifierProvider<RoleRevealViewModel>(
+  (ref) {
+    return RoleRevealViewModel();
+  },
+);
 
-final gameViewModelProvider =
-    ChangeNotifierProvider<GameViewModel>((ref) {
+final gameViewModelProvider = ChangeNotifierProvider<GameViewModel>((ref) {
   return GameViewModel();
 });

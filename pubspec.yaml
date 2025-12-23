@@ -39,6 +39,9 @@ dependencies:
   # Local Storage
   shared_preferences: ^2.3.3
 
+  flutter_dotenv: ^5.1.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -47,6 +50,27 @@ dev_dependencies:
 
   custom_lint: ^0.7.0
   riverpod_lint: ^2.6.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.1
+
+flutter_launcher_icons:
+  android: true
+  image_path_android: assets/images/logo.png
+  adaptive_icon_background: "#0D0D0D"
+  adaptive_icon_foreground: assets/images/logo.png
+
+flutter_native_splash:
+  android: true
+  ios: false
+  web: false
+
+  color: "#0D0D0D"
+  image: assets/images/logo.png
+
+  android_12:
+    color: "#0D0D0D"
+    image: assets/images/logo.png  
+
 
 flutter:
   uses-material-design: true
@@ -55,3 +79,4 @@ flutter:
     - assets/audio/
     - assets/images/
     - assets/data/
+    - .env
