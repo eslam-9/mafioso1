@@ -14,12 +14,17 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
+  easy_localization: ^3.0.4
   
   # State Management
-  flutter_riverpod: ^2.6.1
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
+  
+  # Dependency Injection
+  get_it: ^7.7.0
   
   # Navigation
-  go_router: ^14.6.2
+  # Using onGenerateRoute instead of go_router
   
   # HTTP & API
   dio: ^5.7.0
@@ -39,7 +44,11 @@ dependencies:
   # Local Storage
   shared_preferences: ^2.3.3
 
+  # Environment Variables
   flutter_dotenv: ^5.1.0
+  
+  # Responsive Design
+  flutter_screenutil: ^5.9.0
 
 
 dev_dependencies:
@@ -49,9 +58,9 @@ dev_dependencies:
   mockito: ^5.4.4
 
   custom_lint: ^0.7.0
-  riverpod_lint: ^2.6.0
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.4.1
+  bloc_test: ^9.1.6
 
 flutter_launcher_icons:
   android: true
@@ -79,4 +88,5 @@ flutter:
     - assets/audio/
     - assets/images/
     - assets/data/
+    - assets/translations/
     - .env

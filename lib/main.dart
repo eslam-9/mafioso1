@@ -1,33 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'app/app_theme.dart';
-import 'app/app_router.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'app.dart';
+import 'core/di/injection_container.dart' as di;
+import 'core/localization/app_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  runApp(const ProviderScope(child: MafiosoApp()));
-}
-
-class MafiosoApp extends StatelessWidget {
-  const MafiosoApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'مافيوسو',
-      theme: AppTheme.darkTheme,
-      routerConfig: AppRouter.router,
-      debugShowCheckedModeBanner: false,
-      locale: const Locale('ar'),
-      supportedLocales: const [Locale('ar')],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-    );
-  }
+  await AppLocalization.init();
+  await di.init();
+  runApp(
+    EasyLocalization(
+      supportedLocales: AppLocalization.supportedLocales,
+      path: 'assets/translations',
+      fallbackLocale: const Locale('ar'),
+      child: const MafiosoApp(),
+    ),
+  );
 }

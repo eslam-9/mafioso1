@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
+
+class HowToPlayItem extends StatelessWidget {
+  final String title;
+  final String description;
+
+  const HowToPlayItem({
+    super.key,
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            color: AppColors.bloodRed,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          description,
+          style: TextStyle(
+            color: AppColors.lightGray,
+            fontSize: 14,
+          ),
+        ),
+      ],
+    );
+  }
+}
