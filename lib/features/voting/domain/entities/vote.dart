@@ -3,11 +3,13 @@ class Vote {
   final String voterName;
   final String accusedId;
   final String accusedName;
+  final int voteWeight;
 
   const Vote({
     required this.voterId,
     required this.voterName,
     required this.accusedId,
     required this.accusedName,
+    this.voteWeight = 1,
   });
 }

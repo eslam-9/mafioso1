@@ -31,7 +31,11 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
   void _generateStory(BuildContext context, GameConfig config) {
     if (!mounted || _storyGenerated) return;
     _storyGenerated = true;
-    context.read<StoryBloc>().add(GenerateStory(config));
+
+    final languageCode = context.locale.languageCode;
+    context.read<StoryBloc>().add(
+      GenerateStory(config, languageCode: languageCode),
+    );
   }
 
   @override

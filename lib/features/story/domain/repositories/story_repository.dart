@@ -4,5 +4,6 @@ abstract class StoryRepository {
   Future<Story> getStory({
     required int suspectCount,
     required bool hasDetective,
+    required String languageCode,
   });
 }

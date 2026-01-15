@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../story/domain/entities/clue.dart';
 
@@ -14,11 +15,11 @@ class CluesListWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'الأدلة',
+          'clues'.tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppColors.bloodRed,
-                fontWeight: FontWeight.bold,
-              ),
+            color: AppColors.bloodRed,
+            fontWeight: FontWeight.bold,
+          ),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 16),
         if (clues.isEmpty)
@@ -26,10 +27,10 @@ class CluesListWidget extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Text(
-                'لسه مفيش أدلة اتكشفت. اكشف أدلة عشان تساعد في حل اللغز.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.lightGray,
-                    ),
+                'no_clues_revealed'.tr(),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: AppColors.lightGray),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -39,55 +40,65 @@ class CluesListWidget extends StatelessWidget {
           final clue = entry.value;
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: _getClueDifficultyColor(clue.difficulty),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${index + 1}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+            child:
+                Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: _getClueDifficultyColor(clue.difficulty),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '${index + 1}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _getDifficultyText(clue.difficulty),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                          color: _getClueDifficultyColor(
+                                            clue.difficulty,
+                                          ),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    clue.text,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(color: AppColors.lightGray),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _getClueDifficultyLabel(clue.difficulty),
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                  color: _getClueDifficultyColor(clue.difficulty),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            clue.text,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.lightGray,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ).animate().fadeIn(delay: (300 + index * 100).ms).slideX(begin: -0.2, end: 0),
+                    )
+                    .animate()
+                    .fadeIn(delay: (300 + index * 100).ms)
+                    .slideX(begin: -0.2, end: 0),
           );
         }),
       ],
@@ -109,18 +120,18 @@ class CluesListWidget extends StatelessWidget {
     }
   }
 
-  String _getClueDifficultyLabel(ClueDifficulty difficulty) {
+  String _getDifficultyText(ClueDifficulty difficulty) {
     switch (difficulty) {
       case ClueDifficulty.veryEasy:
-        return 'سهل جداً';
+        return 'clue_difficulty_very_easy'.tr();
       case ClueDifficulty.easy:
-        return 'سهل';
+        return 'clue_difficulty_easy'.tr();
       case ClueDifficulty.medium:
-        return 'متوسط';
+        return 'clue_difficulty_medium'.tr();
       case ClueDifficulty.hard:
-        return 'صعب';
+        return 'clue_difficulty_hard'.tr();
       case ClueDifficulty.veryHard:
-        return 'صعب جداً';
+        return 'clue_difficulty_very_hard'.tr();
     }
   }
 }

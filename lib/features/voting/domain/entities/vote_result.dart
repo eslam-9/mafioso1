@@ -19,7 +19,7 @@ class VoteResult {
   Map<String, int> get voteTally {
     final tally = <String, int>{};
     for (var vote in votes) {
-      tally[vote.accusedId] = (tally[vote.accusedId] ?? 0) + 1;
+      tally[vote.accusedId] = (tally[vote.accusedId] ?? 0) + vote.voteWeight;
     }
     return tally;
   }

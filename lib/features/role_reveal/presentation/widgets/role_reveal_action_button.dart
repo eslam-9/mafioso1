@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../shared/services/sound_service.dart';
 import '../../../../core/di/injection_container.dart' as di;
 
@@ -45,11 +46,11 @@ class RoleRevealActionButton extends StatelessWidget {
 
   String _getButtonText() {
     if (!isRevealed) {
-      return 'اكشف الدور';
+      return 'reveal_role'.tr();
     } else if (hasNextPlayer) {
-      return 'اللاعب الجاي';
+      return 'next_player'.tr();
     } else {
-      return 'ابدأ اللعبة';
+      return 'start_game'.tr();
     }
   }
 }

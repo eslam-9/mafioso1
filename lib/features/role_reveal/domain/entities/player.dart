@@ -1,8 +1,6 @@
-enum PlayerRole {
-  killer,
-  detective,
-  innocent,
-}
+import 'package:easy_localization/easy_localization.dart';
+
+enum PlayerRole { killer, detective, innocent }
 
 class Player {
   final String id;
@@ -39,29 +37,30 @@ class Player {
       isAlive: isAlive ?? this.isAlive,
       hasRevealed: hasRevealed ?? this.hasRevealed,
       storyCharacterName: storyCharacterName ?? this.storyCharacterName,
-      storyCharacterBehavior: storyCharacterBehavior ?? this.storyCharacterBehavior,
+      storyCharacterBehavior:
+          storyCharacterBehavior ?? this.storyCharacterBehavior,
     );
   }
 
   String get roleDisplayName {
     switch (role) {
       case PlayerRole.killer:
-        return 'القاتل';
+        return 'role_killer'.tr();
       case PlayerRole.detective:
-        return 'المحقق';
+        return 'role_detective'.tr();
       case PlayerRole.innocent:
-        return 'بريء';
+        return 'role_innocent'.tr();
     }
   }
 
   String get roleDescription {
     switch (role) {
       case PlayerRole.killer:
-        return 'إنت اللي عملت الجريمة. استخبى واستبعد الأبرياء.';
+        return 'role_killer_desc'.tr();
       case PlayerRole.detective:
-        return 'لاقي القاتل قبل ما يبقى متأخر. استخدم الأدلة بذكاء.';
+        return 'role_detective_desc'.tr();
       case PlayerRole.innocent:
-        return 'إنت بريء. اتعاونوا عشان تلاقوا القاتل.';
+        return 'role_innocent_desc'.tr();
     }
   }
 }

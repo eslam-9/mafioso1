@@ -1,8 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../role_reveal/domain/entities/player.dart' as player_entity;
 import '../../../story/domain/entities/clue.dart';
+import '../../../story/domain/entities/story.dart';
 import '../../../voting/domain/entities/vote_result.dart';
 import '../../domain/entities/game_state.dart' as domain;
 import 'game_event.dart';
@@ -18,14 +20,31 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
 
   void _onInitGame(InitGame event, Emitter<presentation.GameState> emit) {
     AppLogger.logBlocEvent('GameBloc', 'InitGame');
-    emit(presentation.GameState(
-      players: event.players,
-      story: event.story,
-      gameState: domain.GameState.playing,
-      currentRound: 1,
-      voteHistory: const [],
-      revealedClues: const [],
-    ));
+
+    // Sort clues by difficulty (hardest to easiest)
+    final sortedClues = List<Clue>.from(event.story.clues)
+      ..sort((a, b) => b.difficulty.index.compareTo(a.difficulty.index));
+
+    final sortedStory = Story(
+      title: event.story.title,
+      intro: event.story.intro,
+      crimeDescription: event.story.crimeDescription,
+      suspects: event.story.suspects,
+      clues: sortedClues,
+      twist: event.story.twist,
+      killerName: event.story.killerName,
+    );
+
+    emit(
+      presentation.GameState(
+        players: event.players,
+        story: sortedStory,
+        gameState: domain.GameState.playing,
+        currentRound: 1,
+        voteHistory: const [],
+        revealedClues: const [],
+      ),
+    );
   }
 
   void _onRevealNextClue(
@@ -46,7 +65,11 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
       emit(state.copyWith(revealedClues: updatedClues));
     } catch (e, stackTrace) {
       AppLogger.logError('GameBloc', e, stackTrace: stackTrace);
-      ErrorHandler.logError(e, stackTrace: stackTrace, context: 'GameBloc.revealNextClue');
+      ErrorHandler.logError(
+        e,
+        stackTrace: stackTrace,
+        context: 'GameBloc.revealNextClue',
+      );
     }
   }
 
@@ -55,11 +78,11 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
     Emitter<presentation.GameState> emit,
   ) async {
     if (event.votes.isEmpty) {
-      throw ArgumentError('قايمة الأصوات مينفعش تكون فاضية');
+      throw ArgumentError('error_empty_votes'.tr());
     }
 
     if (state.players.isEmpty) {
-      throw StateError('مفيش لاعبين متبدئين');
+      throw StateError('error_no_initial_players'.tr());
     }
 
     AppLogger.logBlocEvent('GameBloc', 'SubmitVotes');
@@ -76,7 +99,7 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
       if (mostVotedId != null) {
         final eliminatedPlayer = state.players.firstWhere(
           (p) => p.id == mostVotedId,
-          orElse: () => throw StateError('اللاعب اللي اتصوت عليه مش موجود'),
+          orElse: () => throw StateError('error_player_not_found'.tr()),
         );
 
         final updatedPlayers = state.players.map((p) {
@@ -93,7 +116,9 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
           newGameState = domain.GameState.innocentsWin;
         } else {
           final aliveCount = updatedPlayers.where((p) => p.isAlive).length;
-          final killerAlive = updatedPlayers.any((p) => p.role == player_entity.PlayerRole.killer && p.isAlive);
+          final killerAlive = updatedPlayers.any(
+            (p) => p.role == player_entity.PlayerRole.killer && p.isAlive,
+          );
 
           if (killerAlive && aliveCount <= 2) {
             newGameState = domain.GameState.killerWins;
@@ -108,18 +133,21 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
           gameState: newGameState,
         );
 
-        final updatedHistory = List<VoteResult>.from(state.voteHistory)..add(finalResult);
+        final updatedHistory = List<VoteResult>.from(state.voteHistory)
+          ..add(finalResult);
 
         if (newGameState == domain.GameState.playing) {
           newRound = state.currentRound + 1;
         }
 
-        emit(state.copyWith(
-          players: updatedPlayers,
-          gameState: newGameState,
-          currentRound: newRound,
-          voteHistory: updatedHistory,
-        ));
+        emit(
+          state.copyWith(
+            players: updatedPlayers,
+            gameState: newGameState,
+            currentRound: newRound,
+            voteHistory: updatedHistory,
+          ),
+        );
       } else {
         final finalResult = VoteResult(
           round: state.currentRound,
@@ -127,16 +155,23 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
           gameState: state.gameState,
         );
 
-        final updatedHistory = List<VoteResult>.from(state.voteHistory)..add(finalResult);
+        final updatedHistory = List<VoteResult>.from(state.voteHistory)
+          ..add(finalResult);
 
-        emit(state.copyWith(
-          currentRound: state.currentRound + 1,
-          voteHistory: updatedHistory,
-        ));
+        emit(
+          state.copyWith(
+            currentRound: state.currentRound + 1,
+            voteHistory: updatedHistory,
+          ),
+        );
       }
     } catch (e, stackTrace) {
       AppLogger.logError('GameBloc', e, stackTrace: stackTrace);
-      ErrorHandler.logError(e, stackTrace: stackTrace, context: 'GameBloc.submitVotes');
+      ErrorHandler.logError(
+        e,
+        stackTrace: stackTrace,
+        context: 'GameBloc.submitVotes',
+      );
       rethrow;
     }
   }

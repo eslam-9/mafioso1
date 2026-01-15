@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/utils/logger.dart';
 import '../models/story_model.dart';
@@ -8,6 +9,7 @@ abstract class StoryRemoteDataSource {
   Future<StoryModel> generateStory({
     required int suspectCount,
     required bool hasDetective,
+    required String languageCode,
   });
 }
 
@@ -15,23 +17,28 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   final Dio dio;
   final String apiKey;
 
-  StoryRemoteDataSourceImpl({
-    required this.dio,
-    required this.apiKey,
-  });
+  StoryRemoteDataSourceImpl({required this.dio, required this.apiKey});
 
   @override
   Future<StoryModel> generateStory({
     required int suspectCount,
     required bool hasDetective,
+    required String languageCode,
   }) async {
     try {
-      AppLogger.logApiCall('Gemini API - generateStory', params: {
-        'suspectCount': suspectCount,
-        'hasDetective': hasDetective,
-      });
+      AppLogger.logApiCall(
+        'Gemini API - generateStory',
+        params: {
+          'suspectCount': suspectCount,
+          'hasDetective': hasDetective,
+          'languageCode': languageCode,
+        },
+      );
 
-      final prompt = _buildPrompt(suspectCount, hasDetective);
+      final prompt = languageCode == 'en'
+          ? _buildEnglishPrompt(suspectCount, hasDetective)
+          : _buildPrompt(suspectCount, hasDetective);
+
       AppLogger.logInfo('Prompt length: ${prompt.length} characters');
 
       final response = await dio.post(
@@ -67,19 +74,19 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       if (response.data == null ||
           response.data['candidates'] == null ||
           response.data['candidates'].isEmpty) {
-        throw Exception('رد مش صحيح من الـ API: مفيش نتايج');
+        throw Exception('API error: No results');
       }
 
       final candidate = response.data['candidates'][0];
       if (candidate['content'] == null ||
           candidate['content']['parts'] == null ||
           candidate['content']['parts'].isEmpty) {
-        throw Exception('رد مش صحيح من الـ API: مفيش محتوى');
+        throw Exception('API error: No content');
       }
 
       final generatedText = candidate['content']['parts'][0]['text'] as String?;
       if (generatedText == null || generatedText.isEmpty) {
-        throw Exception('رد مش صحيح من الـ API: محتوى فاضي');
+        throw Exception('API error: Empty content');
       }
 
       final storyJson = _extractJsonFromResponse(generatedText);
@@ -90,30 +97,75 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
 
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
-        throw Exception('الطلب خد وقت كتير. حاول تاني.');
+        throw Exception('timeout'.tr());
       } else if (e.type == DioExceptionType.badResponse) {
         final statusCode = e.response?.statusCode;
         if (statusCode == 401 || statusCode == 403) {
-          throw Exception('المصادقة فشلت. اتأكد من الـ API key.');
+          throw Exception('error_auth_failed'.tr());
         } else if (statusCode != null && statusCode >= 500) {
-          throw Exception('خطأ في السيرفر. حاول بعدين.');
+          throw Exception('error_server_error'.tr());
         } else {
-          throw Exception('طلب الـ API فشل بكود $statusCode');
+          throw Exception(
+            'error_api_failed_code'.tr(
+              namedArgs: {'code': statusCode.toString()},
+            ),
+          );
         }
       } else if (e.type == DioExceptionType.connectionError) {
-        throw Exception('مفيش نت. اتأكد من النت.');
+        throw Exception('error_no_internet'.tr());
       } else {
-        throw Exception('فشل توليد القصة: ${e.message ?? 'خطأ مجهول'}');
+        throw Exception('error_generation_failed'.tr());
       }
     } on FormatException catch (e) {
       AppLogger.logError('StoryRemoteDataSource', e);
       ErrorHandler.logError(e, context: 'StoryRemoteDataSource.generateStory');
-      throw Exception('فشل قراية القصة: صيغة JSON غلط');
+      throw Exception('error_invalid_json'.tr());
     } catch (e) {
       AppLogger.logError('StoryRemoteDataSource', e);
       ErrorHandler.logError(e, context: 'StoryRemoteDataSource.generateStory');
       rethrow;
     }
+  }
+
+  String _buildEnglishPrompt(int suspectCount, bool hasDetective) {
+    return '''
+You are a creative writer. Generate a murder mystery story in English.
+
+CRITICAL RULES:
+1. Write EVERYTHING in English.
+2. Number of suspects: EXACTLY $suspectCount suspects
+3. Return ONLY valid JSON, no extra text
+
+JSON format:
+
+{
+  "title": "Story Title",
+  "intro": "Short intro (2-3 sentences)",
+  "crimeDescription": "Detailed crime scene description (3-4 sentences)",
+  "suspects": [
+    {
+      "name": "Suspect Name",
+      "suspiciousBehavior": "Why they are suspicious"
+    }
+    // Add exactly $suspectCount suspects in total
+  ],
+  "clues": [
+    {"text": "Clue 1", "difficulty": "veryEasy"},
+    {"text": "Clue 2", "difficulty": "easy"},
+    {"text": "Clue 3", "difficulty": "medium"},
+    {"text": "Clue 4", "difficulty": "hard"},
+    {"text": "Clue 5", "difficulty": "veryHard"}
+  ],
+  "twist": "The plot twist explanation",
+  "killerName": "Exact Name of One Suspect"
+}
+
+Requirements:
+- Exactly $suspectCount suspects
+- Exactly 5 clues with difficulties: veryEasy, easy, medium, hard, veryHard
+- killerName must match one suspect's name exactly
+- Return only the JSON, nothing else
+''';
   }
 
   String _buildPrompt(int suspectCount, bool hasDetective) {
@@ -161,14 +213,19 @@ Requirements:
 
   Map<String, dynamic> _extractJsonFromResponse(String response) {
     String cleaned = response.trim();
+
+    // Remove starting ```json or ```
     if (cleaned.startsWith('```json')) {
       cleaned = cleaned.substring(7);
     } else if (cleaned.startsWith('```')) {
       cleaned = cleaned.substring(3);
     }
+
+    // Remove ending ```
     if (cleaned.endsWith('```')) {
       cleaned = cleaned.substring(0, cleaned.length - 3);
     }
+
     cleaned = cleaned.trim();
 
     try {

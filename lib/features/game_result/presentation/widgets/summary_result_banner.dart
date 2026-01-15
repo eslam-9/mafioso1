@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../../../core/theme/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SummaryResultBanner extends StatelessWidget {
   final bool isInnocentsWin;
@@ -10,45 +10,33 @@ class SummaryResultBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Container(
+      color: isInnocentsWin ? Colors.green.shade900 : Colors.red.shade900,
+      child: Padding(
         padding: const EdgeInsets.all(32),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isInnocentsWin
-                ? [Colors.green.withOpacity(0.3), AppColors.charcoal]
-                : [AppColors.bloodRed.withOpacity(0.3), AppColors.charcoal],
-          ),
-        ),
         child: Column(
           children: [
             Icon(
-              isInnocentsWin ? Icons.check_circle : Icons.dangerous,
+              isInnocentsWin ? Icons.celebration : Icons.dangerous,
               size: 80,
-              color: isInnocentsWin ? Colors.green : AppColors.bloodRed,
-            )
-                .animate()
-                .scale(duration: 600.ms)
-                .shake(delay: 600.ms),
-            const SizedBox(height: 24),
-            Text(
-              isInnocentsWin ? 'الأبرياء كسبوا!' : 'القاتل كسب!',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: isInnocentsWin ? Colors.green : AppColors.bloodRed,
-                    fontWeight: FontWeight.bold,
-                  ),
-              textAlign: TextAlign.center,
-            ).animate().fadeIn(delay: 200.ms),
+              color: Colors.white,
+            ).animate().scale(delay: 200.ms, duration: 500.ms),
             const SizedBox(height: 16),
             Text(
-              isInnocentsWin ? 'القاتل اتقبض عليه!' : 'القاتل هرب من العدالة!',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.lightGray,
-                  ),
+              isInnocentsWin ? 'innocents_won'.tr() : 'killer_won'.tr(),
+              style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ).animate().fadeIn(delay: 400.ms),
+            const SizedBox(height: 8),
+            Text(
+              isInnocentsWin ? 'killer_caught'.tr() : 'killer_escaped'.tr(),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: Colors.white70),
+              textAlign: TextAlign.center,
+            ).animate().fadeIn(delay: 600.ms),
           ],
         ),
       ),

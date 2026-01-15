@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class RoundInfoWidget extends StatelessWidget {
@@ -24,32 +25,52 @@ class RoundInfoWidget extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildStatItem(context, 'الجولة', round.toString(), Icons.refresh),
-            _buildStatItem(context, 'على قيد الحياة', aliveCount.toString(), Icons.people),
-            _buildStatItem(context, 'الأدلة', '$revealedClues/$totalClues', Icons.lightbulb),
+            _buildStatItem(
+              context,
+              'round'.tr(),
+              round.toString(),
+              Icons.refresh,
+            ),
+            _buildStatItem(
+              context,
+              'alive'.tr(),
+              aliveCount.toString(),
+              Icons.people,
+            ),
+            _buildStatItem(
+              context,
+              'clues'.tr(),
+              '$revealedClues/$totalClues',
+              Icons.lightbulb,
+            ),
           ],
         ),
       ),
-    ).animate().fadeIn(delay: 100.ms);
+    ).animate().fadeIn(delay: 200.ms);
   }
 
-  Widget _buildStatItem(BuildContext context, String label, String value, IconData icon) {
+  Widget _buildStatItem(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+  ) {
     return Column(
       children: [
-        Icon(icon, color: AppColors.bloodRed, size: 28),
-        const SizedBox(height: 8),
+        Icon(icon, color: AppColors.bloodRed, size: 24),
+        const SizedBox(height: 4),
         Text(
           value,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.lightGray,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: AppColors.lightGray),
         ),
       ],
     );

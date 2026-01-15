@@ -1,24 +1,30 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/utils/logger.dart';
 import '../models/story_model.dart';
 import '../models/suspect_model.dart';
 
 abstract class StoryLocalDataSource {
-  Future<StoryModel> getOfflineStory(int suspectCount);
+  Future<StoryModel> getOfflineStory(int suspectCount, String languageCode);
 }
 
 class StoryLocalDataSourceImpl implements StoryLocalDataSource {
   @override
-  Future<StoryModel> getOfflineStory(int suspectCount) async {
+  Future<StoryModel> getOfflineStory(
+    int suspectCount,
+    String languageCode,
+  ) async {
     try {
-      AppLogger.logInfo('Loading offline stories from assets...');
+      AppLogger.logInfo('Loading offline stories for language: $languageCode');
 
-      final jsonString = await rootBundle.loadString(
-        'assets/data/stories_offline.json',
-      );
+      final fileName = languageCode == 'en'
+          ? 'assets/data/stories_offline_en.json'
+          : 'assets/data/stories_offline.json';
+
+      final jsonString = await rootBundle.loadString(fileName);
       AppLogger.logInfo('Loaded JSON string, length: ${jsonString.length}');
 
       final jsonData = json.decode(jsonString) as Map<String, dynamic>;
@@ -26,7 +32,7 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
       AppLogger.logInfo('Found ${storiesList.length} offline stories');
 
       if (storiesList.isEmpty) {
-        throw Exception('مفيش قصص أوفلاين متاحة');
+        throw Exception('error_no_offline_stories'.tr());
       }
 
       final random = Random();
@@ -45,7 +51,7 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
         stackTrace: stackTrace,
         context: 'StoryLocalDataSource.getOfflineStory',
       );
-      throw Exception('فشل تحميل القصص الأوفلاين: ${e.toString()}');
+      throw Exception('error_load_offline_stories'.tr() + ': ${e.toString()}');
     }
   }
 

@@ -9,10 +9,12 @@ class GenerateStoryUseCase {
   Future<Story> call({
     required int suspectCount,
     required bool hasDetective,
+    required String languageCode,
   }) async {
     return await repository.getStory(
       suspectCount: suspectCount,
       hasDetective: hasDetective,
+      languageCode: languageCode,
     );
   }
 }

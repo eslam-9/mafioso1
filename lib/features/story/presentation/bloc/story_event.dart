@@ -10,11 +10,12 @@ abstract class StoryEvent extends Equatable {
 
 class GenerateStory extends StoryEvent {
   final GameConfig config;
+  final String languageCode;
 
-  const GenerateStory(this.config);
+  const GenerateStory(this.config, {this.languageCode = 'en'});
 
   @override
-  List<Object?> get props => [config];
+  List<Object?> get props => [config, languageCode];
 }
 
 class ResetStory extends StoryEvent {

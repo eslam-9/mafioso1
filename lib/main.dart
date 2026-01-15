@@ -14,7 +14,7 @@ void main() async {
     EasyLocalization(
       supportedLocales: AppLocalization.supportedLocales,
       path: 'assets/translations',
-      fallbackLocale: const Locale('ar'),
+      fallbackLocale: const Locale('en'),
       child: const MafiosoApp(),
     ),
   );

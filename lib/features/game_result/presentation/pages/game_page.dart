@@ -9,6 +9,7 @@ import '../bloc/game_bloc.dart';
 import '../bloc/game_event.dart';
 import '../bloc/game_state.dart' as presentation;
 import '../widgets/game_tabs.dart';
+import '../widgets/elimination_dialog.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -67,6 +68,42 @@ class _GamePageState extends State<GamePage>
         },
         child: BlocListener<GameBloc, presentation.GameState>(
           listener: (context, state) {
+            // Check if there's a new vote result with an elimination
+            if (state.voteHistory.isNotEmpty) {
+              final lastVote = state.voteHistory.last;
+              if (lastVote.eliminatedPlayerId != null) {
+                // Find the eliminated player
+                final eliminatedPlayer = state.players.firstWhere(
+                  (p) => p.id == lastVote.eliminatedPlayerId,
+                );
+
+                final wasKiller =
+                    eliminatedPlayer.role == player_entity.PlayerRole.killer;
+
+                // Show elimination dialog
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => EliminationDialog(
+                    eliminatedPlayer: eliminatedPlayer,
+                    wasKiller: wasKiller,
+                  ),
+                ).then((_) {
+                  // After dialog is closed, check if game is over
+                  if (state.isGameOver) {
+                    AppLogger.logNavigation(RouteNames.summary);
+                    Navigator.pushNamed(
+                      context,
+                      RouteNames.summary,
+                      arguments: {'gameState': state},
+                    );
+                  }
+                });
+                return; // Return to prevent immediate navigation before dialog
+              }
+            }
+
+            // Fallback for game over without elimination (if possible)
             if (state.isGameOver) {
               AppLogger.logNavigation(RouteNames.summary);
               Navigator.pushNamed(
@@ -76,7 +113,25 @@ class _GamePageState extends State<GamePage>
               );
             }
           },
-          child: GameTabs(tabController: _tabController),
+          child: BlocBuilder<GameBloc, presentation.GameState>(
+            builder: (context, gameState) {
+              // Get alive players
+              final alivePlayers = gameState.players
+                  .where((p) => p.isAlive)
+                  .toList();
+
+              return GameTabs(
+                tabController: _tabController,
+                alivePlayers: alivePlayers,
+                onVotesSubmitted: (votes) {
+                  AppLogger.logInfo(
+                    'Submitting ${votes.length} votes to GameBloc',
+                  );
+                  context.read<GameBloc>().add(SubmitVotes(votes));
+                },
+              );
+            },
+          ),
         ),
       ),
     );

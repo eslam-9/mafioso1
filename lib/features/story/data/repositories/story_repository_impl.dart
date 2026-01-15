@@ -21,14 +21,19 @@ class StoryRepositoryImpl implements StoryRepository {
   Future<Story> getStory({
     required int suspectCount,
     required bool hasDetective,
+    required String languageCode,
   }) async {
     AppLogger.logInfo('Starting story generation...');
-    AppLogger.logInfo('Suspect count: $suspectCount, Has detective: $hasDetective');
+    AppLogger.logInfo(
+      'Suspect count: $suspectCount, Has detective: $hasDetective, Language: $languageCode',
+    );
 
     // Web browsers have CORS restrictions
     if (kIsWeb) {
-      AppLogger.logInfo('Running on WEB platform - using offline stories due to CORS');
-      return await localDataSource.getOfflineStory(suspectCount);
+      AppLogger.logInfo(
+        'Running on WEB platform - using offline stories due to CORS',
+      );
+      return await localDataSource.getOfflineStory(suspectCount, languageCode);
     }
 
     // Check connectivity for mobile/desktop platforms
@@ -42,17 +47,25 @@ class StoryRepositoryImpl implements StoryRepository {
         final story = await remoteDataSource.generateStory(
           suspectCount: suspectCount,
           hasDetective: hasDetective,
+          languageCode: languageCode,
         );
-        AppLogger.logInfo('SUCCESS! Got story from Gemini API: "${story.title}"');
+        AppLogger.logInfo(
+          'SUCCESS! Got story from Gemini API: "${story.title}"',
+        );
         return story;
       } catch (e) {
         AppLogger.logError('StoryRepository', e);
         AppLogger.logInfo('GEMINI API FAILED! Falling back to offline stories');
-        return await localDataSource.getOfflineStory(suspectCount);
+        return await localDataSource.getOfflineStory(
+          suspectCount,
+          languageCode,
+        );
       }
     } else {
-      AppLogger.logInfo('No internet connection detected - using offline stories');
-      return await localDataSource.getOfflineStory(suspectCount);
+      AppLogger.logInfo(
+        'No internet connection detected - using offline stories',
+      );
+      return await localDataSource.getOfflineStory(suspectCount, languageCode);
     }
   }
 }

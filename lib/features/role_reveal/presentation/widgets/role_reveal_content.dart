@@ -15,107 +15,109 @@ class RoleRevealContent extends StatelessWidget {
     final roleColor = _getRoleColor(player.role);
 
     return Card(
-      child: Container(
-        padding: const EdgeInsets.all(32),
-        constraints: const BoxConstraints(maxWidth: 400),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [roleColor.withOpacity(0.2), AppColors.charcoal],
+      child: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(32),
+          constraints: const BoxConstraints(maxWidth: 400),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [roleColor.withOpacity(0.2), AppColors.charcoal],
+            ),
           ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              _getRoleIcon(player.role),
-              size: 100,
-              color: roleColor,
-            ).animate().scale(duration: 600.ms).shake(delay: 600.ms),
-            const SizedBox(height: 24),
-            Text(
-              'your_role'.tr(),
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                _getRoleIcon(player.role),
+                size: 100,
                 color: roleColor,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ).animate().fadeIn(delay: 200.ms),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.deepBlack.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  if (player.storyCharacterName != null) ...[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.person_outline,
-                          color: AppColors.bloodRed,
-                          size: 20,
+              ).animate().scale(duration: 600.ms).shake(delay: 600.ms),
+              const SizedBox(height: 24),
+              Text(
+                _getRoleName(player.role),
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: roleColor,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ).animate().fadeIn(delay: 200.ms),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.deepBlack.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    if (player.storyCharacterName != null) ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.person_outline,
+                            color: AppColors.bloodRed,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'your_story_character'.tr(),
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(
+                                  color: AppColors.bloodRed,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        player.storyCharacterName!,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'your_story_character'.tr(),
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(
-                                color: AppColors.bloodRed,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        textAlign: TextAlign.center,
+                      ),
+                      if (player.storyCharacterBehavior != null) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.charcoal.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            player.storyCharacterBehavior!,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: AppColors.lightGray,
+                                  height: 1.5,
+                                ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 8),
+                      const SizedBox(height: 16),
+                      Divider(color: AppColors.smokeGray),
+                      const SizedBox(height: 12),
+                    ],
                     Text(
-                      player.storyCharacterName!,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      RoleLocalizationHelper.getRoleDescription(player.role),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AppColors.lightGray,
+                        height: 1.5,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    if (player.storyCharacterBehavior != null) ...[
-                      const SizedBox(height: 12),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppColors.charcoal.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          player.storyCharacterBehavior!,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: AppColors.lightGray,
-                                height: 1.5,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 16),
-                    Divider(color: AppColors.smokeGray),
-                    const SizedBox(height: 12),
                   ],
-                  Text(
-                    RoleLocalizationHelper.getRoleDescription(player.role),
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppColors.lightGray,
-                      height: 1.5,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2, end: 0),
-          ],
+                ),
+              ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2, end: 0),
+            ],
+          ),
         ),
       ),
     ).animate().fadeIn().scale();
@@ -129,6 +131,17 @@ class RoleRevealContent extends StatelessWidget {
         return Colors.blue;
       case PlayerRole.innocent:
         return Colors.green;
+    }
+  }
+
+  String _getRoleName(PlayerRole role) {
+    switch (role) {
+      case PlayerRole.killer:
+        return 'role_killer'.tr();
+      case PlayerRole.detective:
+        return 'role_detective'.tr();
+      case PlayerRole.innocent:
+        return 'role_innocent'.tr();
     }
   }
 

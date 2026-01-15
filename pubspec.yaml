@@ -88,5 +88,6 @@ flutter:
     - assets/audio/
     - assets/images/
     - assets/data/
+    - assets/data/stories_offline_en.json
     - assets/translations/
     - .env

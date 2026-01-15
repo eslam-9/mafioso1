@@ -24,15 +24,23 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
       final story = await generateStoryUseCase(
         suspectCount: event.config.suspectCount,
         hasDetective: event.config.hasDetective,
+        languageCode: event.languageCode,
       );
 
       AppLogger.logBlocState('StoryBloc', 'StoryLoaded: ${story.title}');
       emit(state.copyWith(isLoading: false, story: story));
     } catch (e, stackTrace) {
       AppLogger.logError('StoryBloc', e, stackTrace: stackTrace);
-      ErrorHandler.logError(e, stackTrace: stackTrace, context: 'StoryBloc.generateStory');
-      
-      final errorMessage = ErrorHandler.getUserMessage(e, context: 'generating story');
+      ErrorHandler.logError(
+        e,
+        stackTrace: stackTrace,
+        context: 'StoryBloc.generateStory',
+      );
+
+      final errorMessage = ErrorHandler.getUserMessage(
+        e,
+        context: 'generating story',
+      );
       AppLogger.logBlocState('StoryBloc', 'StoryError: $errorMessage');
       emit(state.copyWith(isLoading: false, errorMessage: errorMessage));
     }
