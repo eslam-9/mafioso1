@@ -1,330 +1,104 @@
-# 🎭 Mafioso - Murder Mystery Game
+# Mafioso 🕵️‍♂️🎭
 
-<div align="center">
+**Mafioso** is a modern, AI-powered reimagining of the classic social deduction party game "Mafia" (also known as Werewolf). 
 
-![Flutter](https://img.shields.io/badge/Flutter-3.8.1+-02569B?logo=flutter)
-![Dart](https://img.shields.io/badge/Dart-3.8.1+-0175C2?logo=dart)
-![Platform](https://img.shields.io/badge/Platform-Android%20|%20iOS%20|%20Web%20|%20Desktop-blue)
-
-**An interactive murder mystery game built with Flutter**
-
-*AI-powered story generation with full offline support in Egyptian Arabic*
-
-</div>
+Gone are the days of needing a human moderator to sit out the fun. Mafioso uses **Google Gemini AI** to act as an infinite, dynamic Narrator, cultivating unique and immersive stories for every single game session.
 
 ---
 
-## 📖 Overview
+## ✨ Features
 
-**Mafioso** is a multiplayer murder mystery game where players take on roles of suspects, detectives, and killers. Features AI-generated stories using Google's Gemini API with complete offline fallback support.
+- **🤖 AI Narrator**: Powered by the Gemini API, the game generates unique murder mystery narratives based on player actions in real-time.
+- **🌍 Bilingual Support**: Fully localized for both **English** and **Arabic** speakers.
+- **⚡ Offline Mode**: Internet down? The game seamlessly falls back to a library of pre-generated thrillers so the fun never stops.
+- **🎭 Classic Roles**:
+  - **🔪 Killer**: Eliminate the innocents at night.
+  - **🕵️‍♂️ Detective**: Investigate roles to find the truth.
+  - **🩺 Doctor**: Save one person from elimination each night.
+  - **👥 Civilians**: Deduce, discuss, and vote to survive.
+- **🗳️ In-App Voting**: Integrated voting system to democratically eliminate suspects during the day phase.
+- **🎨 Premium Aesthetic**: A sleek, dark-themed UI designed for late-night gaming sessions.
 
-### 🎯 Key Features
+## 📱 Screens
 
-- 🤖 **AI Story Generation** - Unique mysteries via Gemini API
-- 📴 **Offline-First** - Pre-loaded fallback stories
-- 🎭 **Role-Based Gameplay** - Killer, Detective, Innocent
-- 🔍 **Progressive Clues** - 5 difficulty levels
-- 🗳️ **Voting System** - Democratic elimination
-- 🎨 **Dark Theme** - Immersive mafia aesthetic
-- 🔊 **Sound Effects** - Audio feedback
-- 🌍 **Cross-Platform** - Android, iOS, Web, Desktop
+| Role Reveal | Story Mode | Voting Phase |
+|:-----------:|:----------:|:------------:|
+| ![Role Reveal](assets/images/logo.png) | ![Story](assets/images/logo.png) | ![Voting](assets/images/logo.png) |
 
-## 🏗️ Architecture
+*(Note: Replace reference images with actual screenshots)*
 
-**Pattern**: MVVM (Model-View-ViewModel) with Riverpod
+## 🛠️ Tech Stack
 
-```
-lib/
-├── app/                          # Configuration
-│   ├── app_providers.dart        # Dependency injection
-│   ├── app_router.dart           # GoRouter navigation
-│   └── app_theme.dart            # Material theme
-├── models/                       # Data models
-│   ├── player.dart               # Player with roles
-│   ├── game_config.dart          # Game settings
-│   ├── story.dart                # Story structure
-│   └── vote_result.dart          # Vote results
-├── services/                     # Business logic
-│   ├── gemini_service.dart       # AI integration
-│   ├── sound_service.dart        # Audio
-│   ├── connectivity_service.dart # Network
-│   └── error_handler.dart        # Error management
-├── repositories/                 # Data layer
-│   └── story_repository.dart     # Story management
-├── viewmodels/                   # State management
-│   ├── game_setup_viewmodel.dart
-│   ├── story_viewmodel.dart
-│   ├── role_reveal_viewmodel.dart
-│   └── game_viewmodel.dart
-├── views/                        # UI screens
-│   ├── home/                     # Landing page
-│   ├── setup/                    # Game setup
-│   ├── story/                    # Story generation
-│   ├── roles/                    # Role reveal
-│   └── game/                     # Main game & summary
-└── widgets/                      # Reusable components
-```
+- **Framework**: [Flutter](https://flutter.dev/) (SDK 3.8.1+)
+- **Language**: Dart
+- **State Management**: [flutter_bloc](https://pub.dev/packages/flutter_bloc)
+- **AI Integration**: [Google Gemini API](https://ai.google.dev/)
+- **Localization**: [easy_localization](https://pub.dev/packages/easy_localization)
+- **Styling**: Custom Dark Theme / Flutter ScreenUtil
+- **Network**: Dio
 
-## 🚀 Installation
+## 🚀 Getting Started
+
+Follow these steps to get a local copy up and running.
 
 ### Prerequisites
-- Flutter SDK 3.8.1+
-- Dart SDK 3.8.1+
-- Gemini API key (optional)
 
-### Setup
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) installed.
+- Android Studio / VS Code with Flutter extensions.
+- A valid **Gemini API Key** from [Google AI Studio](https://aistudio.google.com/).
 
-```bash
-# 1. Clone repository
-git clone https://github.com/yourusername/mafioso.git
-cd mafioso
+### Installation
 
-# 2. Install dependencies
-flutter pub get
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/yourusername/mafioso.git
+   cd mafioso
+   ```
 
-# 3. Run app
-flutter run
+2. **Install Dependencies**
+   ```bash
+   flutter pub get
+   ```
 
-# 4. Build for production
-flutter build apk         # Android
-flutter build ios         # iOS
-flutter build web         # Web
-flutter build windows     # Windows
-```
+3. **Configure Environment**
+   Create a `.env` file in the root directory:
+   ```env
+   GEMINI_API_KEY=your_api_key_here
+   ```
 
-### API Configuration (Optional)
+4. **Run the App**
+   ```bash
+   flutter run
+   ```
 
-For AI story generation, get a key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+## 🎮 How to Play
 
-Update `lib/app/app_providers.dart`:
-```dart
-static const String geminiApiKey = 'YOUR_API_KEY';
-```
+1. **Setup**: Select the number of players (minimum 4).
+2. **Role Reveal**: Pass the phone around. Each player sees their secret role.
+3. **Night Phase**:
+   - The **Killer** chooses a victim.
+   - The **Detective** investigates a player.
+   - The **Doctor** chooses someone to save.
+4. **Day Phase**: 
+   - The AI narrates the events of the night (who died, who was saved).
+   - Players discuss and debate who the Killer is.
+5. **Voting**: Players vote to eliminate a suspect.
+6. **Win Condition**: 
+   - **Innocents Win**: If the Killer is eliminated.
+   - **Killer Wins**: If the Killer outnumbers or equals the Innocents.
 
-> ⚠️ **Production**: Use environment variables instead of hardcoding
+## 📦 Building for Release
 
-## 🎯 How to Play
-
-### Game Flow
-
-1. **Select Mode** - With/without detective
-2. **Setup Players** - 4-6 players, enter names
-3. **Generate Story** - AI or offline
-4. **Reveal Roles** - Secret role assignment
-   - 🔪 **Killer** - Survive without being caught
-   - 🕵️ **Detective** - Guide investigation (optional)
-   - 👤 **Innocent** - Find the killer
-5. **Investigation** - Read story, reveal 5 clues progressively
-6. **Vote** - Eliminate suspects democratically
-7. **Win Conditions**
-   - **Innocents**: Eliminate the killer
-   - **Killer**: Survive until 2 players remain
-
-## 📦 Dependencies
-
-### Core
-- **flutter_riverpod** ^2.6.1 - State management
-- **go_router** ^14.6.2 - Navigation
-- **dio** ^5.7.0 - HTTP client
-- **flutter_animate** ^4.5.0 - Animations
-- **audioplayers** ^6.1.0 - Sound effects
-- **google_fonts** ^6.2.1 - Typography
-- **connectivity_plus** ^6.1.0 - Network detection
-- **shared_preferences** ^2.3.3 - Local storage
-
-### Dev
-- **flutter_test** - Testing framework
-- **mockito** ^5.4.4 - Mocking
-- **build_runner** ^2.4.8 - Code generation
-- **riverpod_generator** ^2.6.2 - Riverpod codegen
-
-## 🎨 Customization
-
-### Theme
-Edit `lib/app/app_theme.dart`:
-```dart
-static const Color primaryRed = Color(0xFF8B0000);
-static const Color bloodRed = Color(0xFFDC143C);
-static const Color darkBackground = Color(0xFF0D0D0D);
-```
-
-### Offline Stories
-Edit `assets/data/stories_offline.json`:
-```json
-{
-  "stories": [{
-    "title": "عنوان القصة",
-    "intro": "مقدمة...",
-    "suspects": [...],
-    "clues": [
-      {"text": "دليل", "difficulty": "veryEasy"}
-    ],
-    "killerName": "القاتل"
-  }]
-}
-```
-
-### Sound Effects
-Add to `assets/audio/`:
-- `role_reveal.mp3`, `vote.mp3`, `win.mp3`, `lose.mp3`
-
-## 🔧 Configuration
-
-### Environment Variables (Recommended)
-```yaml
-# pubspec.yaml
-dependencies:
-  flutter_dotenv: ^5.1.0
-```
-
-```env
-# .env
-GEMINI_API_KEY=your_key_here
-```
-
-```dart
-// main.dart
-await dotenv.load(fileName: ".env");
-final apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
-```
-
-### Offline Fallback
-Automatic when:
-- No internet
-- API fails
-- Invalid key
-- Quota exceeded
-
-## 📱 Platforms
-
-| Platform | Status | Min Version |
-|----------|--------|-------------|
-| Android | ✅ | API 21+ |
-| iOS | ✅ | 12.0+ |
-| Web | ✅ | Modern browsers |
-| Windows | ✅ | 10+ |
-| macOS | ✅ | 10.14+ |
-| Linux | ✅ | Ubuntu 20.04+ |
-
-## 🐛 Troubleshooting
-
-### Story Generation Issues
-```bash
-# Check logs
-flutter run --verbose
-
-# Solutions:
-- Verify internet connection
-- Check API key validity
-- Confirm API quota
-- App auto-falls back to offline
-```
-
-### Audio Issues
-- Verify files in `assets/audio/`
-- Check `pubspec.yaml` includes assets
-- Test device volume
-
-### Build Errors
-```bash
-flutter clean
-flutter pub get
-flutter run
-```
-
-### Provider Errors
-- Wrap app with `ProviderScope`
-- Use `Consumer` or `context.watch()`
-- Avoid `context.read()` in `initState`
-
-## 🧪 Testing
+To build an APK for Android:
 
 ```bash
-# Run all tests
-flutter test
-
-# With coverage
-flutter test --coverage
-
-# Specific test
-flutter test test/viewmodels/game_viewmodel_test.dart
+flutter build apk --release
 ```
-
-## 📚 Documentation
-
-- [PROJECT_ANALYSIS.md](PROJECT_ANALYSIS.md) - Code analysis
-- [TESTING_AND_ERROR_HANDLING.md](TESTING_AND_ERROR_HANDLING.md) - Testing guide
-- [WEB_PLATFORM_INFO.md](WEB_PLATFORM_INFO.md) - Web deployment
-- [CHECK_INTERNET.md](CHECK_INTERNET.md) - Connectivity
-
-## 🔑 Key Features Explained
-
-### AI Story Generation
-- Uses Gemini 2.5 Flash model
-- Generates stories in Egyptian Arabic
-- Adapts to player count (4-6)
-- 5 difficulty-based clues
-- Automatic offline fallback
-
-### State Management
-- Riverpod for reactive state
-- ViewModels extend ChangeNotifier
-- Clean separation of concerns
-- Testable architecture
-
-### Game Logic
-- Role assignment algorithm
-- Vote counting system
-- Win condition detection
-- Round progression
-- Player elimination
-
-## 🚀 Performance
-
-- Lazy loading of stories
-- Efficient state updates
-- Optimized animations
-- Asset preloading
-- Memory management
-
-## 🔒 Security Notes
-
-⚠️ **Important**: 
-- Don't commit API keys
-- Use environment variables
-- Implement rate limiting
-- Validate user inputs
-- Sanitize story content
-
-## 🤝 Contributing
-
-Contributions welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new features
-4. Submit a pull request
+The output file will be located at `build/app/outputs/flutter-apk/app-release.apk`.
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file
-
-## 👥 Authors
-
-Built with ❤️ using Flutter
-
-## 🙏 Acknowledgments
-
-- Google Gemini AI for story generation
-- Flutter team for the framework
-- Riverpod for state management
-- Community contributors
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
-
-<div align="center">
-
-**🎭 Enjoy the mystery! Can you find the killer? 🔍**
-
-[Report Bug](https://github.com/yourusername/mafioso/issues) • [Request Feature](https://github.com/yourusername/mafioso/issues)
-
-</div>
+*Built with ❤️ by Eslam Abozied*
