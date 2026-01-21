@@ -13,19 +13,28 @@ class RoundResultDialog extends StatelessWidget {
     return AlertDialog(
       backgroundColor: AppColors.charcoal,
       title: Text(
-        result.eliminatedPlayerName != null ? 'player_eliminated'.tr() : 'no_elimination'.tr(),
-        style: TextStyle(color: AppColors.bloodRed),
+        result.eliminatedPlayerName != null
+            ? 'player_eliminated'.tr()
+            : 'no_elimination'.tr(),
+        style: TextStyle(color: Theme.of(context).colorScheme.primary),
       ),
       content: Text(
         result.eliminatedPlayerName != null
-            ? 'player_eliminated_msg'.tr(namedArgs: {'name': result.eliminatedPlayerName!})
+            ? 'player_eliminated_msg'.tr(
+                namedArgs: {'name': result.eliminatedPlayerName!},
+              )
             : 'tie_vote'.tr(),
-        style: TextStyle(color: AppColors.lightGray),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+        ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('continue_game'.tr(), style: TextStyle(color: AppColors.bloodRed)),
+          child: Text(
+            'continue_game'.tr(),
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          ),
         ),
       ],
     );

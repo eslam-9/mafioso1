@@ -67,7 +67,7 @@ class RoleRevealContent extends StatelessWidget {
                             'your_story_character'.tr(),
                             style: Theme.of(context).textTheme.titleSmall
                                 ?.copyWith(
-                                  color: AppColors.bloodRed,
+                                  color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
@@ -77,7 +77,7 @@ class RoleRevealContent extends StatelessWidget {
                       Text(
                         player.storyCharacterName!,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -94,7 +94,9 @@ class RoleRevealContent extends StatelessWidget {
                             player.storyCharacterBehavior!,
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  color: AppColors.lightGray,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withOpacity(0.8),
                                   height: 1.5,
                                 ),
                             textAlign: TextAlign.center,
@@ -108,7 +110,9 @@ class RoleRevealContent extends StatelessWidget {
                     Text(
                       RoleLocalizationHelper.getRoleDescription(player.role),
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: AppColors.lightGray,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.8),
                         height: 1.5,
                       ),
                       textAlign: TextAlign.center,

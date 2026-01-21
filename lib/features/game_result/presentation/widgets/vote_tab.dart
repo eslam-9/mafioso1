@@ -88,7 +88,10 @@ class _VoteTabState extends State<VoteTab> {
       return Center(
         child: Text(
           'no_alive_players'.tr(),
-          style: TextStyle(color: AppColors.lightGray, fontSize: 18),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontSize: 18,
+          ),
         ),
       );
     }
@@ -113,7 +116,7 @@ class _VoteTabState extends State<VoteTab> {
                           'vote_to_eliminate'.tr(),
                           style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(
-                                color: AppColors.bloodRed,
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
@@ -124,14 +127,16 @@ class _VoteTabState extends State<VoteTab> {
                   Text(
                     'each_player_votes'.tr(),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.lightGray,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'detective_double_vote'.tr(),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.bloodRed,
+                      color: Theme.of(context).colorScheme.primary,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -175,7 +180,7 @@ class _VoteTabState extends State<VoteTab> {
                               player.name,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 18,
                               ),
                             ),
@@ -192,8 +197,10 @@ class _VoteTabState extends State<VoteTab> {
                               ),
                               child: Text(
                                 'x2',
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
                                 ),
@@ -218,7 +225,9 @@ class _VoteTabState extends State<VoteTab> {
                             value: suspect.id,
                             child: Text(
                               suspect.name,
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                             ),
                           );
                         }).toList(),

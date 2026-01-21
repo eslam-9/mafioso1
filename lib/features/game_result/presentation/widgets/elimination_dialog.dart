@@ -49,8 +49,8 @@ class EliminationDialog extends StatelessWidget {
         children: [
           Text(
             eliminatedPlayer.name,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
@@ -65,8 +65,8 @@ class EliminationDialog extends StatelessWidget {
             ),
             child: Text(
               eliminatedPlayer.roleDisplayName,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -77,7 +77,10 @@ class EliminationDialog extends StatelessWidget {
             wasKiller
                 ? 'killer_eliminated_message'.tr()
                 : 'innocent_eliminated_message'.tr(),
-            style: TextStyle(color: AppColors.lightGray, fontSize: 16),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+              fontSize: 16,
+            ),
             textAlign: TextAlign.center,
           ),
         ],

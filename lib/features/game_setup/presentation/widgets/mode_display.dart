@@ -31,8 +31,8 @@ class ModeDisplay extends StatelessWidget {
                       ? 'with_detective'.tr()
                       : 'without_detective'.tr(),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
               ],
             ),

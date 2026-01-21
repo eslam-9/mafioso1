@@ -11,7 +11,7 @@ class HomeFooter extends StatelessWidget {
     return Text(
       'footer_question'.tr(),
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: AppColors.lightGray.withOpacity(0.8),
+        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
         fontStyle: FontStyle.italic,
       ),
     ).animate().fadeIn(delay: 1000.ms);

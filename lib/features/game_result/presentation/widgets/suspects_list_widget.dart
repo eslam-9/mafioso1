@@ -17,7 +17,7 @@ class SuspectsListWidget extends StatelessWidget {
         Text(
           'suspects'.tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: AppColors.bloodRed,
+            color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
           ),
         ).animate().fadeIn(delay: 200.ms),
@@ -34,16 +34,24 @@ class SuspectsListWidget extends StatelessWidget {
                           backgroundColor: AppColors.bloodRed,
                           child: Text(
                             '${index + 1}',
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                           ),
                         ),
                         title: Text(
                           suspect.name,
-                          style: const TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                         ),
                         subtitle: Text(
                           suspect.suspiciousBehavior,
-                          style: TextStyle(color: AppColors.lightGray),
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.7),
+                          ),
                         ),
                       ),
                     )

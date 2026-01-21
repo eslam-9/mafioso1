@@ -17,7 +17,7 @@ class CluesListWidget extends StatelessWidget {
         Text(
           'clues'.tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: AppColors.bloodRed,
+            color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
           ),
         ).animate().fadeIn(delay: 200.ms),
@@ -28,9 +28,11 @@ class CluesListWidget extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Text(
                 'no_clues_revealed'.tr(),
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppColors.lightGray),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.8),
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -57,8 +59,10 @@ class CluesListWidget extends StatelessWidget {
                               child: Center(
                                 child: Text(
                                   '${index + 1}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -87,7 +91,12 @@ class CluesListWidget extends StatelessWidget {
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
-                                        ?.copyWith(color: AppColors.lightGray),
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.8),
+                                        ),
                                   ),
                                 ],
                               ),

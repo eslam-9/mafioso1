@@ -19,7 +19,7 @@ class HowToPlayItem extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            color: AppColors.bloodRed,
+            color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
@@ -28,7 +28,7 @@ class HowToPlayItem extends StatelessWidget {
         Text(
           description,
           style: TextStyle(
-            color: AppColors.lightGray,
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
             fontSize: 14,
           ),
         ),

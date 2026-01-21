@@ -18,13 +18,13 @@ class SummaryResultBanner extends StatelessWidget {
             Icon(
               isInnocentsWin ? Icons.celebration : Icons.dangerous,
               size: 80,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
             ).animate().scale(delay: 200.ms, duration: 500.ms),
             const SizedBox(height: 16),
             Text(
               isInnocentsWin ? 'innocents_won'.tr() : 'killer_won'.tr(),
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onPrimary,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
@@ -32,9 +32,9 @@ class SummaryResultBanner extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               isInnocentsWin ? 'killer_caught'.tr() : 'killer_escaped'.tr(),
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: Colors.white70),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
+              ),
               textAlign: TextAlign.center,
             ).animate().fadeIn(delay: 600.ms),
           ],

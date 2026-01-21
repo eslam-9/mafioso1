@@ -8,8 +8,8 @@ class DarkTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: ColorScheme.dark(
-        primary: AppColors.primaryRed,
-        secondary: AppColors.bloodRed,
+        primary: AppColors.bloodRed, // Bright red for dark theme
+        secondary: AppColors.primaryRed,
         surface: AppColors.charcoal,
         background: AppColors.deepBlack,
         error: AppColors.bloodRed,
@@ -21,9 +21,9 @@ class DarkTheme {
       scaffoldBackgroundColor: AppColors.deepBlack,
       textTheme: GoogleFonts.crimsonTextTextTheme(
         ThemeData.dark().textTheme.apply(
-              bodyColor: AppColors.lightGray,
-              displayColor: Colors.white,
-            ),
+          bodyColor: AppColors.lightGray,
+          displayColor: Colors.white,
+        ),
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.charcoal,
@@ -105,11 +105,7 @@ class DarkTheme {
       gradient: LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          AppColors.deepBlack,
-          AppColors.charcoal,
-          AppColors.deepBlack,
-        ],
+        colors: [AppColors.deepBlack, AppColors.charcoal, AppColors.deepBlack],
         stops: const [0.0, 0.5, 1.0],
       ),
     );
@@ -120,16 +116,10 @@ class DarkTheme {
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          AppColors.smokeGray,
-          AppColors.charcoal,
-        ],
+        colors: [AppColors.smokeGray, AppColors.charcoal],
       ),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: AppColors.darkRed.withOpacity(0.5),
-        width: 1,
-      ),
+      border: Border.all(color: AppColors.darkRed.withOpacity(0.5), width: 1),
       boxShadow: [
         BoxShadow(
           color: AppColors.primaryRed.withOpacity(0.2),

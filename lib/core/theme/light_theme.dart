@@ -8,8 +8,8 @@ class LightTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: ColorScheme.light(
-        primary: AppColors.primaryRed,
-        secondary: AppColors.bloodRed,
+        primary: AppColors.darkRed, // Darker red for light theme
+        secondary: AppColors.primaryRed,
         surface: Colors.grey[100]!,
         background: Colors.white,
         error: AppColors.bloodRed,
@@ -21,9 +21,9 @@ class LightTheme {
       scaffoldBackgroundColor: Colors.white,
       textTheme: GoogleFonts.crimsonTextTextTheme(
         ThemeData.light().textTheme.apply(
-              bodyColor: Colors.black87,
-              displayColor: Colors.black,
-            ),
+          bodyColor: Colors.black87,
+          displayColor: Colors.black,
+        ),
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.grey[200],
@@ -89,9 +89,7 @@ class LightTheme {
           borderSide: const BorderSide(color: AppColors.bloodRed, width: 2),
         ),
         labelStyle: GoogleFonts.crimsonText(color: Colors.black87),
-        hintStyle: GoogleFonts.crimsonText(
-          color: Colors.black54,
-        ),
+        hintStyle: GoogleFonts.crimsonText(color: Colors.black54),
       ),
       dividerTheme: DividerThemeData(
         color: AppColors.darkRed.withOpacity(0.2),
@@ -105,11 +103,7 @@ class LightTheme {
       gradient: LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          Colors.white,
-          Colors.grey[100]!,
-          Colors.white,
-        ],
+        colors: [Colors.white, Colors.grey[100]!, Colors.white],
         stops: const [0.0, 0.5, 1.0],
       ),
     );
@@ -120,16 +114,10 @@ class LightTheme {
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.grey[50]!,
-          Colors.white,
-        ],
+        colors: [Colors.grey[50]!, Colors.white],
       ),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: AppColors.darkRed.withOpacity(0.3),
-        width: 1,
-      ),
+      border: Border.all(color: AppColors.darkRed.withOpacity(0.3), width: 1),
       boxShadow: [
         BoxShadow(
           color: AppColors.primaryRed.withOpacity(0.1),

@@ -28,7 +28,7 @@ class GameStatsWidget extends StatelessWidget {
             Text(
               'game_stats'.tr(),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppColors.bloodRed,
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -58,14 +58,14 @@ class GameStatsWidget extends StatelessWidget {
         children: [
           Text(
             label,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyLarge?.copyWith(color: AppColors.lightGray),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+            ),
           ),
           Text(
             value,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.bold,
             ),
           ),

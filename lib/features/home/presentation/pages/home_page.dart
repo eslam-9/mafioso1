@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mafioso/features/home/presentation/widgets/theme_switch_button.dart';
 
 import '../../../../core/constants/route_names.dart';
 import '../../../../core/utils/logger.dart';
@@ -47,7 +49,18 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const LanguageSwitcherButton(),
+                Positioned(
+                  top: 16.h,
+                  left: 18.w,
+                  right: 18.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const LanguageSwitcherButton(),
+                      const ThemeSwitchButton(),
+                    ],
+                  ),
+                ),
               ],
             ),
           );

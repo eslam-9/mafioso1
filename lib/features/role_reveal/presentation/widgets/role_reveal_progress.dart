@@ -30,9 +30,9 @@ class RoleRevealProgress extends StatelessWidget {
               'total': totalPlayers.toString(),
             },
           ),
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(color: AppColors.lightGray),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+          ),
         ).animate().fadeIn(),
       ],
     );

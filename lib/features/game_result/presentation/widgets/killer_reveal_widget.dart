@@ -17,15 +17,15 @@ class KillerRevealWidget extends StatelessWidget {
           children: [
             Text(
               'killer_was'.tr(),
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: AppColors.lightGray),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               killerName,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: AppColors.bloodRed,
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),

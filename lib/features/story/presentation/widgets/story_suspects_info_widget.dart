@@ -25,7 +25,7 @@ class StorySuspectsInfoWidget extends StatelessWidget {
                     namedArgs: {'count': suspectCount.toString()},
                   ),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -35,7 +35,7 @@ class StorySuspectsInfoWidget extends StatelessWidget {
             Text(
               'each_player_role'.tr(),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.lightGray.withOpacity(0.8),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
               ),
             ),
           ],

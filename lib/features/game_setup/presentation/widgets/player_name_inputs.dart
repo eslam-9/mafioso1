@@ -20,16 +20,18 @@ class PlayerNameInputs extends StatelessWidget {
             Text(
               'player_names'.tr(),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.bloodRed,
-                    fontWeight: FontWeight.bold,
-                  ),
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
             ).animate().fadeIn(delay: 300.ms),
             const SizedBox(height: 8),
             Text(
-              'total_players'.tr(namedArgs: {'count': state.totalPlayers.toString()}),
+              'total_players'.tr(
+                namedArgs: {'count': state.totalPlayers.toString()},
+              ),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.lightGray,
-                  ),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+              ),
             ).animate().fadeIn(delay: 400.ms),
             const SizedBox(height: 16),
             ...List.generate(

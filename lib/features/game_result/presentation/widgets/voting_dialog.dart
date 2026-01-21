@@ -39,7 +39,7 @@ class _VotingDialogState extends State<VotingDialog> {
     return AlertDialog(
       title: Text(
         'vote_to_eliminate'.tr(),
-        style: TextStyle(color: AppColors.bloodRed),
+        style: TextStyle(color: Theme.of(context).colorScheme.primary),
       ),
       content: SingleChildScrollView(
         child: Column(
@@ -48,7 +48,9 @@ class _VotingDialogState extends State<VotingDialog> {
           children: [
             Text(
               'each_player_votes'.tr(),
-              style: TextStyle(color: AppColors.lightGray),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+              ),
             ),
             const SizedBox(height: 16),
             ...List.generate(widget.totalPlayers, (playerIndex) {
@@ -61,9 +63,9 @@ class _VotingDialogState extends State<VotingDialog> {
                       'player'.tr(
                         namedArgs: {'index': (playerIndex + 1).toString()},
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -83,7 +85,9 @@ class _VotingDialogState extends State<VotingDialog> {
                           value: player.id,
                           child: Text(
                             player.name,
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                           ),
                         );
                       }).toList(),
