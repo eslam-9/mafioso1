@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mafioso/core/theme/app_spacing.dart';
 import 'app_colors.dart';
 
 class DarkTheme {
@@ -129,4 +131,10 @@ class DarkTheme {
       ],
     );
   }
+
+  static get styleIconButton => IconButton.styleFrom(
+    backgroundColor: AppColors.charcoal.withOpacity(0.7),
+    padding: EdgeInsets.all(12.w),
+    minimumSize: Size(AppSpacing.minTouchTarget, AppSpacing.minTouchTarget),
+  );
 }

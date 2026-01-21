@@ -41,7 +41,9 @@ class LanguageSwitcherButton extends StatelessWidget {
             ],
           ),
           style: IconButton.styleFrom(
-            backgroundColor: AppColors.charcoal.withOpacity(0.7),
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.surface.withOpacity(0.7),
             padding: EdgeInsets.all(12.w),
             minimumSize: Size(
               AppSpacing.minTouchTarget,
