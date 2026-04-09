@@ -44,14 +44,14 @@ class ModeCard extends StatelessWidget {
           );
         },
         borderRadius: BorderRadius.circular(16),
-        splashColor: AppColors.bloodRed.withOpacity(0.1),
-        highlightColor: AppColors.bloodRed.withOpacity(0.2),
+        splashColor: AppColors.bloodRed.withValues(alpha: 0.1),
+        highlightColor: AppColors.bloodRed.withValues(alpha: 0.2),
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: AppColors.darkRed.withOpacity(0.5),
+              color: AppColors.darkRed.withValues(alpha: 0.5),
               width: 1,
             ),
           ),
@@ -74,7 +74,7 @@ class ModeCard extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurface.withOpacity(0.8),
+                  ).colorScheme.onSurface.withValues(alpha: 0.8),
                 ),
               ),
             ],

@@ -31,7 +31,7 @@ class StoryCardWidget extends StatelessWidget {
             Text(
               intro,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.9),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                 height: 1.5,
               ),
             ),
@@ -39,7 +39,7 @@ class StoryCardWidget extends StatelessWidget {
             Text(
               crimeDescription,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                 height: 1.5,
               ),
             ),

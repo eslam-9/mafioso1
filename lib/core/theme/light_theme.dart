@@ -36,10 +36,10 @@ class LightTheme {
       cardTheme: CardThemeData(
         color: Colors.grey[50],
         elevation: 4,
-        shadowColor: AppColors.primaryRed.withOpacity(0.2),
+        shadowColor: AppColors.primaryRed.withValues(alpha: 0.2),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: AppColors.darkRed.withOpacity(0.3), width: 1),
+          side: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.3), width: 1),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -76,11 +76,11 @@ class LightTheme {
         fillColor: Colors.grey[100],
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.darkRed.withOpacity(0.3)),
+          borderSide: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.3)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.darkRed.withOpacity(0.3)),
+          borderSide: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.3)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -90,7 +90,7 @@ class LightTheme {
         hintStyle: GoogleFonts.crimsonText(color: Colors.black54),
       ),
       dividerTheme: DividerThemeData(
-        color: AppColors.darkRed.withOpacity(0.2),
+        color: AppColors.darkRed.withValues(alpha: 0.2),
         thickness: 1,
       ),
     );
@@ -115,10 +115,10 @@ class LightTheme {
         colors: [Colors.grey[50]!, Colors.white],
       ),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: AppColors.darkRed.withOpacity(0.3), width: 1),
+      border: Border.all(color: AppColors.darkRed.withValues(alpha: 0.3), width: 1),
       boxShadow: [
         BoxShadow(
-          color: AppColors.primaryRed.withOpacity(0.1),
+          color: AppColors.primaryRed.withValues(alpha: 0.1),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),

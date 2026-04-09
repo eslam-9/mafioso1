@@ -89,6 +89,7 @@ class _GamePageState extends State<GamePage>
                     wasKiller: wasKiller,
                   ),
                 ).then((_) {
+                  if (!context.mounted) return;
                   // After dialog is closed, check if game is over
                   if (state.isGameOver) {
                     AppLogger.logNavigation(RouteNames.summary);

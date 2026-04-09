@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../role_reveal/domain/entities/player.dart';
 import '../../../voting/domain/entities/vote.dart';
 
@@ -49,7 +48,7 @@ class _VotingDialogState extends State<VotingDialog> {
             Text(
               'each_player_votes'.tr(),
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
               ),
             ),
             const SizedBox(height: 16),

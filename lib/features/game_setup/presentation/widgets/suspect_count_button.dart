@@ -32,7 +32,7 @@ class SuspectCountButton extends StatelessWidget {
               border: Border.all(
                 color: isSelected
                     ? AppColors.bloodRed
-                    : AppColors.darkRed.withOpacity(0.5),
+                    : AppColors.darkRed.withValues(alpha: 0.5),
                 width: 2,
               ),
             ),

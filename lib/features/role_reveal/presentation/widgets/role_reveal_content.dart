@@ -25,7 +25,7 @@ class RoleRevealContent extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                roleColor.withOpacity(0.2),
+                roleColor.withValues(alpha: 0.2),
                 Theme.of(context).colorScheme.surface,
               ],
             ),
@@ -52,8 +52,8 @@ class RoleRevealContent extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.dark
-                      ? AppColors.deepBlack.withOpacity(0.5)
-                      : Colors.black.withOpacity(0.05),
+                      ? AppColors.deepBlack.withValues(alpha: 0.5)
+                      : Colors.black.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -94,8 +94,8 @@ class RoleRevealContent extends StatelessWidget {
                           decoration: BoxDecoration(
                             color:
                                 Theme.of(context).brightness == Brightness.dark
-                                ? AppColors.charcoal.withOpacity(0.5)
-                                : Colors.black.withOpacity(0.05),
+                                ? AppColors.charcoal.withValues(alpha: 0.5)
+                                : Colors.black.withValues(alpha: 0.05),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -104,7 +104,7 @@ class RoleRevealContent extends StatelessWidget {
                                 ?.copyWith(
                                   color: Theme.of(
                                     context,
-                                  ).colorScheme.onSurface.withOpacity(0.8),
+                                  ).colorScheme.onSurface.withValues(alpha: 0.8),
                                   height: 1.5,
                                 ),
                             textAlign: TextAlign.center,
@@ -120,7 +120,7 @@ class RoleRevealContent extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Theme.of(
                           context,
-                        ).colorScheme.onSurface.withOpacity(0.8),
+                        ).colorScheme.onSurface.withValues(alpha: 0.8),
                         height: 1.5,
                       ),
                       textAlign: TextAlign.center,

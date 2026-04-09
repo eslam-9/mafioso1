@@ -30,7 +30,7 @@ class CluesListWidget extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurface.withOpacity(0.8),
+                  ).colorScheme.onSurface.withValues(alpha: 0.8),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -94,7 +94,7 @@ class CluesListWidget extends StatelessWidget {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .onSurface
-                                              .withOpacity(0.8),
+                                              .withValues(alpha: 0.8),
                                         ),
                                   ),
                                 ],

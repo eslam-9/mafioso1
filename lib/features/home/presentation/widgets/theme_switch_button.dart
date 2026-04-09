@@ -31,7 +31,7 @@ class ThemeSwitchButton extends StatelessWidget {
           style: IconButton.styleFrom(
             backgroundColor: Theme.of(
               context,
-            ).colorScheme.surface.withOpacity(0.7),
+            ).colorScheme.surface.withValues(alpha: 0.7),
             padding: EdgeInsets.all(12.w),
             minimumSize: Size(
               AppSpacing.minTouchTarget,

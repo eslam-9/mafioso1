@@ -10,7 +10,7 @@ class HomeSubtitle extends StatelessWidget {
     return Text(
       'app_subtitle'.tr(),
       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
         letterSpacing: 2,
       ),
     ).animate().fadeIn(delay: 400.ms);

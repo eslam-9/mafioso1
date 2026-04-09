@@ -38,10 +38,10 @@ class DarkTheme {
       cardTheme: CardThemeData(
         color: AppColors.smokeGray,
         elevation: 8,
-        shadowColor: AppColors.primaryRed.withOpacity(0.3),
+        shadowColor: AppColors.primaryRed.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: AppColors.darkRed.withOpacity(0.5), width: 1),
+          side: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.5), width: 1),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -78,11 +78,11 @@ class DarkTheme {
         fillColor: AppColors.smokeGray,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.darkRed.withOpacity(0.5)),
+          borderSide: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.5)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.darkRed.withOpacity(0.5)),
+          borderSide: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -90,11 +90,11 @@ class DarkTheme {
         ),
         labelStyle: GoogleFonts.crimsonText(color: AppColors.lightGray),
         hintStyle: GoogleFonts.crimsonText(
-          color: AppColors.lightGray.withOpacity(0.6),
+          color: AppColors.lightGray.withValues(alpha: 0.6),
         ),
       ),
       dividerTheme: DividerThemeData(
-        color: AppColors.darkRed.withOpacity(0.3),
+        color: AppColors.darkRed.withValues(alpha: 0.3),
         thickness: 1,
       ),
     );
@@ -119,10 +119,10 @@ class DarkTheme {
         colors: [AppColors.smokeGray, AppColors.charcoal],
       ),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: AppColors.darkRed.withOpacity(0.5), width: 1),
+      border: Border.all(color: AppColors.darkRed.withValues(alpha: 0.5), width: 1),
       boxShadow: [
         BoxShadow(
-          color: AppColors.primaryRed.withOpacity(0.2),
+          color: AppColors.primaryRed.withValues(alpha: 0.2),
           blurRadius: 12,
           offset: const Offset(0, 4),
         ),
@@ -131,7 +131,7 @@ class DarkTheme {
   }
 
   static get styleIconButton => IconButton.styleFrom(
-    backgroundColor: AppColors.charcoal.withOpacity(0.7),
+    backgroundColor: AppColors.charcoal.withValues(alpha: 0.7),
     padding: EdgeInsets.all(12.w),
     minimumSize: Size(AppSpacing.minTouchTarget, AppSpacing.minTouchTarget),
   );

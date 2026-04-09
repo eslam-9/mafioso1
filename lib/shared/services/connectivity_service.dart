@@ -10,9 +10,9 @@ class ConnectivityService {
       // First check connectivity status
       final result = await _connectivity.checkConnectivity();
       final hasConnection =
-          result == ConnectivityResult.mobile ||
-          result == ConnectivityResult.wifi ||
-          result == ConnectivityResult.ethernet;
+          result.contains(ConnectivityResult.mobile) ||
+          result.contains(ConnectivityResult.wifi) ||
+          result.contains(ConnectivityResult.ethernet);
 
       AppLogger.logInfo('[ConnectivityService] Connectivity status: $result');
       AppLogger.logInfo(
@@ -20,7 +20,7 @@ class ConnectivityService {
       );
 
       // If connectivity check fails (common on emulators), try actual network request
-      if (!hasConnection || result == ConnectivityResult.none) {
+      if (!hasConnection || result.contains(ConnectivityResult.none)) {
         AppLogger.logInfo(
           '[ConnectivityService] Connectivity check failed, testing with real request...',
         );
@@ -67,9 +67,9 @@ class ConnectivityService {
 
   Stream<bool> get connectivityStream {
     return _connectivity.onConnectivityChanged.map((result) {
-      return result == ConnectivityResult.mobile ||
-          result == ConnectivityResult.wifi ||
-          result == ConnectivityResult.ethernet;
+      return result.contains(ConnectivityResult.mobile) ||
+          result.contains(ConnectivityResult.wifi) ||
+          result.contains(ConnectivityResult.ethernet);
     });
   }
 }

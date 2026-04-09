@@ -18,7 +18,7 @@ class HomeTitle extends StatelessWidget {
         letterSpacing: 8,
         shadows: [
           Shadow(
-            color: AppColors.primaryRed.withOpacity(0.8),
+            color: AppColors.primaryRed.withValues(alpha: 0.8),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),

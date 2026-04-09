@@ -26,7 +26,7 @@ class StoryTwistWidget extends StatelessWidget {
             Text(
               twist,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.9),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                 height: 1.5,
               ),
             ),
