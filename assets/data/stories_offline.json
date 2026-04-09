@@ -1,609 +1,239 @@
 {
   "stories": [
     {
-      "title": "جريمة الفيلا المهجورة",
-      "intro": "الليلة دي كانت غريبة في الحتة. حد اتقتل والكل بيقول إنه كان راجل كويس.",
-      "crimeDescription": "لقوه في الصالة قاعد على الكرسي. الباب كان مفتوح والنور مطفي. في دم على الأرض وكان واضح إن حد ضربه من ورا.",
+      "title": "آخر رهان لصاحب المراكب",
+      "intro": "المكان كان معروف بسباقات المراكب والرهانات. في يوم، صاحب المراكب اتلاقى ميت بطريقة غريبة.",
+      "crimeDescription": "لقوه واقع قدام مكتبه وفي كوباية جنبه. قبلها كان متخانق مع ابنه. وفي نفس اليوم صاحبه القديم رجع واداله فلوس. الراجل كان بيعض الفلوس عشان يتأكد منها.",
       "suspects": [
         {
-          "name": "أحمد الشربيني",
-          "suspiciousBehavior": "كان واقف قدام البيت بليل وشكله مش طبيعي"
+          "name": "عمر حسن",
+          "suspiciousBehavior": "اتخانق مع أبوه وكان محتاج فلوس"
         },
         {
-          "name": "منى السيد",
-          "suspiciousBehavior": "كانت آخر واحدة شافته قبل ما يموت"
+          "name": "كريم صالح",
+          "suspiciousBehavior": "رجع فجأة واداله فلوس"
         },
         {
-          "name": "حسام الدين",
-          "suspiciousBehavior": "كان عنده مشاكل مالية مع الضحية"
+          "name": "يوسف علي",
+          "suspiciousBehavior": "هو اللي قدم العصير"
         },
         {
-          "name": "سلمى فؤاد",
-          "suspiciousBehavior": "اتشافت بتجري من المكان"
-        },
-        {
-          "name": "كريم عبدالله",
-          "suspiciousBehavior": "كان بيهدد الضحية من كام يوم"
-        },
-        {
-          "name": "نور الهدى",
-          "suspiciousBehavior": "كانت عايزة ترث الفلوس"
+          "name": "محمود فتحي",
+          "suspiciousBehavior": "شرب من نفس العصير ومحصلوش حاجة"
         }
       ],
       "clues": [
         {
-          "text": "لقينا أثر جزمة غريبة جنب الباب",
+          "text": "البودي جارد شرب العصير ومحصلوش حاجة",
           "difficulty": "veryEasy"
         },
         {
-          "text": "الجيران سمعوا صوت خناقة بليل",
+          "text": "مفيش سم واضح في الكوباية",
           "difficulty": "easy"
         },
         {
-          "text": "في حد شاف عربية سودا واقفة بره",
+          "text": "الراجل بيعض الفلوس دايمًا",
           "difficulty": "medium"
         },
         {
-          "text": "لقينا ورقة مكتوب عليها رقم تليفون",
+          "text": "الفلوس اختفت",
           "difficulty": "hard"
         },
         {
-          "text": "الكاميرا صورت حد داخل الساعة ١٠",
+          "text": "وقع بعد ما مسك الفلوس",
           "difficulty": "veryHard"
         }
       ],
-      "twist": "طلع إن القاتل كان صاحبه من زمان وكان عايز ياخد الفلوس",
-      "killerName": "أحمد الشربيني"
+      "twist": "السم كان على الفلوس مش العصير",
+      "killerName": "كريم صالح"
     },
     {
-      "title": "جريمة القهوة القديمة",
-      "intro": "الجو كان هادي على غير العادة. فجأة الخبر انتشر إن صاحب القهوة اتقتل.",
-      "crimeDescription": "لقوه واقع ورا الكاونتر. الكوبايات مكسورة والأرض مليانة دم. الباب كان مقفول من جوه وده زوّد الشك.",
+      "title": "جريمة الساعة المتأخرة",
+      "intro": "واحد اتقتل في شقته بليل والباب كان مقفول من جوه.",
+      "crimeDescription": "لقوه على الأرض والتليفون جنبه. مفيش أي آثار كسر. الساعة كانت واقفة على 2.",
       "suspects": [
         {
-          "name": "سعيد البنا",
-          "suspiciousBehavior": "كان متخانق مع الضحية قبلها بساعات"
+          "name": "رامي",
+          "suspiciousBehavior": "آخر واحد كلمه"
         },
         {
-          "name": "محمود عطية",
-          "suspiciousBehavior": "اختفى وقت الجريمة"
+          "name": "سارة",
+          "suspiciousBehavior": "كانت عنده قبلها"
         },
         {
-          "name": "نهى كمال",
-          "suspiciousBehavior": "كانت بتيجي القهوة بليل بس"
+          "name": "مروان",
+          "suspiciousBehavior": "كان معاه مفتاح قديم"
         },
         {
-          "name": "علاء فوزي",
-          "suspiciousBehavior": "كان مديون للضحية"
-        },
-        {
-          "name": "ريم حسن",
-          "suspiciousBehavior": "اتشافت بتقفل باب القهوة بسرعة"
-        },
-        {
-          "name": "طارق سامي",
-          "suspiciousBehavior": "كان باين عليه توتر غريب"
+          "name": "دينا",
+          "suspiciousBehavior": "سمعت صوت خبط"
         }
       ],
       "clues": [
         {
-          "text": "لقينا كوباية عليها بصمات غريبة",
+          "text": "الباب مقفول من جوه",
           "difficulty": "veryEasy"
         },
         {
-          "text": "في حد سمع صوت حاجة بتقع",
+          "text": "الساعة وقفت على 2",
           "difficulty": "easy"
         },
         {
-          "text": "الكاش ناقص مبلغ كبير",
+          "text": "التليفون فيه مكالمة بعد 2",
           "difficulty": "medium"
         },
         {
-          "text": "مفتاح القهوة اتلاقى في جيب حد",
+          "text": "مفيش آثار دخول بالقوة",
           "difficulty": "hard"
         },
         {
-          "text": "كاميرا الشارع صورت وش متغطي",
+          "text": "الساعة اتكسرت بعد الوفاة",
           "difficulty": "veryHard"
         }
       ],
-      "twist": "طلع إن القاتل كان بيخطط يسرق القهوة من زمان",
-      "killerName": "علاء فوزي"
+      "twist": "القاتل دخل قبلها وخبّى نفسه",
+      "killerName": "مروان"
     },
     {
-      "title": "جريمة العمارة الجديدة",
-      "intro": "الناس صحيت على صوت صريخ. واحد من سكان العمارة اتقتل.",
-      "crimeDescription": "لقوه مرمي في المدخل. الأسانسير كان واقف والنور فاصل. في دم على الحيطان.",
+      "title": "جريمة القهوة الساخنة",
+      "intro": "واحد مات وهو بيشرب قهوة.",
+      "crimeDescription": "لقوه على الترابيزة والكوباية قدامه. القهوة كانت لسه سخنة.",
       "suspects": [
         {
-          "name": "حسن الديب",
-          "suspiciousBehavior": "كان دايمًا يشتكي من الضحية"
+          "name": "أحمد",
+          "suspiciousBehavior": "هو اللي عمل القهوة"
         },
         {
-          "name": "مي أحمد",
-          "suspiciousBehavior": "كانت طالعة من العمارة بليل"
+          "name": "ليلى",
+          "suspiciousBehavior": "قعدت معاه"
         },
         {
-          "name": "شريف نادر",
-          "suspiciousBehavior": "اتخانق معاه قدام الناس"
+          "name": "خالد",
+          "suspiciousBehavior": "دخل المطبخ"
         },
         {
-          "name": "دينا يوسف",
-          "suspiciousBehavior": "كانت ساكنة فوقه على طول"
-        },
-        {
-          "name": "كريم صبري",
-          "suspiciousBehavior": "كان متأخر على شغله يومها"
-        },
-        {
-          "name": "نجلاء فاروق",
-          "suspiciousBehavior": "غيرت أقوالها أكتر من مرة"
-        }
-      ],
-      "clues": [
-        {
-          "text": "لقينا زرار واقع جنب الجثة",
-          "difficulty": "veryEasy"
-        },
-        {
-          "text": "في صوت خبطة سمعه أكتر من حد",
-          "difficulty": "easy"
-        },
-        {
-          "text": "كارت دخول الأسانسير ضاع",
-          "difficulty": "medium"
-        },
-        {
-          "text": "رسالة تهديد كانت متسجلة على الموبايل",
-          "difficulty": "hard"
-        },
-        {
-          "text": "كاميرات العمارة اتحذفت تسجيلاتها",
-          "difficulty": "veryHard"
-        }
-      ],
-      "twist": "الخناقة اتحولت لجريمة من غير ما حد يقصد",
-      "killerName": "شريف نادر"
-    },
-    {
-      "title": "جريمة الشقة المفروشة",
-      "intro": "الشقة كانت مأجرة جديد. بعد يومين بس لقوا جريمة.",
-      "crimeDescription": "لقوه على الأرض جنب السرير. الشباك مفتوح والستارة مقطوعة.",
-      "suspects": [
-        {
-          "name": "وائل حسين",
-          "suspiciousBehavior": "كان ساكن قبله وساب الشقة فجأة"
-        },
-        {
-          "name": "منى رفعت",
-          "suspiciousBehavior": "كانت بتيجي تزوره كتير"
-        },
-        {
-          "name": "إسلام حمدي",
-          "suspiciousBehavior": "كان عليه مشاكل مع الضحية"
-        },
-        {
-          "name": "هدى سامح",
-          "suspiciousBehavior": "اتصلت بالإسعاف متأخر"
-        },
-        {
-          "name": "أشرف نبيل",
-          "suspiciousBehavior": "شافوه واقف تحت الشباك"
-        },
-        {
-          "name": "رانيا فؤاد",
-          "suspiciousBehavior": "دخلت الشقة من غير ما حد يشوفها"
-        }
-      ],
-      "clues": [
-        {
-          "text": "لقينا بصمات على الشباك",
-          "difficulty": "veryEasy"
-        },
-        {
-          "text": "في صوت شباك بيتفتح اتسمع",
-          "difficulty": "easy"
-        },
-        {
-          "text": "محفظته كانت ناقصة فلوس",
-          "difficulty": "medium"
-        },
-        {
-          "text": "مفتاح الشقة كان متبدل",
-          "difficulty": "hard"
-        },
-        {
-          "text": "مكالمة مسجلة قبل الجريمة بدقايق",
-          "difficulty": "veryHard"
-        }
-      ],
-      "twist": "القاتل دخل وهو فاكره نايم",
-      "killerName": "أشرف نبيل"
-    },
-    {
-      "title": "جريمة الجراج",
-      "intro": "ريحة دم كانت مالية المكان. الجراج كله كان مقفول.",
-      "crimeDescription": "لقوه جنب عربيته. الكشاف مكسور وفي أثر سحب على الأرض.",
-      "suspects": [
-        {
-          "name": "باسم فتحي",
-          "suspiciousBehavior": "كان واقف عند الجراج بليل"
-        },
-        {
-          "name": "هالة شوقي",
-          "suspiciousBehavior": "سمعت حاجة بس قالت متعرفش"
-        },
-        {
-          "name": "أيمن طارق",
-          "suspiciousBehavior": "كان مديون للضحية"
-        },
-        {
-          "name": "نرمين صلاح",
-          "suspiciousBehavior": "اتلغبطت في كلامها"
-        },
-        {
-          "name": "سامح عبدالعظيم",
-          "suspiciousBehavior": "عربيته كانت مخبوطة"
-        },
-        {
-          "name": "لينا عادل",
-          "suspiciousBehavior": "خرجت من الجراج بسرعة"
-        }
-      ],
-      "clues": [
-        {
-          "text": "لقينا أثر فرامل",
-          "difficulty": "veryEasy"
-        },
-        {
-          "text": "في حد سمع صوت موتور شغال",
-          "difficulty": "easy"
-        },
-        {
-          "text": "مفتاح عربية مش بتاعه",
-          "difficulty": "medium"
-        },
-        {
-          "text": "كشاف الجراج متكسر بإيد حد",
-          "difficulty": "hard"
-        },
-        {
-          "text": "كاميرا الجراج كانت متغطية",
-          "difficulty": "veryHard"
-        }
-      ],
-      "twist": "الجريمة حصلت في لحظة غضب",
-      "killerName": "أيمن طارق"
-    },
-    {
-      "title": "جريمة المكتب",
-      "intro": "الشغل وقف فجأة. المدير اتقتل جوه مكتبه.",
-      "crimeDescription": "لقوه قاعد على الكرسي. الورق مرمي والنور مطفي.",
-      "suspects": [
-        {
-          "name": "رامي سعد",
-          "suspiciousBehavior": "كان متخانق مع المدير"
-        },
-        {
-          "name": "سمر شريف",
-          "suspiciousBehavior": "خرجت متأخر"
-        },
-        {
-          "name": "مروان نبيل",
-          "suspiciousBehavior": "كان عليه إنذار"
-        },
-        {
-          "name": "نجلاء توفيق",
-          "suspiciousBehavior": "دخلت المكتب من غير إذن"
-        },
-        {
-          "name": "حازم كمال",
-          "suspiciousBehavior": "مسح ملفات من الكمبيوتر"
-        },
-        {
-          "name": "داليا مجدي",
-          "suspiciousBehavior": "كانت آخر واحدة شافته"
-        }
-      ],
-      "clues": [
-        {
-          "text": "لقينا كوباية قهوة لسه سخنة",
-          "difficulty": "veryEasy"
-        },
-        {
-          "text": "في صوت باب اتقفل",
-          "difficulty": "easy"
-        },
-        {
-          "text": "ملفات مهمة اتحذفت",
-          "difficulty": "medium"
-        },
-        {
-          "text": "بصمة غريبة على المكتب",
-          "difficulty": "hard"
-        },
-        {
-          "text": "كاميرا الدور كانت مقفولة",
-          "difficulty": "veryHard"
-        }
-      ],
-      "twist": "القاتل كان خايف يترفد",
-      "killerName": "حازم كمال"
-    },
-    {
-      "title": "جريمة السطح",
-      "intro": "الليل كان هادي بس السطح شهد جريمة.",
-      "crimeDescription": "لقوه مرمي جنب السور. في آثار خناقة واضحة.",
-      "suspects": [
-        {
-          "name": "فادي كرم",
-          "suspiciousBehavior": "كان طالع السطح كتير"
-        },
-        {
-          "name": "سارة عاطف",
-          "suspiciousBehavior": "اتشافت بتعيط"
-        },
-        {
-          "name": "عمر هشام",
-          "suspiciousBehavior": "كان صوته عالي"
-        },
-        {
-          "name": "نورهان رأفت",
-          "suspiciousBehavior": "غيرت هدومها بسرعة"
-        },
-        {
-          "name": "محمد جلال",
-          "suspiciousBehavior": "اتأخر عن البيت"
-        },
-        {
-          "name": "بسمة عادل",
-          "suspiciousBehavior": "قالت شافت حد يجري"
-        }
-      ],
-      "clues": [
-        {
-          "text": "لقينا جزمة واقعة",
-          "difficulty": "veryEasy"
-        },
-        {
-          "text": "في صوت زعيق اتسمع",
-          "difficulty": "easy"
-        },
-        {
-          "text": "موبايل مكسور",
-          "difficulty": "medium"
-        },
-        {
-          "text": "دم على السور",
-          "difficulty": "hard"
-        },
-        {
-          "text": "رسالة تهديد قديمة",
-          "difficulty": "veryHard"
-        }
-      ],
-      "twist": "الخناقة خرجت عن السيطرة",
-      "killerName": "عمر هشام"
-    },
-    {
-      "title": "جريمة المستودع",
-      "intro": "المكان كان مقفول. محدش متوقع اللي حصل.",
-      "crimeDescription": "لقوه وسط الكراتين. النور كان فاصل.",
-      "suspects": [
-        {
-          "name": "شادي مراد",
-          "suspiciousBehavior": "كان آخر واحد موجود"
-        },
-        {
-          "name": "هشام رجب",
-          "suspiciousBehavior": "كان بيخبّي حاجة"
-        },
-        {
-          "name": "ندى فوزي",
+          "name": "منى",
           "suspiciousBehavior": "غيرت كلامها"
-        },
-        {
-          "name": "كامل بدوي",
-          "suspiciousBehavior": "كان عليه شبهة سرقة"
-        },
-        {
-          "name": "ريم صابر",
-          "suspiciousBehavior": "دخلت المستودع لوحدها"
-        },
-        {
-          "name": "طارق ياسين",
-          "suspiciousBehavior": "اختفى فجأة"
         }
       ],
       "clues": [
         {
-          "text": "لقينا كرتونة مفتوحة",
+          "text": "القهوة لسه سخنة",
           "difficulty": "veryEasy"
         },
         {
-          "text": "في صوت حد بيجري",
+          "text": "مفيش سم في القهوة",
           "difficulty": "easy"
         },
         {
-          "text": "مفتاح المستودع مكسور",
+          "text": "السكر كان متبدل",
           "difficulty": "medium"
         },
         {
-          "text": "دم على الكراتين",
+          "text": "المعلقة عليها أثر غريب",
           "difficulty": "hard"
         },
         {
-          "text": "كاميرا المستودع كانت بايظة",
+          "text": "السم كان في المعلقة مش القهوة",
           "difficulty": "veryHard"
         }
       ],
-      "twist": "القاتل كان خايف يتكشف",
-      "killerName": "كامل بدوي"
+      "twist": "السم كان على المعلقة",
+      "killerName": "خالد"
     },
     {
-      "title": "جريمة النادي",
-      "intro": "النادي كان زحمة. فجأة كل حاجة وقفت.",
-      "crimeDescription": "لقوه في غرفة تغيير الملابس. الباب كان موارب.",
+      "title": "جريمة المصعد",
+      "intro": "واحد مات في الأسانسير.",
+      "crimeDescription": "لقوه لوحده والأسانسير واقف بين دورين.",
       "suspects": [
         {
-          "name": "ياسر خالد",
-          "suspiciousBehavior": "كان متخانق معاه"
+          "name": "حسن",
+          "suspiciousBehavior": "كان معاه قبلها"
         },
         {
-          "name": "مروة ناصر",
-          "suspiciousBehavior": "دخلت الغرفة لوحدها"
+          "name": "نور",
+          "suspiciousBehavior": "نزلت بسرعة"
         },
         {
-          "name": "شادي حسين",
-          "suspiciousBehavior": "كان متوتر"
+          "name": "كريم",
+          "suspiciousBehavior": "كان بيصلّح الأسانسير"
         },
         {
-          "name": "رانيا شوقي",
-          "suspiciousBehavior": "غيرت روايتها"
-        },
-        {
-          "name": "علاء مدحت",
-          "suspiciousBehavior": "اختفى شوية"
-        },
-        {
-          "name": "سلمى طارق",
-          "suspiciousBehavior": "كانت بتبص حواليها كتير"
+          "name": "سلمى",
+          "suspiciousBehavior": "سمعت صوت"
         }
       ],
       "clues": [
         {
-          "text": "لقينا فوطة عليها دم",
+          "text": "مفيش إصابات واضحة",
           "difficulty": "veryEasy"
         },
         {
-          "text": "في صوت باب بيتقفل",
+          "text": "الأسانسير وقف فجأة",
           "difficulty": "easy"
         },
         {
-          "text": "كارت عضوية واقع",
+          "text": "في مشكلة كهربا",
           "difficulty": "medium"
         },
         {
-          "text": "قفل الغرفة مكسور",
+          "text": "الزرار كان فيه مادة",
           "difficulty": "hard"
         },
         {
-          "text": "كاميرا الممر اتحذفت",
+          "text": "المادة سامة على الزرار",
           "difficulty": "veryHard"
         }
       ],
-      "twist": "الغيرة كانت السبب",
-      "killerName": "ياسر خالد"
+      "twist": "السم كان على زرار الأسانسير",
+      "killerName": "كريم"
     },
     {
-      "title": "جريمة العيادة",
-      "intro": "العيادة كانت فاضية. بس الجريمة كانت مستنية.",
-      "crimeDescription": "لقوه على السرير. الأدوات مبعثرة.",
+      "title": "جريمة الموبايل",
+      "intro": "واحد مات وهو ماسك موبايله.",
+      "crimeDescription": "لقوه على السرير والموبايل في إيده.",
       "suspects": [
         {
-          "name": "دكتور سامي",
-          "suspiciousBehavior": "كان آخر واحد موجود"
+          "name": "طارق",
+          "suspiciousBehavior": "بعت له رسالة"
         },
         {
-          "name": "ليلى سمير",
-          "suspiciousBehavior": "خرجت بسرعة"
+          "name": "ريم",
+          "suspiciousBehavior": "كانت معاه"
         },
         {
-          "name": "حازم رفعت",
-          "suspiciousBehavior": "كان متوتر"
+          "name": "وليد",
+          "suspiciousBehavior": "كان بيصلّح الموبايل"
         },
         {
-          "name": "نور صلاح",
+          "name": "هبة",
           "suspiciousBehavior": "غيرت أقوالها"
-        },
-        {
-          "name": "ماجد يوسف",
-          "suspiciousBehavior": "دخل من غير ميعاد"
-        },
-        {
-          "name": "هبة كمال",
-          "suspiciousBehavior": "كانت واقفة عند الباب"
         }
       ],
       "clues": [
         {
-          "text": "لقينا جوانتي طبي",
+          "text": "مفيش سم في الأكل",
           "difficulty": "veryEasy"
         },
         {
-          "text": "في صوت صريخ خافت",
+          "text": "الموبايل كان سخن",
           "difficulty": "easy"
         },
         {
-          "text": "ملف مريض مختفي",
+          "text": "في شحن غريب",
           "difficulty": "medium"
         },
         {
-          "text": "دواء ناقص",
+          "text": "الكهربا كانت زايدة",
           "difficulty": "hard"
         },
         {
-          "text": "كاميرا العيادة مطفية",
+          "text": "الموبايل متوصل بطريقة تسبب صدمة",
           "difficulty": "veryHard"
         }
       ],
-      "twist": "السر كان لازم يستخبى",
-      "killerName": "دكتور سامي"
-    },
-    {
-      "title": "جريمة المخزن",
-      "intro": "المكان ضلمة والجو مش مريح.",
-      "crimeDescription": "لقوه مرمي جنب الباب. في أثر مقاومة.",
-      "suspects": [
-        {
-          "name": "مينا فؤاد",
-          "suspiciousBehavior": "كان واقف بره"
-        },
-        {
-          "name": "شيماء حسن",
-          "suspiciousBehavior": "اتلخبطت في كلامها"
-        },
-        {
-          "name": "بدر محمود",
-          "suspiciousBehavior": "كان معاه مفتاح"
-        },
-        {
-          "name": "ياسمين لطفي",
-          "suspiciousBehavior": "دخلت المخزن بليل"
-        },
-        {
-          "name": "أكرم سعيد",
-          "suspiciousBehavior": "كان متخانق معاه"
-        },
-        {
-          "name": "سحر علي",
-          "suspiciousBehavior": "خرجت متأخر"
-        }
-      ],
-      "clues": [
-        {
-          "text": "لقينا قفل مكسور",
-          "difficulty": "veryEasy"
-        },
-        {
-          "text": "في صوت خبط",
-          "difficulty": "easy"
-        },
-        {
-          "text": "مفتاح زيادة",
-          "difficulty": "medium"
-        },
-        {
-          "text": "دم على الأرض",
-          "difficulty": "hard"
-        },
-        {
-          "text": "رسالة تهديد قديمة",
-          "difficulty": "veryHard"
-        }
-      ],
-      "twist": "الخناقة اتحولت لجريمة",
-      "killerName": "أكرم سعيد"
+      "twist": "الموبايل هو سبب الموت",
+      "killerName": "وليد"
     }
   ]
 }

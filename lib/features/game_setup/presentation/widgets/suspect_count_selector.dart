@@ -15,9 +15,9 @@ class SuspectCountSelector extends StatelessWidget {
         Text(
           'suspect_count'.tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppColors.bloodRed,
-                fontWeight: FontWeight.bold,
-              ),
+            color: AppColors.bloodRed,
+            fontWeight: FontWeight.bold,
+          ),
         ).animate().fadeIn(delay: 100.ms),
         const SizedBox(height: 16),
         Row(

@@ -15,13 +15,9 @@ final getIt = GetIt.instance;
 
 Future<void> init() async {
   // Services
-  getIt.registerLazySingleton<ConnectivityService>(
-    () => ConnectivityService(),
-  );
+  getIt.registerLazySingleton<ConnectivityService>(() => ConnectivityService());
 
-  getIt.registerLazySingleton<SoundService>(
-    () => SoundService()..init(),
-  );
+  getIt.registerLazySingleton<SoundService>(() => SoundService()..init());
 
   // Network
   getIt.registerLazySingleton<Dio>(
@@ -76,7 +72,5 @@ Future<void> init() async {
   );
 
   // Role Reveal Use Cases
-  getIt.registerFactory<AssignRolesUseCase>(
-    () => AssignRolesUseCase(),
-  );
+  getIt.registerFactory<AssignRolesUseCase>(() => AssignRolesUseCase());
 }

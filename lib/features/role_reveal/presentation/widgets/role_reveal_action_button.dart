@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../../../shared/services/sound_service.dart';
-import '../../../../core/di/injection_container.dart' as di;
 
 class RoleRevealActionButton extends StatelessWidget {
   final bool isRevealed;
@@ -27,11 +25,6 @@ class RoleRevealActionButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           if (!isRevealed) {
-            try {
-              di.getIt<SoundService>().playSound(SoundEffect.roleReveal);
-            } catch (e) {
-              // Sound service might not be available
-            }
             onReveal();
           } else if (hasNextPlayer) {
             onNext();

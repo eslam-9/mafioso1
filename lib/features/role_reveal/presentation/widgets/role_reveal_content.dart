@@ -24,7 +24,10 @@ class RoleRevealContent extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [roleColor.withOpacity(0.2), AppColors.charcoal],
+              colors: [
+                roleColor.withOpacity(0.2),
+                Theme.of(context).colorScheme.surface,
+              ],
             ),
           ),
           child: Column(
@@ -48,7 +51,9 @@ class RoleRevealContent extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.deepBlack.withOpacity(0.5),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.deepBlack.withOpacity(0.5)
+                      : Colors.black.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -87,7 +92,10 @@ class RoleRevealContent extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.charcoal.withOpacity(0.5),
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                ? AppColors.charcoal.withOpacity(0.5)
+                                : Colors.black.withOpacity(0.05),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(

@@ -70,16 +70,20 @@ class _VotingDialogState extends State<VotingDialog> {
                     ),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      value: _votes[playerIndex],
+                      initialValue: _votes[playerIndex],
                       decoration: InputDecoration(
                         hintText: 'accuse'.tr(),
                         filled: true,
-                        fillColor: AppColors.charcoal,
+                        fillColor: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      dropdownColor: AppColors.charcoal,
+                      dropdownColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
                       items: widget.alivePlayers.map((player) {
                         return DropdownMenuItem<String>(
                           value: player.id,

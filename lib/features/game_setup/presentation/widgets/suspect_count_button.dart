@@ -25,7 +25,9 @@ class SuspectCountButton extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.primaryRed : AppColors.smokeGray,
+              color: isSelected
+                  ? AppColors.primaryRed
+                  : Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSelected
@@ -38,7 +40,9 @@ class SuspectCountButton extends StatelessWidget {
               child: Text(
                 count.toString(),
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                 ),
               ),

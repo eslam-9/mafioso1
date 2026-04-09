@@ -15,7 +15,7 @@ class GameSetupBloc extends Bloc<GameSetupEvent, GameSetupState> {
 
   void _onSetGameMode(SetGameMode event, Emitter<GameSetupState> emit) {
     AppLogger.logBlocEvent('GameSetupBloc', 'SetGameMode');
-    
+
     final newTotalPlayers = event.mode == GameMode.withDetective
         ? state.suspectCount + 1
         : state.suspectCount;
@@ -25,17 +25,16 @@ class GameSetupBloc extends Bloc<GameSetupEvent, GameSetupState> {
       newTotalPlayers,
     );
 
-    emit(state.copyWith(
-      selectedMode: event.mode,
-      playerNames: updatedPlayerNames,
-    ));
-    
+    emit(
+      state.copyWith(selectedMode: event.mode, playerNames: updatedPlayerNames),
+    );
+
     add(const ValidateNames());
   }
 
   void _onSetSuspectCount(SetSuspectCount event, Emitter<GameSetupState> emit) {
     if (event.count < 4 || event.count > 6) return;
-    
+
     AppLogger.logBlocEvent('GameSetupBloc', 'SetSuspectCount: ${event.count}');
 
     final newTotalPlayers = state.selectedMode == GameMode.withDetective
@@ -47,17 +46,19 @@ class GameSetupBloc extends Bloc<GameSetupEvent, GameSetupState> {
       newTotalPlayers,
     );
 
-    emit(state.copyWith(
-      suspectCount: event.count,
-      playerNames: updatedPlayerNames,
-    ));
-    
+    emit(
+      state.copyWith(
+        suspectCount: event.count,
+        playerNames: updatedPlayerNames,
+      ),
+    );
+
     add(const ValidateNames());
   }
 
   void _onSetPlayerName(SetPlayerName event, Emitter<GameSetupState> emit) {
     if (event.index < 0 || event.index >= state.playerNames.length) return;
-    
+
     AppLogger.logBlocEvent('GameSetupBloc', 'SetPlayerName: ${event.index}');
 
     final updatedNames = List<String>.from(state.playerNames);
@@ -77,7 +78,10 @@ class GameSetupBloc extends Bloc<GameSetupEvent, GameSetupState> {
     emit(const GameSetupState());
   }
 
-  List<String> _updatePlayerNames(List<String> currentNames, int requiredCount) {
+  List<String> _updatePlayerNames(
+    List<String> currentNames,
+    int requiredCount,
+  ) {
     if (currentNames.length > requiredCount) {
       return currentNames.sublist(0, requiredCount);
     } else {

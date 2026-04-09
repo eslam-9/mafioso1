@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../../../core/theme/app_colors.dart';
 import 'how_to_play_item.dart';
 
 class HowToPlayDialog extends StatelessWidget {
@@ -9,7 +8,7 @@ class HowToPlayDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.charcoal,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       title: Text(
         'how_to_play_title'.tr(),
         style: TextStyle(color: Theme.of(context).colorScheme.primary),

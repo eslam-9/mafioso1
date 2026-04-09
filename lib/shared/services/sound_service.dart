@@ -1,12 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 
-enum SoundEffect {
-  roleReveal,
-  vote,
-  win,
-  lose,
-  buttonClick,
-}
+enum SoundEffect { roleReveal, vote, win, lose, buttonClick }
 
 class SoundService {
   final AudioPlayer _player = AudioPlayer();

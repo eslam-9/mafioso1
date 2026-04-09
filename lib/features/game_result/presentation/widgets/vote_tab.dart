@@ -160,7 +160,9 @@ class _VoteTabState extends State<VoteTab> {
               key: ValueKey(player.id),
               padding: const EdgeInsets.only(bottom: 16),
               child: Card(
-                color: AppColors.smokeGray,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.smokeGray
+                    : Theme.of(context).cardColor,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -172,7 +174,12 @@ class _VoteTabState extends State<VoteTab> {
                             Icons.person,
                             color: player.role == PlayerRole.detective
                                 ? AppColors.bloodRed
-                                : Colors.white,
+                                : (Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -210,16 +217,20 @@ class _VoteTabState extends State<VoteTab> {
                       ),
                       const SizedBox(height: 12),
                       DropdownButtonFormField<String>(
-                        value: _votes[player.id],
+                        initialValue: _votes[player.id],
                         decoration: InputDecoration(
                           hintText: 'select_suspect'.tr(),
                           filled: true,
-                          fillColor: AppColors.charcoal,
+                          fillColor: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        dropdownColor: AppColors.charcoal,
+                        dropdownColor: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
                         items: votingOptions.map((suspect) {
                           return DropdownMenuItem<String>(
                             value: suspect.id,
@@ -250,7 +261,10 @@ class _VoteTabState extends State<VoteTab> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.bloodRed,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              disabledBackgroundColor: AppColors.smokeGray,
+              disabledBackgroundColor:
+                  Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.smokeGray
+                  : Theme.of(context).colorScheme.surfaceContainerHighest,
             ),
             child: Text(
               'submit_all_votes'.tr(),

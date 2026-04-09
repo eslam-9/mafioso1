@@ -1,7 +1,1 @@
-enum GameState {
-  setup,
-  playing,
-  voting,
-  innocentsWin,
-  killerWins,
-}
+enum GameState { setup, playing, voting, innocentsWin, killerWins }

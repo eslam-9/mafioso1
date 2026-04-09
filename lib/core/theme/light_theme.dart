@@ -11,12 +11,10 @@ class LightTheme {
         primary: AppColors.darkRed, // Darker red for light theme
         secondary: AppColors.primaryRed,
         surface: Colors.grey[100]!,
-        background: Colors.white,
         error: AppColors.bloodRed,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: Colors.black87,
-        onBackground: Colors.black87,
       ),
       scaffoldBackgroundColor: Colors.white,
       textTheme: GoogleFonts.crimsonTextTextTheme(

@@ -1,7 +1,4 @@
-enum GameMode {
-  withDetective,
-  withoutDetective,
-}
+enum GameMode { withDetective, withoutDetective }
 
 class GameConfig {
   final GameMode mode;

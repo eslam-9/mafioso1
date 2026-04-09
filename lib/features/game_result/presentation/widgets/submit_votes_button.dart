@@ -64,9 +64,8 @@ class SubmitVotesButton extends StatelessWidget {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => RoundResultDialog(
-          result: bloc.state.voteHistory.last,
-        ),
+        builder: (context) =>
+            RoundResultDialog(result: bloc.state.voteHistory.last),
       );
     }
   }

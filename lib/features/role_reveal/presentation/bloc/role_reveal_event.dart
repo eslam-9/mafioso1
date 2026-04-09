@@ -13,10 +13,7 @@ class AssignRoles extends RoleRevealEvent {
   final GameConfig config;
   final Story story;
 
-  const AssignRoles({
-    required this.config,
-    required this.story,
-  });
+  const AssignRoles({required this.config, required this.story});
 
   @override
   List<Object?> get props => [config, story];

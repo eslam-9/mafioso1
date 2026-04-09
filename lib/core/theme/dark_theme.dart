@@ -13,12 +13,10 @@ class DarkTheme {
         primary: AppColors.bloodRed, // Bright red for dark theme
         secondary: AppColors.primaryRed,
         surface: AppColors.charcoal,
-        background: AppColors.deepBlack,
         error: AppColors.bloodRed,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: AppColors.lightGray,
-        onBackground: AppColors.lightGray,
       ),
       scaffoldBackgroundColor: AppColors.deepBlack,
       textTheme: GoogleFonts.crimsonTextTextTheme(

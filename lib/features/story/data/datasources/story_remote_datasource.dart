@@ -129,25 +129,37 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
 
   String _buildEnglishPrompt(int suspectCount, bool hasDetective) {
     return '''
-You are a creative writer. Generate a murder mystery story in English.
+You are a professional detective puzzle designer.
+
+Generate a SMART and LOGICAL murder mystery story.
 
 CRITICAL RULES:
 1. Write EVERYTHING in English.
-2. Number of suspects: EXACTLY $suspectCount suspects
-3. Return ONLY valid JSON, no extra text
+2. Number of suspects: EXACTLY $suspectCount suspects.
+3. Return ONLY valid JSON. No explanation, no text before or after.
+4. DO NOT add comments inside JSON.
+5. DO NOT leave trailing commas.
+6. You MUST close all brackets correctly.
+7. The response MUST start with { and end with }.
 
-JSON format:
+STORY RULES (IMPORTANT):
+- The mystery must be solvable using the clues.
+- Include a misleading element (red herring).
+- The real cause of death must NOT be obvious.
+- Use a hidden mechanism (habit / object / trick).
+- The twist must be logical and based on clues.
+
+JSON format (STRICT — DO NOT CHANGE KEYS OR STRUCTURE):
 
 {
   "title": "Story Title",
   "intro": "Short intro (2-3 sentences)",
-  "crimeDescription": "Detailed crime scene description (3-4 sentences)",
+  "crimeDescription": "Detailed crime scene description (2-3 sentences)",
   "suspects": [
     {
       "name": "Suspect Name",
       "suspiciousBehavior": "Why they are suspicious"
     }
-    // Add exactly $suspectCount suspects in total
   ],
   "clues": [
     {"text": "Clue 1", "difficulty": "veryEasy"},
@@ -156,58 +168,83 @@ JSON format:
     {"text": "Clue 4", "difficulty": "hard"},
     {"text": "Clue 5", "difficulty": "veryHard"}
   ],
-  "twist": "The plot twist explanation",
+  "twist": "Logical explanation of what really happened",
   "killerName": "Exact Name of One Suspect"
 }
 
-Requirements:
-- Exactly $suspectCount suspects
-- Exactly 5 clues with difficulties: veryEasy, easy, medium, hard, veryHard
-- killerName must match one suspect's name exactly
-- Return only the JSON, nothing else
+STRICT REQUIREMENTS:
+- EXACTLY $suspectCount suspects (no more, no less)
+- EXACTLY 5 clues
+- killerName MUST match one suspect EXACTLY
+- NO extra fields
+- NO missing fields
+- NO invalid JSON
+
+FINAL CHECK BEFORE OUTPUT:
+- Ensure valid JSON
+- Ensure all brackets are closed
+- Ensure structure matches exactly
+
+Return ONLY JSON.
 ''';
   }
 
   String _buildPrompt(int suspectCount, bool hasDetective) {
     return '''
-You are a creative writer. Generate a murder mystery story in Egyptian Arabic dialect (العامية المصرية).
+إنت مصمم ألغاز جرايم محترف.
+
+اكتب قصة جريمة ذكية بالمصري تتحل بالمنطق.
 
 CRITICAL RULES:
-1. Write EVERYTHING in Egyptian colloquial Arabic (not formal Arabic, not English)
-2. Use Egyptian words like: لقينا، شفنا، كان قاعد، راح، جه، اتقتل، الحتة، بليل، عايز، ياخد، طلع، واقف، قدام
-3. Number of suspects: EXACTLY $suspectCount suspects
-4. Return ONLY valid JSON, no extra text
+1. كل الكلام بالمصري فقط (مش فصحى ومش إنجليزي)
+2. عدد المشتبه فيهم: EXACTLY $suspectCount
+3. رجّع JSON بس من غير أي كلام
+4. ممنوع تحط comments جوه JSON
+5. ممنوع trailing commas
+6. لازم تقفل كل الأقواس صح
+7. الرد لازم يبدأ بـ { وينتهي بـ }
 
-JSON format:
+قواعد القصة:
+- لازم يكون في تمويه (حاجة تضلل القارئ)
+- طريقة القتل تكون غير مباشرة وذكية
+- الحل لازم يعتمد على الأدلة
+- في حاجة مخفية (عادة / أداة / حركة)
+
+JSON format (ممنوع تغييره):
 
 {
-  "title": "عنوان القصة بالمصري (مثال: جريمة الفيلا المهجورة)",
-  "intro": "مقدمة قصيرة بالمصري (جملتين أو تلاتة) - مثال: الليلة دي كانت غريبة في الحتة. حد اتقتل والكل بيقول إنه كان راجل كويس.",
-  "crimeDescription": "وصف مفصل بالمصري لمشهد الجريمة واللي حصل (٣ أو ٤ جمل) - استخدم كلمات زي: لقوه، كان قاعد، الباب كان مفتوح، إلخ",
+  "title": "عنوان القصة",
+  "intro": "مقدمة قصيرة (جملتين أو تلاتة)",
+  "crimeDescription": "وصف الجريمة (٢-٣ جمل)",
   "suspects": [
     {
-      "name": "أحمد الشربيني",
-      "suspiciousBehavior": "كان واقف قدام البيت بليل وشكله مش طبيعي"
+      "name": "اسم شخص",
+      "suspiciousBehavior": "ليه مشكوك فيه"
     }
-    // Add exactly $suspectCount more suspects with Egyptian names
   ],
   "clues": [
-    {"text": "لقينا أثر جزمة غريبة جنب الباب", "difficulty": "veryEasy"},
-    {"text": "الجيران سمعوا صوت خناقة بليل", "difficulty": "easy"},
-    {"text": "في حد شاف عربية سودا واقفة بره", "difficulty": "medium"},
-    {"text": "لقينا ورقة مكتوب عليها رقم تليفون", "difficulty": "hard"},
-    {"text": "الكاميرا صورت حد داخل الساعة ١٠", "difficulty": "veryHard"}
+    {"text": "دليل", "difficulty": "veryEasy"},
+    {"text": "دليل", "difficulty": "easy"},
+    {"text": "دليل", "difficulty": "medium"},
+    {"text": "دليل", "difficulty": "hard"},
+    {"text": "دليل", "difficulty": "veryHard"}
   ],
-  "twist": "طلع إن القاتل كان صاحبه من زمان",
-  "killerName": "أحمد الشربيني"
+  "twist": "شرح منطقي للحقيقة",
+  "killerName": "اسم القاتل"
 }
 
-Requirements:
-- Exactly $suspectCount suspects with Egyptian names
-- Exactly 5 clues with difficulties: veryEasy, easy, medium, hard, veryHard
-- killerName must match one suspect's name exactly
-- All text in Egyptian Arabic dialect
-- Return only the JSON, nothing else
+STRICT REQUIREMENTS:
+- بالظبط $suspectCount مشتبه فيهم
+- 5 clues بس
+- القاتل لازم يكون واحد من اللي فوق
+- مفيش fields زيادة أو ناقصة
+
+FINAL CHECK:
+- اتأكد إن JSON سليم
+- كل الأقواس مقفولة
+- نفس الشكل بالظبط
+
+رجّع JSON بس
 ''';
   }
 

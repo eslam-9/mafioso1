@@ -22,7 +22,8 @@ class GameState extends Equatable {
     this.revealedClues = const [],
   });
 
-  List<player_entity.Player> get alivePlayers => players.where((p) => p.isAlive).toList();
+  List<player_entity.Player> get alivePlayers =>
+      players.where((p) => p.isAlive).toList();
 
   List<Clue> get availableClues => story?.clues ?? [];
 
@@ -51,6 +52,12 @@ class GameState extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [players, story, gameState, currentRound, voteHistory, revealedClues];
+  List<Object?> get props => [
+    players,
+    story,
+    gameState,
+    currentRound,
+    voteHistory,
+    revealedClues,
+  ];
 }

@@ -1,605 +1,239 @@
 {
     "stories": [
         {
-            "title": "The Mystery of the Abandoned Villa",
-            "intro": "Tonight was strange in the neighborhood. Someone was killed and everyone says he was a good man.",
-            "crimeDescription": "The body was found in the living room. The door was open, and there were signs of struggle.",
+            "title": "The Boat Owner’s Final Bet",
+            "intro": "The harbor was known for illegal races. One night, the owner was found dead.",
+            "crimeDescription": "He was found near his office with a glass. He argued with his son and met his old partner who gave him money. He had a habit of biting coins.",
             "suspects": [
                 {
-                    "name": "John Smith",
-                    "suspiciousBehavior": "Was seen arguing with the victim earlier."
+                    "name": "Omar Hassan",
+                    "suspiciousBehavior": "Argued with his father"
                 },
                 {
-                    "name": "Sarah Jones",
-                    "suspiciousBehavior": "Was seen leaving the area in a hurry."
+                    "name": "Karim Saleh",
+                    "suspiciousBehavior": "Gave him money"
                 },
                 {
-                    "name": "Mike Brown",
-                    "suspiciousBehavior": "Has a history of violence"
+                    "name": "Youssef Ali",
+                    "suspiciousBehavior": "Served the drink"
                 },
                 {
-                    "name": "Emily Davis",
-                    "suspiciousBehavior": "Her fingerprints were found on a glass"
-                },
-                {
-                    "name": "David Wilson",
-                    "suspiciousBehavior": "Owed money to the victim"
+                    "name": "Mahmoud Fathy",
+                    "suspiciousBehavior": "Drank safely"
                 }
             ],
             "clues": [
                 {
-                    "text": "A muddy footprint near the door",
+                    "text": "Bodyguard drank safely",
                     "difficulty": "veryEasy"
                 },
                 {
-                    "text": "Neighbors heard shouting",
+                    "text": "No poison in drink",
                     "difficulty": "easy"
                 },
                 {
-                    "text": "A black car was seen speeding away",
+                    "text": "He bites coins",
                     "difficulty": "medium"
                 },
                 {
-                    "text": "A note with a phone number was found",
+                    "text": "Money missing",
                     "difficulty": "hard"
                 },
                 {
-                    "text": "Security camera footage shows someone entering at 10 PM",
+                    "text": "Collapsed after touching money",
                     "difficulty": "veryHard"
                 }
             ],
-            "twist": "The killer was actually his long lost brother",
-            "killerName": "John Smith"
+            "twist": "Poison was on the coins",
+            "killerName": "Karim Saleh"
         },
         {
-            "title": "The Old Cafe Murder",
-            "intro": "The place was unusually quiet. Suddenly, news spread that the cafe owner was murdered.",
-            "crimeDescription": "He was found lying behind the counter. Broken cups were everywhere and blood covered the floor. The door was locked from the inside, which made things more suspicious.",
+            "title": "The Broken Clock Case",
+            "intro": "A man was found dead in a locked apartment.",
+            "crimeDescription": "The clock stopped at 2. No forced entry.",
             "suspects": [
                 {
-                    "name": "Saeed Elbanna",
-                    "suspiciousBehavior": "He had a fight with the victim a few hours earlier"
+                    "name": "Ramy",
+                    "suspiciousBehavior": "Last call"
                 },
                 {
-                    "name": "Mahmoud Attia",
-                    "suspiciousBehavior": "He disappeared at the time of the murder"
+                    "name": "Sara",
+                    "suspiciousBehavior": "Visited earlier"
                 },
                 {
-                    "name": "Noha Kamal",
-                    "suspiciousBehavior": "She only used to visit the cafe late at night"
+                    "name": "Marwan",
+                    "suspiciousBehavior": "Had a key"
                 },
                 {
-                    "name": "Alaa Fawzy",
-                    "suspiciousBehavior": "He owed the victim money"
-                },
-                {
-                    "name": "Reem Hassan",
-                    "suspiciousBehavior": "She was seen locking the cafe door quickly"
-                },
-                {
-                    "name": "Tarek Samy",
-                    "suspiciousBehavior": "He looked unusually nervous"
+                    "name": "Dina",
+                    "suspiciousBehavior": "Heard noise"
                 }
             ],
             "clues": [
                 {
-                    "text": "We found a cup with strange fingerprints",
+                    "text": "Door locked",
                     "difficulty": "veryEasy"
                 },
                 {
-                    "text": "Someone heard something fall",
+                    "text": "Clock stopped",
                     "difficulty": "easy"
                 },
                 {
-                    "text": "A large amount of cash was missing",
+                    "text": "Call after 2",
                     "difficulty": "medium"
                 },
                 {
-                    "text": "The cafe key was found in someone's pocket",
+                    "text": "No break-in",
                     "difficulty": "hard"
                 },
                 {
-                    "text": "The street camera recorded a covered face",
+                    "text": "Clock broken later",
                     "difficulty": "veryHard"
                 }
             ],
-            "twist": "It turned out the killer had been planning to steal the cafe for a long time",
-            "killerName": "Alaa Fawzy"
+            "twist": "Killer hid inside",
+            "killerName": "Marwan"
         },
         {
-            "title": "The Apartment Building Crime",
-            "intro": "People woke up to screams. One of the residents had been killed.",
-            "crimeDescription": "He was found in the building entrance. The elevator was stuck and the lights were off. Blood stains covered the walls.",
+            "title": "The Coffee Death",
+            "intro": "A man died while drinking coffee.",
+            "crimeDescription": "He was found at the table. Coffee still warm.",
             "suspects": [
                 {
-                    "name": "Hassan Eldib",
-                    "suspiciousBehavior": "He was always complaining about the victim"
+                    "name": "Ahmed",
+                    "suspiciousBehavior": "Made coffee"
                 },
                 {
-                    "name": "Mai Ahmed",
-                    "suspiciousBehavior": "She was leaving the building late at night"
+                    "name": "Laila",
+                    "suspiciousBehavior": "Sat with him"
                 },
                 {
-                    "name": "Sherif Nader",
-                    "suspiciousBehavior": "He argued with the victim in public"
+                    "name": "Khaled",
+                    "suspiciousBehavior": "Entered kitchen"
                 },
                 {
-                    "name": "Dina Youssef",
-                    "suspiciousBehavior": "She lived directly above the victim"
-                },
-                {
-                    "name": "Karim Sabry",
-                    "suspiciousBehavior": "He was late to work that day"
-                },
-                {
-                    "name": "Naglaa Farouk",
-                    "suspiciousBehavior": "She changed her story more than once"
+                    "name": "Mona",
+                    "suspiciousBehavior": "Changed story"
                 }
             ],
             "clues": [
                 {
-                    "text": "We found a button near the body",
+                    "text": "Coffee warm",
                     "difficulty": "veryEasy"
                 },
                 {
-                    "text": "Several people heard a loud thump",
+                    "text": "No poison in coffee",
                     "difficulty": "easy"
                 },
                 {
-                    "text": "The elevator access card was missing",
+                    "text": "Sugar replaced",
                     "difficulty": "medium"
                 },
                 {
-                    "text": "A threatening voice message was found",
+                    "text": "Spoon unusual",
                     "difficulty": "hard"
                 },
                 {
-                    "text": "The building cameras had their footage deleted",
+                    "text": "Poison on spoon",
                     "difficulty": "veryHard"
                 }
             ],
-            "twist": "The argument turned into murder without intention",
-            "killerName": "Sherif Nader"
+            "twist": "Poison was on the spoon",
+            "killerName": "Khaled"
         },
         {
-            "title": "The Furnished Apartment Murder",
-            "intro": "The apartment was newly rented. Two days later, a crime was discovered.",
-            "crimeDescription": "He was found on the floor next to the bed. The window was open and the curtain was torn.",
+            "title": "The Elevator Case",
+            "intro": "A man died inside an elevator.",
+            "crimeDescription": "He was alone. Elevator stuck.",
             "suspects": [
                 {
-                    "name": "Wael Hussein",
-                    "suspiciousBehavior": "He lived there before and left suddenly"
+                    "name": "Hassan",
+                    "suspiciousBehavior": "With him earlier"
                 },
                 {
-                    "name": "Mona Refaat",
-                    "suspiciousBehavior": "She used to visit him frequently"
+                    "name": "Nour",
+                    "suspiciousBehavior": "Left quickly"
                 },
                 {
-                    "name": "Islam Hamdy",
-                    "suspiciousBehavior": "He had problems with the victim"
+                    "name": "Karim",
+                    "suspiciousBehavior": "Maintains elevator"
                 },
                 {
-                    "name": "Hoda Sameh",
-                    "suspiciousBehavior": "She called the ambulance very late"
-                },
-                {
-                    "name": "Ashraf Nabil",
-                    "suspiciousBehavior": "He was seen standing under the window"
-                },
-                {
-                    "name": "Rania Fouad",
-                    "suspiciousBehavior": "She entered the apartment unnoticed"
+                    "name": "Salma",
+                    "suspiciousBehavior": "Heard noise"
                 }
             ],
             "clues": [
                 {
-                    "text": "Fingerprints were found on the window",
+                    "text": "No injuries",
                     "difficulty": "veryEasy"
                 },
                 {
-                    "text": "Someone heard a window opening",
+                    "text": "Elevator stopped",
                     "difficulty": "easy"
                 },
                 {
-                    "text": "His wallet was missing money",
+                    "text": "Electrical issue",
                     "difficulty": "medium"
                 },
                 {
-                    "text": "The apartment key had been replaced",
+                    "text": "Button had substance",
                     "difficulty": "hard"
                 },
                 {
-                    "text": "A phone call was recorded minutes before the murder",
+                    "text": "Poison on button",
                     "difficulty": "veryHard"
                 }
             ],
-            "twist": "The killer entered while thinking the victim was asleep",
-            "killerName": "Ashraf Nabil"
+            "twist": "Poison was on the button",
+            "killerName": "Karim"
         },
         {
-            "title": "The Garage Murder",
-            "intro": "The smell of blood filled the place. The garage was completely closed.",
-            "crimeDescription": "He was found next to his car. The flashlight was broken and drag marks were visible on the ground.",
+            "title": "The Phone Shock",
+            "intro": "A man died holding his phone.",
+            "crimeDescription": "He was found on the bed with his phone.",
             "suspects": [
                 {
-                    "name": "Bassem Fathy",
-                    "suspiciousBehavior": "He was standing near the garage at night"
+                    "name": "Tarek",
+                    "suspiciousBehavior": "Sent message"
                 },
                 {
-                    "name": "Hala Shawky",
-                    "suspiciousBehavior": "She heard something but claimed ignorance"
+                    "name": "Reem",
+                    "suspiciousBehavior": "Was with him"
                 },
                 {
-                    "name": "Ayman Tarek",
-                    "suspiciousBehavior": "He owed the victim money"
+                    "name": "Walid",
+                    "suspiciousBehavior": "Fixed phone"
                 },
                 {
-                    "name": "Nermine Salah",
-                    "suspiciousBehavior": "She got confused while speaking"
-                },
-                {
-                    "name": "Sameh Abdelazim",
-                    "suspiciousBehavior": "His car was damaged"
-                },
-                {
-                    "name": "Lina Adel",
-                    "suspiciousBehavior": "She left the garage quickly"
+                    "name": "Heba",
+                    "suspiciousBehavior": "Changed story"
                 }
             ],
             "clues": [
                 {
-                    "text": "We found brake marks on the ground",
+                    "text": "No poison",
                     "difficulty": "veryEasy"
                 },
                 {
-                    "text": "Someone heard an engine running",
+                    "text": "Phone hot",
                     "difficulty": "easy"
                 },
                 {
-                    "text": "A car key that wasn't his was found",
+                    "text": "Strange charge",
                     "difficulty": "medium"
                 },
                 {
-                    "text": "The garage flashlight was smashed intentionally",
+                    "text": "High electricity",
                     "difficulty": "hard"
                 },
                 {
-                    "text": "The garage camera was covered",
+                    "text": "Phone modified to shock",
                     "difficulty": "veryHard"
                 }
             ],
-            "twist": "The crime happened in a moment of rage",
-            "killerName": "Ayman Tarek"
-        },
-        {
-            "title": "The Office Murder",
-            "intro": "Work stopped suddenly. The manager was killed inside his office.",
-            "crimeDescription": "He was found sitting in his chair. Papers were scattered and the lights were off.",
-            "suspects": [
-                {
-                    "name": "Ramy Saad",
-                    "suspiciousBehavior": "He had constant arguments with the manager"
-                },
-                {
-                    "name": "Samar Sherif",
-                    "suspiciousBehavior": "She left the office late"
-                },
-                {
-                    "name": "Marwan Nabil",
-                    "suspiciousBehavior": "He was under disciplinary warning"
-                },
-                {
-                    "name": "Naglaa Tawfik",
-                    "suspiciousBehavior": "She entered the office without permission"
-                },
-                {
-                    "name": "Hazem Kamal",
-                    "suspiciousBehavior": "He deleted files from the computer"
-                },
-                {
-                    "name": "Dalia Magdy",
-                    "suspiciousBehavior": "She was the last person to see him"
-                }
-            ],
-            "clues": [
-                {
-                    "text": "A cup of coffee was still warm",
-                    "difficulty": "veryEasy"
-                },
-                {
-                    "text": "A door closing sound was heard",
-                    "difficulty": "easy"
-                },
-                {
-                    "text": "Important files were deleted",
-                    "difficulty": "medium"
-                },
-                {
-                    "text": "A strange fingerprint was found on the desk",
-                    "difficulty": "hard"
-                },
-                {
-                    "text": "The floor camera was turned off",
-                    "difficulty": "veryHard"
-                }
-            ],
-            "twist": "The killer was afraid of being fired",
-            "killerName": "Hazem Kamal"
-        },
-        {
-            "title": "The Rooftop Murder",
-            "intro": "The night was quiet, but the rooftop witnessed a crime.",
-            "crimeDescription": "He was found near the edge. Clear signs of a struggle were present.",
-            "suspects": [
-                {
-                    "name": "Fady Karam",
-                    "suspiciousBehavior": "He frequently went to the rooftop"
-                },
-                {
-                    "name": "Sara Atef",
-                    "suspiciousBehavior": "She was seen crying"
-                },
-                {
-                    "name": "Omar Hesham",
-                    "suspiciousBehavior": "His voice was heard shouting"
-                },
-                {
-                    "name": "Norhan Raafat",
-                    "suspiciousBehavior": "She changed her clothes quickly"
-                },
-                {
-                    "name": "Mohamed Galal",
-                    "suspiciousBehavior": "He returned home late"
-                },
-                {
-                    "name": "Basma Adel",
-                    "suspiciousBehavior": "She claimed she saw someone running"
-                }
-            ],
-            "clues": [
-                {
-                    "text": "A shoe was found on the ground",
-                    "difficulty": "veryEasy"
-                },
-                {
-                    "text": "Shouting noises were heard",
-                    "difficulty": "easy"
-                },
-                {
-                    "text": "A broken phone was found",
-                    "difficulty": "medium"
-                },
-                {
-                    "text": "Blood was found on the railing",
-                    "difficulty": "hard"
-                },
-                {
-                    "text": "An old threatening message was discovered",
-                    "difficulty": "veryHard"
-                }
-            ],
-            "twist": "The fight went out of control",
-            "killerName": "Omar Hesham"
-        },
-        {
-            "title": "The Warehouse Murder",
-            "intro": "The place was locked. No one expected what happened.",
-            "crimeDescription": "He was found among boxes. The lights were off.",
-            "suspects": [
-                {
-                    "name": "Shady Mourad",
-                    "suspiciousBehavior": "He was the last one present"
-                },
-                {
-                    "name": "Hesham Ragab",
-                    "suspiciousBehavior": "He was hiding something"
-                },
-                {
-                    "name": "Nada Fawzy",
-                    "suspiciousBehavior": "She changed her statements"
-                },
-                {
-                    "name": "Kamel Badawy",
-                    "suspiciousBehavior": "He was suspected of theft"
-                },
-                {
-                    "name": "Reem Saber",
-                    "suspiciousBehavior": "She entered the warehouse alone"
-                },
-                {
-                    "name": "Tarek Yassin",
-                    "suspiciousBehavior": "He disappeared suddenly"
-                }
-            ],
-            "clues": [
-                {
-                    "text": "An open box was found",
-                    "difficulty": "veryEasy"
-                },
-                {
-                    "text": "Footsteps were heard running",
-                    "difficulty": "easy"
-                },
-                {
-                    "text": "The warehouse key was broken",
-                    "difficulty": "medium"
-                },
-                {
-                    "text": "Blood was found on the boxes",
-                    "difficulty": "hard"
-                },
-                {
-                    "text": "The warehouse camera was damaged",
-                    "difficulty": "veryHard"
-                }
-            ],
-            "twist": "The killer was afraid of being exposed",
-            "killerName": "Kamel Badawy"
-        },
-        {
-            "title": "The Club Murder",
-            "intro": "The club was crowded. Suddenly everything stopped.",
-            "crimeDescription": "He was found in the locker room. The door was half open.",
-            "suspects": [
-                {
-                    "name": "Yasser Khaled",
-                    "suspiciousBehavior": "He had an argument with the victim"
-                },
-                {
-                    "name": "Marwa Nasser",
-                    "suspiciousBehavior": "She entered the room alone"
-                },
-                {
-                    "name": "Shady Hussein",
-                    "suspiciousBehavior": "He appeared nervous"
-                },
-                {
-                    "name": "Rania Shawky",
-                    "suspiciousBehavior": "She changed her story"
-                },
-                {
-                    "name": "Alaa Medhat",
-                    "suspiciousBehavior": "He disappeared for a while"
-                },
-                {
-                    "name": "Salma Tarek",
-                    "suspiciousBehavior": "She kept looking around"
-                }
-            ],
-            "clues": [
-                {
-                    "text": "A towel with blood was found",
-                    "difficulty": "veryEasy"
-                },
-                {
-                    "text": "A door closing sound was heard",
-                    "difficulty": "easy"
-                },
-                {
-                    "text": "A membership card was found",
-                    "difficulty": "medium"
-                },
-                {
-                    "text": "The locker lock was broken",
-                    "difficulty": "hard"
-                },
-                {
-                    "text": "The hallway camera footage was deleted",
-                    "difficulty": "veryHard"
-                }
-            ],
-            "twist": "Jealousy was the motive",
-            "killerName": "Yasser Khaled"
-        },
-        {
-            "title": "The Clinic Murder",
-            "intro": "The clinic was empty. The crime was waiting.",
-            "crimeDescription": "He was found on the bed. Medical tools were scattered.",
-            "suspects": [
-                {
-                    "name": "Dr. Samy",
-                    "suspiciousBehavior": "He was the last one present"
-                },
-                {
-                    "name": "Laila Samir",
-                    "suspiciousBehavior": "She left in a hurry"
-                },
-                {
-                    "name": "Hazem Refaat",
-                    "suspiciousBehavior": "He was nervous"
-                },
-                {
-                    "name": "Nour Salah",
-                    "suspiciousBehavior": "She changed her statements"
-                },
-                {
-                    "name": "Magdy Youssef",
-                    "suspiciousBehavior": "He entered without an appointment"
-                },
-                {
-                    "name": "Heba Kamal",
-                    "suspiciousBehavior": "She was standing by the door"
-                }
-            ],
-            "clues": [
-                {
-                    "text": "A medical glove was found",
-                    "difficulty": "veryEasy"
-                },
-                {
-                    "text": "A faint scream was heard",
-                    "difficulty": "easy"
-                },
-                {
-                    "text": "A patient file was missing",
-                    "difficulty": "medium"
-                },
-                {
-                    "text": "Some medicine was missing",
-                    "difficulty": "hard"
-                },
-                {
-                    "text": "The clinic camera was turned off",
-                    "difficulty": "veryHard"
-                }
-            ],
-            "twist": "A dangerous secret had to be hidden",
-            "killerName": "Dr. Samy"
-        },
-        {
-            "title": "The Storage Room Murder",
-            "intro": "The place was dark and uncomfortable.",
-            "crimeDescription": "He was found near the door. Signs of resistance were clear.",
-            "suspects": [
-                {
-                    "name": "Mina Fouad",
-                    "suspiciousBehavior": "He was standing outside"
-                },
-                {
-                    "name": "Shaimaa Hassan",
-                    "suspiciousBehavior": "She got confused while talking"
-                },
-                {
-                    "name": "Badr Mahmoud",
-                    "suspiciousBehavior": "He had a key"
-                },
-                {
-                    "name": "Yasmin Lotfy",
-                    "suspiciousBehavior": "She entered the storage room at night"
-                },
-                {
-                    "name": "Akram Saeed",
-                    "suspiciousBehavior": "He argued with the victim"
-                },
-                {
-                    "name": "Sahar Ali",
-                    "suspiciousBehavior": "She left late"
-                }
-            ],
-            "clues": [
-                {
-                    "text": "A broken lock was found",
-                    "difficulty": "veryEasy"
-                },
-                {
-                    "text": "A loud knock was heard",
-                    "difficulty": "easy"
-                },
-                {
-                    "text": "An extra key was discovered",
-                    "difficulty": "medium"
-                },
-                {
-                    "text": "Blood was found on the floor",
-                    "difficulty": "hard"
-                },
-                {
-                    "text": "An old threatening message was found",
-                    "difficulty": "veryHard"
-                }
-            ],
-            "twist": "The argument escalated into murder",
-            "killerName": "Akram Saeed"
+            "twist": "Death by electric shock from phone",
+            "killerName": "Walid"
         }
     ]
 }
