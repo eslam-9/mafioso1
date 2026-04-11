@@ -15,8 +15,10 @@ void main() {
         if (newContent != content) {
           entity.writeAsStringSync(newContent);
           count++;
+          print('Fixed ${entity.path}');
         }
       }
     }
   }
+  print('Fixed $count files');
 }

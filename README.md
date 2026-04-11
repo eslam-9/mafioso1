@@ -96,6 +96,10 @@ flutter build apk --release
 ```
 The output file will be located at `build/app/outputs/flutter-apk/app-release.apk`.
 
+## 🛡️ Privacy Policy
+
+This application respects your privacy and is built with transparency in mind. For the full details on what we collect and how we handle third-party APIs (like Google Gemini), please see our [Privacy Policy](PRIVACY_POLICY.md).
+
 ## 📄 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
