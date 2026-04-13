@@ -57,10 +57,73 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
             'temperature': 1.0,
             'topK': 40,
             'topP': 0.95,
-            'maxOutputTokens': 3000,
+            'maxOutputTokens': 8192,
             'candidateCount': 1,
+            'responseMimeType': 'application/json',
+            'responseSchema': {
+              'type': 'object',
+              'properties': {
+                'title': {'type': 'string'},
+                'intro': {'type': 'string'},
+                'crimeDescription': {'type': 'string'},
+                'suspects': {
+                  'type': 'array',
+                  'items': {
+                    'type': 'object',
+                    'properties': {
+                      'name': {'type': 'string'},
+                      'suspiciousBehavior': {'type': 'string'},
+                    },
+                    'required': ['name', 'suspiciousBehavior'],
+                  },
+                },
+                'clues': {
+                  'type': 'array',
+                  'items': {
+                    'type': 'object',
+                    'properties': {
+                      'text': {'type': 'string'},
+                      'difficulty': {
+                        'type': 'string',
+                        'enum': [
+                          'veryEasy',
+                          'easy',
+                          'medium',
+                          'hard',
+                          'veryHard',
+                        ],
+                      },
+                    },
+                    'required': ['text', 'difficulty'],
+                  },
+                },
+                'twist': {'type': 'string'},
+                'killerName': {'type': 'string'},
+              },
+              'required': [
+                'title',
+                'intro',
+                'crimeDescription',
+                'suspects',
+                'clues',
+                'twist',
+                'killerName',
+              ],
+            },
           },
           'safetySettings': [
+            {
+              'category': 'HARM_CATEGORY_HARASSMENT',
+              'threshold': 'BLOCK_ONLY_HIGH',
+            },
+            {
+              'category': 'HARM_CATEGORY_HATE_SPEECH',
+              'threshold': 'BLOCK_ONLY_HIGH',
+            },
+            {
+              'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+              'threshold': 'BLOCK_ONLY_HIGH',
+            },
             {
               'category': 'HARM_CATEGORY_DANGEROUS_CONTENT',
               'threshold': 'BLOCK_ONLY_HIGH',
@@ -74,14 +137,31 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       if (response.data == null ||
           response.data['candidates'] == null ||
           response.data['candidates'].isEmpty) {
-        throw Exception('API error: No results');
+        // Log promptFeedback if it exists (explains why there are no candidates)
+        final blockReason = response.data?['promptFeedback']?['blockReason'];
+        AppLogger.logError(
+          'StoryRemoteDataSource',
+          'No candidates returned. blockReason: $blockReason | Full response: ${response.data}',
+        );
+        throw Exception('API error: No results (blockReason: $blockReason)');
       }
 
       final candidate = response.data['candidates'][0];
+
+      // Log finishReason to detect SAFETY blocks
+      final finishReason = candidate['finishReason'] as String? ?? 'UNKNOWN';
+      AppLogger.logInfo('Candidate finishReason: $finishReason');
+
       if (candidate['content'] == null ||
           candidate['content']['parts'] == null ||
           candidate['content']['parts'].isEmpty) {
-        throw Exception('API error: No content');
+        // Log safety ratings if content is missing
+        final safetyRatings = candidate['safetyRatings'];
+        AppLogger.logError(
+          'StoryRemoteDataSource',
+          'No content in candidate. finishReason: $finishReason, safetyRatings: $safetyRatings',
+        );
+        throw Exception('API error: No content (finishReason: $finishReason)');
       }
 
       final generatedText = candidate['content']['parts'][0]['text'] as String?;
@@ -203,6 +283,7 @@ CRITICAL RULES:
 5. ممنوع trailing commas
 6. لازم تقفل كل الأقواس صح
 7. الرد لازم يبدأ بـ { وينتهي بـ }
+8. DO NOT TRANSLATE JSON KEYS. Keep the exact english keys unchanged.
 
 قواعد القصة:
 - لازم يكون في تمويه (حاجة تضلل القارئ)
@@ -210,7 +291,7 @@ CRITICAL RULES:
 - الحل لازم يعتمد على الأدلة
 - في حاجة مخفية (عادة / أداة / حركة)
 
-JSON format (ممنوع تغييره):
+JSON format (STRICT — DO NOT TRANSLATE KEYS):
 
 {
   "title": "عنوان القصة",
@@ -251,28 +332,58 @@ FINAL CHECK:
   Map<String, dynamic> _extractJsonFromResponse(String response) {
     String cleaned = response.trim();
 
-    // Remove starting ```json or ```
-    if (cleaned.startsWith('```json')) {
-      cleaned = cleaned.substring(7);
-    } else if (cleaned.startsWith('```')) {
-      cleaned = cleaned.substring(3);
+    // Strip BOM if present
+    if (cleaned.startsWith('\uFEFF')) {
+      cleaned = cleaned.substring(1);
     }
 
-    // Remove ending ```
+    // Strip markdown code fences (handles ```json, ```JSON, ``` with/without language)
+    final codeFencePattern = RegExp(r'^```[a-zA-Z]*\s*', multiLine: false);
+    cleaned = cleaned.replaceFirst(codeFencePattern, '');
     if (cleaned.endsWith('```')) {
       cleaned = cleaned.substring(0, cleaned.length - 3);
     }
 
     cleaned = cleaned.trim();
 
+    // Strategy 1: direct parse
     try {
       return json.decode(cleaned) as Map<String, dynamic>;
-    } catch (e) {
-      final jsonMatch = RegExp(r'\{[\s\S]*\}').firstMatch(cleaned);
-      if (jsonMatch != null) {
-        return json.decode(jsonMatch.group(0)!) as Map<String, dynamic>;
+    } catch (_) {}
+
+    // Strategy 2: extract the first {...} block (handles Arabic preamble/postamble)
+    final firstBrace = cleaned.indexOf('{');
+    final lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace != -1 && lastBrace != -1 && lastBrace > firstBrace) {
+      final jsonCandidate = cleaned.substring(firstBrace, lastBrace + 1);
+      try {
+        return json.decode(jsonCandidate) as Map<String, dynamic>;
+      } catch (e) {
+        AppLogger.logError(
+          'StoryRemoteDataSource._extractJsonFromResponse',
+          'JSON candidate (strategy 2) failed: $e\nCandidate: ${jsonCandidate.substring(0, jsonCandidate.length.clamp(0, 300))}',
+        );
       }
-      rethrow;
     }
+
+    // Strategy 3: regex greedy match as last resort
+    final jsonMatch = RegExp(r'\{[\s\S]*\}').firstMatch(cleaned);
+    if (jsonMatch != null) {
+      try {
+        return json.decode(jsonMatch.group(0)!) as Map<String, dynamic>;
+      } catch (e) {
+        AppLogger.logError(
+          'StoryRemoteDataSource._extractJsonFromResponse',
+          'Regex strategy failed: $e\nFull cleaned response: $cleaned',
+        );
+        throw FormatException('Failed to parse JSON from response: $e');
+      }
+    }
+
+    AppLogger.logError(
+      'StoryRemoteDataSource._extractJsonFromResponse',
+      'No JSON object found in response. Full response: $cleaned',
+    );
+    throw const FormatException('No JSON object found in API response');
   }
 }
