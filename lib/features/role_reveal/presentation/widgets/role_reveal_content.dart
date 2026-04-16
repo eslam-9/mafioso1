@@ -24,7 +24,10 @@ class RoleRevealContent extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [roleColor.withOpacity(0.2), AppColors.charcoal],
+              colors: [
+                roleColor.withValues(alpha: 0.2),
+                Theme.of(context).colorScheme.surface,
+              ],
             ),
           ),
           child: Column(
@@ -48,7 +51,9 @@ class RoleRevealContent extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.deepBlack.withOpacity(0.5),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.deepBlack.withValues(alpha: 0.5)
+                      : Colors.black.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -67,7 +72,7 @@ class RoleRevealContent extends StatelessWidget {
                             'your_story_character'.tr(),
                             style: Theme.of(context).textTheme.titleSmall
                                 ?.copyWith(
-                                  color: AppColors.bloodRed,
+                                  color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
@@ -77,7 +82,7 @@ class RoleRevealContent extends StatelessWidget {
                       Text(
                         player.storyCharacterName!,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -87,14 +92,19 @@ class RoleRevealContent extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.charcoal.withOpacity(0.5),
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                ? AppColors.charcoal.withValues(alpha: 0.5)
+                                : Colors.black.withValues(alpha: 0.05),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             player.storyCharacterBehavior!,
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  color: AppColors.lightGray,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withValues(alpha: 0.8),
                                   height: 1.5,
                                 ),
                             textAlign: TextAlign.center,
@@ -108,7 +118,9 @@ class RoleRevealContent extends StatelessWidget {
                     Text(
                       RoleLocalizationHelper.getRoleDescription(player.role),
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: AppColors.lightGray,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.8),
                         height: 1.5,
                       ),
                       textAlign: TextAlign.center,

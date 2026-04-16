@@ -14,25 +14,15 @@ import '../../core/di/injection_container.dart';
 
 class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
-
     switch (settings.name) {
       case RouteNames.home:
-        return _buildRoute(
-          const HomePage(),
-          settings: settings,
-        );
+        return _buildRoute(const HomePage(), settings: settings);
 
       case RouteNames.gameMode:
-        return _buildRoute(
-          const _GameModePageWrapper(),
-          settings: settings,
-        );
+        return _buildRoute(const _GameModePageWrapper(), settings: settings);
 
       case RouteNames.playerSetup:
-        return _buildRoute(
-          const _PlayerSetupPageWrapper(),
-          settings: settings,
-        );
+        return _buildRoute(const _PlayerSetupPageWrapper(), settings: settings);
 
       case RouteNames.storyGeneration:
         return _buildRoute(
@@ -41,22 +31,13 @@ class RouteGenerator {
         );
 
       case RouteNames.roleReveal:
-        return _buildRoute(
-          const _RoleRevealPageWrapper(),
-          settings: settings,
-        );
+        return _buildRoute(const _RoleRevealPageWrapper(), settings: settings);
 
       case RouteNames.game:
-        return _buildRoute(
-          const _GamePageWrapper(),
-          settings: settings,
-        );
+        return _buildRoute(const _GamePageWrapper(), settings: settings);
 
       case RouteNames.summary:
-        return _buildRoute(
-          const _SummaryPageWrapper(),
-          settings: settings,
-        );
+        return _buildRoute(const _SummaryPageWrapper(), settings: settings);
 
       default:
         return _buildRoute(
@@ -70,10 +51,7 @@ class RouteGenerator {
     Widget page, {
     required RouteSettings settings,
   }) {
-    return MaterialPageRoute(
-      builder: (_) => page,
-      settings: settings,
-    );
+    return MaterialPageRoute(builder: (_) => page, settings: settings);
   }
 }
 
@@ -146,10 +124,6 @@ class _ErrorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(message),
-      ),
-    );
+    return Scaffold(body: Center(child: Text(message)));
   }
 }

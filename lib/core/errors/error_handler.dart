@@ -122,7 +122,11 @@ class ErrorHandler {
   }
 
   /// Log error for debugging
-  static void logError(dynamic error, {StackTrace? stackTrace, String? context}) {
+  static void logError(
+    dynamic error, {
+    StackTrace? stackTrace,
+    String? context,
+  }) {
     AppLogger.logError(context ?? 'Unknown', error, stackTrace: stackTrace);
   }
 }

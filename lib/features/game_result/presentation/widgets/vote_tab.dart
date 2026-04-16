@@ -88,7 +88,10 @@ class _VoteTabState extends State<VoteTab> {
       return Center(
         child: Text(
           'no_alive_players'.tr(),
-          style: TextStyle(color: AppColors.lightGray, fontSize: 18),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontSize: 18,
+          ),
         ),
       );
     }
@@ -113,7 +116,7 @@ class _VoteTabState extends State<VoteTab> {
                           'vote_to_eliminate'.tr(),
                           style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(
-                                color: AppColors.bloodRed,
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
@@ -124,14 +127,16 @@ class _VoteTabState extends State<VoteTab> {
                   Text(
                     'each_player_votes'.tr(),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.lightGray,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.8),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'detective_double_vote'.tr(),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.bloodRed,
+                      color: Theme.of(context).colorScheme.primary,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -155,7 +160,9 @@ class _VoteTabState extends State<VoteTab> {
               key: ValueKey(player.id),
               padding: const EdgeInsets.only(bottom: 16),
               child: Card(
-                color: AppColors.smokeGray,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.smokeGray
+                    : Theme.of(context).cardColor,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -167,7 +174,12 @@ class _VoteTabState extends State<VoteTab> {
                             Icons.person,
                             color: player.role == PlayerRole.detective
                                 ? AppColors.bloodRed
-                                : Colors.white,
+                                : (Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -175,7 +187,7 @@ class _VoteTabState extends State<VoteTab> {
                               player.name,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 18,
                               ),
                             ),
@@ -192,8 +204,10 @@ class _VoteTabState extends State<VoteTab> {
                               ),
                               child: Text(
                                 'x2',
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
                                 ),
@@ -203,22 +217,28 @@ class _VoteTabState extends State<VoteTab> {
                       ),
                       const SizedBox(height: 12),
                       DropdownButtonFormField<String>(
-                        value: _votes[player.id],
+                        initialValue: _votes[player.id],
                         decoration: InputDecoration(
                           hintText: 'select_suspect'.tr(),
                           filled: true,
-                          fillColor: AppColors.charcoal,
+                          fillColor: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        dropdownColor: AppColors.charcoal,
+                        dropdownColor: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
                         items: votingOptions.map((suspect) {
                           return DropdownMenuItem<String>(
                             value: suspect.id,
                             child: Text(
                               suspect.name,
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                             ),
                           );
                         }).toList(),
@@ -241,7 +261,10 @@ class _VoteTabState extends State<VoteTab> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.bloodRed,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              disabledBackgroundColor: AppColors.smokeGray,
+              disabledBackgroundColor:
+                  Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.smokeGray
+                  : Theme.of(context).colorScheme.surfaceContainerHighest,
             ),
             child: Text(
               'submit_all_votes'.tr(),

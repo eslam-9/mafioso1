@@ -8,10 +8,7 @@ import '../bloc/game_setup_state.dart';
 class SuspectCountButton extends StatelessWidget {
   final int count;
 
-  const SuspectCountButton({
-    super.key,
-    required this.count,
-  });
+  const SuspectCountButton({super.key, required this.count});
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +25,14 @@ class SuspectCountButton extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.primaryRed : AppColors.smokeGray,
+              color: isSelected
+                  ? AppColors.primaryRed
+                  : Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSelected
                     ? AppColors.bloodRed
-                    : AppColors.darkRed.withOpacity(0.5),
+                    : AppColors.darkRed.withValues(alpha: 0.5),
                 width: 2,
               ),
             ),
@@ -41,9 +40,11 @@ class SuspectCountButton extends StatelessWidget {
               child: Text(
                 count.toString(),
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

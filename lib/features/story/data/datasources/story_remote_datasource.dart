@@ -57,10 +57,73 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
             'temperature': 1.0,
             'topK': 40,
             'topP': 0.95,
-            'maxOutputTokens': 3000,
+            'maxOutputTokens': 8192,
             'candidateCount': 1,
+            'responseMimeType': 'application/json',
+            'responseSchema': {
+              'type': 'object',
+              'properties': {
+                'title': {'type': 'string'},
+                'intro': {'type': 'string'},
+                'crimeDescription': {'type': 'string'},
+                'suspects': {
+                  'type': 'array',
+                  'items': {
+                    'type': 'object',
+                    'properties': {
+                      'name': {'type': 'string'},
+                      'suspiciousBehavior': {'type': 'string'},
+                    },
+                    'required': ['name', 'suspiciousBehavior'],
+                  },
+                },
+                'clues': {
+                  'type': 'array',
+                  'items': {
+                    'type': 'object',
+                    'properties': {
+                      'text': {'type': 'string'},
+                      'difficulty': {
+                        'type': 'string',
+                        'enum': [
+                          'veryEasy',
+                          'easy',
+                          'medium',
+                          'hard',
+                          'veryHard',
+                        ],
+                      },
+                    },
+                    'required': ['text', 'difficulty'],
+                  },
+                },
+                'twist': {'type': 'string'},
+                'killerName': {'type': 'string'},
+              },
+              'required': [
+                'title',
+                'intro',
+                'crimeDescription',
+                'suspects',
+                'clues',
+                'twist',
+                'killerName',
+              ],
+            },
           },
           'safetySettings': [
+            {
+              'category': 'HARM_CATEGORY_HARASSMENT',
+              'threshold': 'BLOCK_ONLY_HIGH',
+            },
+            {
+              'category': 'HARM_CATEGORY_HATE_SPEECH',
+              'threshold': 'BLOCK_ONLY_HIGH',
+            },
+            {
+              'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+              'threshold': 'BLOCK_ONLY_HIGH',
+            },
             {
               'category': 'HARM_CATEGORY_DANGEROUS_CONTENT',
               'threshold': 'BLOCK_ONLY_HIGH',
@@ -74,14 +137,31 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       if (response.data == null ||
           response.data['candidates'] == null ||
           response.data['candidates'].isEmpty) {
-        throw Exception('API error: No results');
+        // Log promptFeedback if it exists (explains why there are no candidates)
+        final blockReason = response.data?['promptFeedback']?['blockReason'];
+        AppLogger.logError(
+          'StoryRemoteDataSource',
+          'No candidates returned. blockReason: $blockReason | Full response: ${response.data}',
+        );
+        throw Exception('API error: No results (blockReason: $blockReason)');
       }
 
       final candidate = response.data['candidates'][0];
+
+      // Log finishReason to detect SAFETY blocks
+      final finishReason = candidate['finishReason'] as String? ?? 'UNKNOWN';
+      AppLogger.logInfo('Candidate finishReason: $finishReason');
+
       if (candidate['content'] == null ||
           candidate['content']['parts'] == null ||
           candidate['content']['parts'].isEmpty) {
-        throw Exception('API error: No content');
+        // Log safety ratings if content is missing
+        final safetyRatings = candidate['safetyRatings'];
+        AppLogger.logError(
+          'StoryRemoteDataSource',
+          'No content in candidate. finishReason: $finishReason, safetyRatings: $safetyRatings',
+        );
+        throw Exception('API error: No content (finishReason: $finishReason)');
       }
 
       final generatedText = candidate['content']['parts'][0]['text'] as String?;
@@ -129,25 +209,37 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
 
   String _buildEnglishPrompt(int suspectCount, bool hasDetective) {
     return '''
-You are a creative writer. Generate a murder mystery story in English.
+You are a professional detective puzzle designer.
+
+Generate a SMART and LOGICAL murder mystery story.
 
 CRITICAL RULES:
 1. Write EVERYTHING in English.
-2. Number of suspects: EXACTLY $suspectCount suspects
-3. Return ONLY valid JSON, no extra text
+2. Number of suspects: EXACTLY $suspectCount suspects.
+3. Return ONLY valid JSON. No explanation, no text before or after.
+4. DO NOT add comments inside JSON.
+5. DO NOT leave trailing commas.
+6. You MUST close all brackets correctly.
+7. The response MUST start with { and end with }.
 
-JSON format:
+STORY RULES (IMPORTANT):
+- The mystery must be solvable using the clues.
+- Include a misleading element (red herring).
+- The real cause of death must NOT be obvious.
+- Use a hidden mechanism (habit / object / trick).
+- The twist must be logical and based on clues.
+
+JSON format (STRICT — DO NOT CHANGE KEYS OR STRUCTURE):
 
 {
   "title": "Story Title",
   "intro": "Short intro (2-3 sentences)",
-  "crimeDescription": "Detailed crime scene description (3-4 sentences)",
+  "crimeDescription": "Detailed crime scene description (2-3 sentences)",
   "suspects": [
     {
       "name": "Suspect Name",
       "suspiciousBehavior": "Why they are suspicious"
     }
-    // Add exactly $suspectCount suspects in total
   ],
   "clues": [
     {"text": "Clue 1", "difficulty": "veryEasy"},
@@ -156,86 +248,142 @@ JSON format:
     {"text": "Clue 4", "difficulty": "hard"},
     {"text": "Clue 5", "difficulty": "veryHard"}
   ],
-  "twist": "The plot twist explanation",
+  "twist": "Logical explanation of what really happened",
   "killerName": "Exact Name of One Suspect"
 }
 
-Requirements:
-- Exactly $suspectCount suspects
-- Exactly 5 clues with difficulties: veryEasy, easy, medium, hard, veryHard
-- killerName must match one suspect's name exactly
-- Return only the JSON, nothing else
+STRICT REQUIREMENTS:
+- EXACTLY $suspectCount suspects (no more, no less)
+- EXACTLY 5 clues
+- killerName MUST match one suspect EXACTLY
+- NO extra fields
+- NO missing fields
+- NO invalid JSON
+
+FINAL CHECK BEFORE OUTPUT:
+- Ensure valid JSON
+- Ensure all brackets are closed
+- Ensure structure matches exactly
+
+Return ONLY JSON.
 ''';
   }
 
   String _buildPrompt(int suspectCount, bool hasDetective) {
     return '''
-You are a creative writer. Generate a murder mystery story in Egyptian Arabic dialect (العامية المصرية).
+إنت مصمم ألغاز جرايم محترف.
+
+اكتب قصة جريمة ذكية بالمصري تتحل بالمنطق.
 
 CRITICAL RULES:
-1. Write EVERYTHING in Egyptian colloquial Arabic (not formal Arabic, not English)
-2. Use Egyptian words like: لقينا، شفنا، كان قاعد، راح، جه، اتقتل، الحتة، بليل، عايز، ياخد، طلع، واقف، قدام
-3. Number of suspects: EXACTLY $suspectCount suspects
-4. Return ONLY valid JSON, no extra text
+1. كل الكلام بالمصري فقط (مش فصحى ومش إنجليزي)
+2. عدد المشتبه فيهم: EXACTLY $suspectCount
+3. رجّع JSON بس من غير أي كلام
+4. ممنوع تحط comments جوه JSON
+5. ممنوع trailing commas
+6. لازم تقفل كل الأقواس صح
+7. الرد لازم يبدأ بـ { وينتهي بـ }
+8. DO NOT TRANSLATE JSON KEYS. Keep the exact english keys unchanged.
 
-JSON format:
+قواعد القصة:
+- لازم يكون في تمويه (حاجة تضلل القارئ)
+- طريقة القتل تكون غير مباشرة وذكية
+- الحل لازم يعتمد على الأدلة
+- في حاجة مخفية (عادة / أداة / حركة)
+
+JSON format (STRICT — DO NOT TRANSLATE KEYS):
 
 {
-  "title": "عنوان القصة بالمصري (مثال: جريمة الفيلا المهجورة)",
-  "intro": "مقدمة قصيرة بالمصري (جملتين أو تلاتة) - مثال: الليلة دي كانت غريبة في الحتة. حد اتقتل والكل بيقول إنه كان راجل كويس.",
-  "crimeDescription": "وصف مفصل بالمصري لمشهد الجريمة واللي حصل (٣ أو ٤ جمل) - استخدم كلمات زي: لقوه، كان قاعد، الباب كان مفتوح، إلخ",
+  "title": "عنوان القصة",
+  "intro": "مقدمة قصيرة (جملتين أو تلاتة)",
+  "crimeDescription": "وصف الجريمة (٢-٣ جمل)",
   "suspects": [
     {
-      "name": "أحمد الشربيني",
-      "suspiciousBehavior": "كان واقف قدام البيت بليل وشكله مش طبيعي"
+      "name": "اسم شخص",
+      "suspiciousBehavior": "ليه مشكوك فيه"
     }
-    // Add exactly $suspectCount more suspects with Egyptian names
   ],
   "clues": [
-    {"text": "لقينا أثر جزمة غريبة جنب الباب", "difficulty": "veryEasy"},
-    {"text": "الجيران سمعوا صوت خناقة بليل", "difficulty": "easy"},
-    {"text": "في حد شاف عربية سودا واقفة بره", "difficulty": "medium"},
-    {"text": "لقينا ورقة مكتوب عليها رقم تليفون", "difficulty": "hard"},
-    {"text": "الكاميرا صورت حد داخل الساعة ١٠", "difficulty": "veryHard"}
+    {"text": "دليل", "difficulty": "veryEasy"},
+    {"text": "دليل", "difficulty": "easy"},
+    {"text": "دليل", "difficulty": "medium"},
+    {"text": "دليل", "difficulty": "hard"},
+    {"text": "دليل", "difficulty": "veryHard"}
   ],
-  "twist": "طلع إن القاتل كان صاحبه من زمان",
-  "killerName": "أحمد الشربيني"
+  "twist": "شرح منطقي للحقيقة",
+  "killerName": "اسم القاتل"
 }
 
-Requirements:
-- Exactly $suspectCount suspects with Egyptian names
-- Exactly 5 clues with difficulties: veryEasy, easy, medium, hard, veryHard
-- killerName must match one suspect's name exactly
-- All text in Egyptian Arabic dialect
-- Return only the JSON, nothing else
+STRICT REQUIREMENTS:
+- بالظبط $suspectCount مشتبه فيهم
+- 5 clues بس
+- القاتل لازم يكون واحد من اللي فوق
+- مفيش fields زيادة أو ناقصة
+
+FINAL CHECK:
+- اتأكد إن JSON سليم
+- كل الأقواس مقفولة
+- نفس الشكل بالظبط
+
+رجّع JSON بس
 ''';
   }
 
   Map<String, dynamic> _extractJsonFromResponse(String response) {
     String cleaned = response.trim();
 
-    // Remove starting ```json or ```
-    if (cleaned.startsWith('```json')) {
-      cleaned = cleaned.substring(7);
-    } else if (cleaned.startsWith('```')) {
-      cleaned = cleaned.substring(3);
+    // Strip BOM if present
+    if (cleaned.startsWith('\uFEFF')) {
+      cleaned = cleaned.substring(1);
     }
 
-    // Remove ending ```
+    // Strip markdown code fences (handles ```json, ```JSON, ``` with/without language)
+    final codeFencePattern = RegExp(r'^```[a-zA-Z]*\s*', multiLine: false);
+    cleaned = cleaned.replaceFirst(codeFencePattern, '');
     if (cleaned.endsWith('```')) {
       cleaned = cleaned.substring(0, cleaned.length - 3);
     }
 
     cleaned = cleaned.trim();
 
+    // Strategy 1: direct parse
     try {
       return json.decode(cleaned) as Map<String, dynamic>;
-    } catch (e) {
-      final jsonMatch = RegExp(r'\{[\s\S]*\}').firstMatch(cleaned);
-      if (jsonMatch != null) {
-        return json.decode(jsonMatch.group(0)!) as Map<String, dynamic>;
+    } catch (_) {}
+
+    // Strategy 2: extract the first {...} block (handles Arabic preamble/postamble)
+    final firstBrace = cleaned.indexOf('{');
+    final lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace != -1 && lastBrace != -1 && lastBrace > firstBrace) {
+      final jsonCandidate = cleaned.substring(firstBrace, lastBrace + 1);
+      try {
+        return json.decode(jsonCandidate) as Map<String, dynamic>;
+      } catch (e) {
+        AppLogger.logError(
+          'StoryRemoteDataSource._extractJsonFromResponse',
+          'JSON candidate (strategy 2) failed: $e\nCandidate: ${jsonCandidate.substring(0, jsonCandidate.length.clamp(0, 300))}',
+        );
       }
-      rethrow;
     }
+
+    // Strategy 3: regex greedy match as last resort
+    final jsonMatch = RegExp(r'\{[\s\S]*\}').firstMatch(cleaned);
+    if (jsonMatch != null) {
+      try {
+        return json.decode(jsonMatch.group(0)!) as Map<String, dynamic>;
+      } catch (e) {
+        AppLogger.logError(
+          'StoryRemoteDataSource._extractJsonFromResponse',
+          'Regex strategy failed: $e\nFull cleaned response: $cleaned',
+        );
+        throw FormatException('Failed to parse JSON from response: $e');
+      }
+    }
+
+    AppLogger.logError(
+      'StoryRemoteDataSource._extractJsonFromResponse',
+      'No JSON object found in response. Full response: $cleaned',
+    );
+    throw const FormatException('No JSON object found in API response');
   }
 }

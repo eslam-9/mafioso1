@@ -8,7 +8,8 @@ import 'role_reveal_state.dart';
 class RoleRevealBloc extends Bloc<RoleRevealEvent, RoleRevealState> {
   final AssignRolesUseCase assignRolesUseCase;
 
-  RoleRevealBloc({required this.assignRolesUseCase}) : super(const RoleRevealState()) {
+  RoleRevealBloc({required this.assignRolesUseCase})
+    : super(const RoleRevealState()) {
     on<AssignRoles>(_onAssignRoles);
     on<NextPlayer>(_onNextPlayer);
     on<MarkCurrentRevealed>(_onMarkCurrentRevealed);
@@ -17,7 +18,7 @@ class RoleRevealBloc extends Bloc<RoleRevealEvent, RoleRevealState> {
 
   void _onAssignRoles(AssignRoles event, Emitter<RoleRevealState> emit) {
     AppLogger.logBlocEvent('RoleRevealBloc', 'AssignRoles');
-    
+
     final players = assignRolesUseCase(
       config: event.config,
       story: event.story,
@@ -28,27 +29,32 @@ class RoleRevealBloc extends Bloc<RoleRevealEvent, RoleRevealState> {
 
   void _onNextPlayer(NextPlayer event, Emitter<RoleRevealState> emit) {
     if (!state.hasNextPlayer) return;
-    
-    AppLogger.logBlocEvent('RoleRevealBloc', 'NextPlayer');
-    
-    final updatedPlayers = List<Player>.from(state.players);
-    updatedPlayers[state.currentPlayerIndex] = updatedPlayers[state.currentPlayerIndex]
-        .copyWith(hasRevealed: true);
 
-    emit(state.copyWith(
-      players: updatedPlayers,
-      currentPlayerIndex: state.currentPlayerIndex + 1,
-    ));
+    AppLogger.logBlocEvent('RoleRevealBloc', 'NextPlayer');
+
+    final updatedPlayers = List<Player>.from(state.players);
+    updatedPlayers[state.currentPlayerIndex] =
+        updatedPlayers[state.currentPlayerIndex].copyWith(hasRevealed: true);
+
+    emit(
+      state.copyWith(
+        players: updatedPlayers,
+        currentPlayerIndex: state.currentPlayerIndex + 1,
+      ),
+    );
   }
 
-  void _onMarkCurrentRevealed(MarkCurrentRevealed event, Emitter<RoleRevealState> emit) {
+  void _onMarkCurrentRevealed(
+    MarkCurrentRevealed event,
+    Emitter<RoleRevealState> emit,
+  ) {
     if (state.currentPlayer == null) return;
-    
+
     AppLogger.logBlocEvent('RoleRevealBloc', 'MarkCurrentRevealed');
-    
+
     final updatedPlayers = List<Player>.from(state.players);
-    updatedPlayers[state.currentPlayerIndex] = updatedPlayers[state.currentPlayerIndex]
-        .copyWith(hasRevealed: true);
+    updatedPlayers[state.currentPlayerIndex] =
+        updatedPlayers[state.currentPlayerIndex].copyWith(hasRevealed: true);
 
     emit(state.copyWith(players: updatedPlayers));
   }

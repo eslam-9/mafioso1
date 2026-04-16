@@ -27,22 +27,19 @@ class StoryErrorWidget extends StatelessWidget {
         Text(
           'story_generation_failed'.tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppColors.bloodRed,
-              ),
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
         const SizedBox(height: 16),
         Text(
           errorMessage,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.lightGray,
-              ),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 32),
-        ElevatedButton(
-          onPressed: onRetry,
-          child: Text('retry'.tr()),
-        ),
+        ElevatedButton(onPressed: onRetry, child: Text('retry'.tr())),
       ],
     );
   }

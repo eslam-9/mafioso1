@@ -24,9 +24,9 @@ class StoryCardWidget extends StatelessWidget {
                   child: Text(
                     story.title,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppColors.bloodRed,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -35,9 +35,9 @@ class StoryCardWidget extends StatelessWidget {
             Text(
               story.crimeDescription,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.lightGray,
-                    height: 1.5,
-                  ),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                height: 1.5,
+              ),
             ),
           ],
         ),

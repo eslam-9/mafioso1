@@ -24,9 +24,9 @@ class StoryLoadingWidget extends StatelessWidget {
         const SizedBox(height: 32),
         Text(
               'generating_story'.tr(),
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(color: AppColors.bloodRed),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
             )
             .animate(onPlay: (controller) => controller.repeat())
             .fadeIn(duration: 1000.ms)
@@ -35,9 +35,9 @@ class StoryLoadingWidget extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           'may_take_time'.tr(),
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: AppColors.lightGray),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+          ),
         ),
       ],
     );

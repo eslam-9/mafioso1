@@ -14,10 +14,7 @@ class InitGame extends GameEvent {
   final List<player_entity.Player> players;
   final Story story;
 
-  const InitGame({
-    required this.players,
-    required this.story,
-  });
+  const InitGame({required this.players, required this.story});
 
   @override
   List<Object?> get props => [players, story];

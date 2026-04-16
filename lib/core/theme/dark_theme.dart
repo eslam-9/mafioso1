@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mafioso/core/theme/app_spacing.dart';
 import 'app_colors.dart';
 
 class DarkTheme {
@@ -8,22 +10,20 @@ class DarkTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: ColorScheme.dark(
-        primary: AppColors.primaryRed,
-        secondary: AppColors.bloodRed,
+        primary: AppColors.bloodRed, // Bright red for dark theme
+        secondary: AppColors.primaryRed,
         surface: AppColors.charcoal,
-        background: AppColors.deepBlack,
         error: AppColors.bloodRed,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: AppColors.lightGray,
-        onBackground: AppColors.lightGray,
       ),
       scaffoldBackgroundColor: AppColors.deepBlack,
       textTheme: GoogleFonts.crimsonTextTextTheme(
         ThemeData.dark().textTheme.apply(
-              bodyColor: AppColors.lightGray,
-              displayColor: Colors.white,
-            ),
+          bodyColor: AppColors.lightGray,
+          displayColor: Colors.white,
+        ),
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.charcoal,
@@ -38,10 +38,10 @@ class DarkTheme {
       cardTheme: CardThemeData(
         color: AppColors.smokeGray,
         elevation: 8,
-        shadowColor: AppColors.primaryRed.withOpacity(0.3),
+        shadowColor: AppColors.primaryRed.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: AppColors.darkRed.withOpacity(0.5), width: 1),
+          side: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.5), width: 1),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -78,11 +78,11 @@ class DarkTheme {
         fillColor: AppColors.smokeGray,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.darkRed.withOpacity(0.5)),
+          borderSide: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.5)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.darkRed.withOpacity(0.5)),
+          borderSide: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -90,11 +90,11 @@ class DarkTheme {
         ),
         labelStyle: GoogleFonts.crimsonText(color: AppColors.lightGray),
         hintStyle: GoogleFonts.crimsonText(
-          color: AppColors.lightGray.withOpacity(0.6),
+          color: AppColors.lightGray.withValues(alpha: 0.6),
         ),
       ),
       dividerTheme: DividerThemeData(
-        color: AppColors.darkRed.withOpacity(0.3),
+        color: AppColors.darkRed.withValues(alpha: 0.3),
         thickness: 1,
       ),
     );
@@ -105,11 +105,7 @@ class DarkTheme {
       gradient: LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          AppColors.deepBlack,
-          AppColors.charcoal,
-          AppColors.deepBlack,
-        ],
+        colors: [AppColors.deepBlack, AppColors.charcoal, AppColors.deepBlack],
         stops: const [0.0, 0.5, 1.0],
       ),
     );
@@ -120,23 +116,23 @@ class DarkTheme {
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          AppColors.smokeGray,
-          AppColors.charcoal,
-        ],
+        colors: [AppColors.smokeGray, AppColors.charcoal],
       ),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: AppColors.darkRed.withOpacity(0.5),
-        width: 1,
-      ),
+      border: Border.all(color: AppColors.darkRed.withValues(alpha: 0.5), width: 1),
       boxShadow: [
         BoxShadow(
-          color: AppColors.primaryRed.withOpacity(0.2),
+          color: AppColors.primaryRed.withValues(alpha: 0.2),
           blurRadius: 12,
           offset: const Offset(0, 4),
         ),
       ],
     );
   }
+
+  static get styleIconButton => IconButton.styleFrom(
+    backgroundColor: AppColors.charcoal.withValues(alpha: 0.7),
+    padding: EdgeInsets.all(12.w),
+    minimumSize: Size(AppSpacing.minTouchTarget, AppSpacing.minTouchTarget),
+  );
 }

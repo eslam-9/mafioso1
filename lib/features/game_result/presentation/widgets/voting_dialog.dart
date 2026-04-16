@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../role_reveal/domain/entities/player.dart';
 import '../../../voting/domain/entities/vote.dart';
 
@@ -39,7 +38,7 @@ class _VotingDialogState extends State<VotingDialog> {
     return AlertDialog(
       title: Text(
         'vote_to_eliminate'.tr(),
-        style: TextStyle(color: AppColors.bloodRed),
+        style: TextStyle(color: Theme.of(context).colorScheme.primary),
       ),
       content: SingleChildScrollView(
         child: Column(
@@ -48,7 +47,9 @@ class _VotingDialogState extends State<VotingDialog> {
           children: [
             Text(
               'each_player_votes'.tr(),
-              style: TextStyle(color: AppColors.lightGray),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+              ),
             ),
             const SizedBox(height: 16),
             ...List.generate(widget.totalPlayers, (playerIndex) {
@@ -61,29 +62,35 @@ class _VotingDialogState extends State<VotingDialog> {
                       'player'.tr(
                         namedArgs: {'index': (playerIndex + 1).toString()},
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      value: _votes[playerIndex],
+                      initialValue: _votes[playerIndex],
                       decoration: InputDecoration(
                         hintText: 'accuse'.tr(),
                         filled: true,
-                        fillColor: AppColors.charcoal,
+                        fillColor: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      dropdownColor: AppColors.charcoal,
+                      dropdownColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
                       items: widget.alivePlayers.map((player) {
                         return DropdownMenuItem<String>(
                           value: player.id,
                           child: Text(
                             player.name,
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                           ),
                         );
                       }).toList(),

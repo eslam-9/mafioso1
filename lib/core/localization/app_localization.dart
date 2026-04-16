@@ -7,7 +7,7 @@ class AppLocalization {
   }
 
   static List<Locale> get supportedLocales => const [
-        Locale('ar'),
-        Locale('en'),
-      ];
+    Locale('ar'),
+    Locale('en'),
+  ];
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
 
 class HowToPlayItem extends StatelessWidget {
   final String title;
@@ -19,7 +18,7 @@ class HowToPlayItem extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            color: AppColors.bloodRed,
+            color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
@@ -28,7 +27,7 @@ class HowToPlayItem extends StatelessWidget {
         Text(
           description,
           style: TextStyle(
-            color: AppColors.lightGray,
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
             fontSize: 14,
           ),
         ),

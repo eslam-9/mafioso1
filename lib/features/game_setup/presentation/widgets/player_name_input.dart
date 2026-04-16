@@ -9,10 +9,7 @@ import '../bloc/game_setup_state.dart';
 class PlayerNameInput extends StatefulWidget {
   final int index;
 
-  const PlayerNameInput({
-    super.key,
-    required this.index,
-  });
+  const PlayerNameInput({super.key, required this.index});
 
   @override
   State<PlayerNameInput> createState() => _PlayerNameInputState();
@@ -54,14 +51,15 @@ class _PlayerNameInputState extends State<PlayerNameInput> {
         return TextField(
           controller: _controller,
           decoration: InputDecoration(
-            labelText: 'player'.tr(namedArgs: {'index': (widget.index + 1).toString()}),
-            prefixIcon: Icon(
-              Icons.person,
-              color: AppColors.bloodRed,
+            labelText: 'player'.tr(
+              namedArgs: {'index': (widget.index + 1).toString()},
             ),
+            prefixIcon: Icon(Icons.person, color: AppColors.bloodRed),
           ),
           onChanged: (value) {
-            context.read<GameSetupBloc>().add(SetPlayerName(widget.index, value));
+            context.read<GameSetupBloc>().add(
+              SetPlayerName(widget.index, value),
+            );
           },
         );
       },

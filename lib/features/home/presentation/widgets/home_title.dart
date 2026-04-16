@@ -12,21 +12,18 @@ class HomeTitle extends StatelessWidget {
     return Text(
       'app_title'.tr(),
       style: Theme.of(context).textTheme.displayLarge?.copyWith(
-            fontSize: 72.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.bloodRed,
-            letterSpacing: 8,
-            shadows: [
-              Shadow(
-                color: AppColors.primaryRed.withOpacity(0.8),
-                blurRadius: 20,
-                offset: const Offset(0, 4),
-              ),
-            ],
+        fontSize: 72.sp,
+        fontWeight: FontWeight.bold,
+        color: Theme.of(context).colorScheme.primary,
+        letterSpacing: 8,
+        shadows: [
+          Shadow(
+            color: AppColors.primaryRed.withValues(alpha: 0.8),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
           ),
-    )
-        .animate()
-        .fadeIn(duration: 800.ms)
-        .scale(delay: 200.ms);
+        ],
+      ),
+    ).animate().fadeIn(duration: 800.ms).scale(delay: 200.ms);
   }
 }

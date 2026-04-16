@@ -17,7 +17,7 @@ class EliminationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.charcoal,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
@@ -49,8 +49,8 @@ class EliminationDialog extends StatelessWidget {
         children: [
           Text(
             eliminatedPlayer.name,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
@@ -60,13 +60,22 @@ class EliminationDialog extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: wasKiller ? AppColors.bloodRed : AppColors.smokeGray,
+              color: wasKiller
+                  ? AppColors.bloodRed
+                  : (Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.smokeGray
+                        : Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               eliminatedPlayer.roleDisplayName,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color:
+                    wasKiller || Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Theme.of(context).colorScheme.onSurface,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -77,7 +86,10 @@ class EliminationDialog extends StatelessWidget {
             wasKiller
                 ? 'killer_eliminated_message'.tr()
                 : 'innocent_eliminated_message'.tr(),
-            style: TextStyle(color: AppColors.lightGray, fontSize: 16),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+              fontSize: 16,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -89,10 +101,23 @@ class EliminationDialog extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: wasKiller
                   ? AppColors.bloodRed
-                  : AppColors.smokeGray,
+                  : (Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.smokeGray
+                        : Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest),
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
             ),
-            child: Text('continue'.tr(), style: const TextStyle(fontSize: 18)),
+            child: Text(
+              'continue'.tr(),
+              style: TextStyle(
+                fontSize: 18,
+                color:
+                    wasKiller || Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
           ),
         ),
       ],

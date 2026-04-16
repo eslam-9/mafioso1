@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../../../core/theme/app_colors.dart';
 
 class StoryTwistWidget extends StatelessWidget {
   final String twist;
@@ -19,7 +18,7 @@ class StoryTwistWidget extends StatelessWidget {
             Text(
               'truth'.tr(),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppColors.bloodRed,
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -27,7 +26,7 @@ class StoryTwistWidget extends StatelessWidget {
             Text(
               twist,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppColors.lightGray,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                 height: 1.5,
               ),
             ),

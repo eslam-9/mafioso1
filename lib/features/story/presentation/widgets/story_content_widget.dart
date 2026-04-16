@@ -7,10 +7,7 @@ import 'story_suspects_info_widget.dart';
 class StoryContentWidget extends StatelessWidget {
   final Story story;
 
-  const StoryContentWidget({
-    super.key,
-    required this.story,
-  });
+  const StoryContentWidget({super.key, required this.story});
 
   @override
   Widget build(BuildContext context) {

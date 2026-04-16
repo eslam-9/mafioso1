@@ -24,9 +24,9 @@ class ModeSelector extends StatelessWidget {
               Text(
                 'choose_game_mode'.tr(),
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: AppColors.bloodRed,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: AppColors.bloodRed,
+                  fontWeight: FontWeight.bold,
+                ),
               ).animate().fadeIn(),
               const SizedBox(height: 60),
               BlocBuilder<GameSetupBloc, GameSetupState>(

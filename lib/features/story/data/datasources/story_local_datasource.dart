@@ -51,7 +51,7 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
         stackTrace: stackTrace,
         context: 'StoryLocalDataSource.getOfflineStory',
       );
-      throw Exception('error_load_offline_stories'.tr() + ': ${e.toString()}');
+      throw Exception('${'error_load_offline_stories'.tr()}: ${e.toString()}');
     }
   }
 
