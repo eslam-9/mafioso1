@@ -40,10 +40,7 @@ class RouteGenerator {
         return _buildRoute(const _SummaryPageWrapper(), settings: settings);
 
       default:
-        return _buildRoute(
-          _ErrorPage(message: 'Page not found: ${settings.name}'),
-          settings: settings,
-        );
+        return _buildRoute(const HomePage(), settings: settings);
     }
   }
 
@@ -114,16 +111,5 @@ class _SummaryPageWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SummaryPage();
-  }
-}
-
-class _ErrorPage extends StatelessWidget {
-  final String message;
-
-  const _ErrorPage({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text(message)));
   }
 }

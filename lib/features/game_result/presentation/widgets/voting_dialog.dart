@@ -48,7 +48,9 @@ class _VotingDialogState extends State<VotingDialog> {
             Text(
               'each_player_votes'.tr(),
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.8),
               ),
             ),
             const SizedBox(height: 16),

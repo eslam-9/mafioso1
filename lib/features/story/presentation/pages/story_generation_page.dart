@@ -28,11 +28,12 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
     super.initState();
   }
 
-  void _generateStory(BuildContext context, GameConfig config) {
+  void _generateStory(BuildContext context, GameConfig config) async {
     if (!mounted || _storyGenerated) return;
     _storyGenerated = true;
 
     final languageCode = context.locale.languageCode;
+
     context.read<StoryBloc>().add(
       GenerateStory(config, languageCode: languageCode),
     );

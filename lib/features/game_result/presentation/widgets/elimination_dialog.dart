@@ -87,7 +87,9 @@ class EliminationDialog extends StatelessWidget {
                 ? 'killer_eliminated_message'.tr()
                 : 'innocent_eliminated_message'.tr(),
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.8),
               fontSize: 16,
             ),
             textAlign: TextAlign.center,

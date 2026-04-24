@@ -33,7 +33,9 @@ class SummaryResultBanner extends StatelessWidget {
             Text(
               isInnocentsWin ? 'killer_caught'.tr() : 'killer_escaped'.tr(),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.7),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onPrimary.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ).animate().fadeIn(delay: 600.ms),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../../../../core/ai_provider/ai_provider.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/utils/logger.dart';
 import '../models/story_model.dart';
@@ -10,17 +11,45 @@ abstract class StoryRemoteDataSource {
     required int suspectCount,
     required bool hasDetective,
     required String languageCode,
+    required AiProvider aiProvider,
   });
 }
 
 class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
-  final Dio dio;
-  final String apiKey;
+  final Dio geminiDio;
+  final Dio grokDio;
+  final String geminiApiKey;
+  final String grokApiKey;
 
-  StoryRemoteDataSourceImpl({required this.dio, required this.apiKey});
+  StoryRemoteDataSourceImpl({
+    required this.geminiDio,
+    required this.grokDio,
+    required this.geminiApiKey,
+    required this.grokApiKey,
+  });
 
   @override
   Future<StoryModel> generateStory({
+    required int suspectCount,
+    required bool hasDetective,
+    required String languageCode,
+    required AiProvider aiProvider,
+  }) async {
+    if (aiProvider == AiProvider.grok) {
+      return _generateWithGrok(
+        suspectCount: suspectCount,
+        hasDetective: hasDetective,
+        languageCode: languageCode,
+      );
+    }
+    return _generateWithGemini(
+      suspectCount: suspectCount,
+      hasDetective: hasDetective,
+      languageCode: languageCode,
+    );
+  }
+
+  Future<StoryModel> _generateWithGemini({
     required int suspectCount,
     required bool hasDetective,
     required String languageCode,
@@ -41,9 +70,9 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
 
       AppLogger.logInfo('Prompt length: ${prompt.length} characters');
 
-      final response = await dio.post(
+      final response = await geminiDio.post(
         '/models/gemini-2.5-flash:generateContent',
-        queryParameters: {'key': apiKey},
+        queryParameters: {'key': geminiApiKey},
         data: {
           'contents': [
             {
@@ -58,7 +87,6 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
             'topK': 40,
             'topP': 0.95,
             'maxOutputTokens': 8192,
-            'candidateCount': 1,
             'responseMimeType': 'application/json',
             'responseSchema': {
               'type': 'object',
@@ -137,7 +165,6 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       if (response.data == null ||
           response.data['candidates'] == null ||
           response.data['candidates'].isEmpty) {
-        // Log promptFeedback if it exists (explains why there are no candidates)
         final blockReason = response.data?['promptFeedback']?['blockReason'];
         AppLogger.logError(
           'StoryRemoteDataSource',
@@ -147,15 +174,12 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       }
 
       final candidate = response.data['candidates'][0];
-
-      // Log finishReason to detect SAFETY blocks
       final finishReason = candidate['finishReason'] as String? ?? 'UNKNOWN';
       AppLogger.logInfo('Candidate finishReason: $finishReason');
 
       if (candidate['content'] == null ||
           candidate['content']['parts'] == null ||
           candidate['content']['parts'].isEmpty) {
-        // Log safety ratings if content is missing
         final safetyRatings = candidate['safetyRatings'];
         AppLogger.logError(
           'StoryRemoteDataSource',
@@ -173,6 +197,12 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       return StoryModel.fromJson(storyJson);
     } on DioException catch (e) {
       AppLogger.logError('StoryRemoteDataSource', e);
+      if (e.response?.data != null) {
+        AppLogger.logError(
+          'StoryRemoteDataSource',
+          'API response body: ${e.response?.data}',
+        );
+      }
       ErrorHandler.logError(e, context: 'StoryRemoteDataSource.generateStory');
 
       if (e.type == DioExceptionType.connectionTimeout ||
@@ -203,6 +233,109 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
     } catch (e) {
       AppLogger.logError('StoryRemoteDataSource', e);
       ErrorHandler.logError(e, context: 'StoryRemoteDataSource.generateStory');
+      rethrow;
+    }
+  }
+
+  Future<StoryModel> _generateWithGrok({
+    required int suspectCount,
+    required bool hasDetective,
+    required String languageCode,
+  }) async {
+    try {
+      AppLogger.logApiCall(
+        'Groq API - generateStory',
+        params: {
+          'suspectCount': suspectCount,
+          'hasDetective': hasDetective,
+          'languageCode': languageCode,
+        },
+      );
+
+      final prompt = languageCode == 'en'
+          ? _buildEnglishPrompt(suspectCount, hasDetective)
+          : _buildPrompt(suspectCount, hasDetective);
+
+      AppLogger.logInfo('Prompt length: ${prompt.length} characters');
+
+      final response = await grokDio.post(
+        '/chat/completions',
+        options: Options(headers: {'Authorization': 'Bearer $grokApiKey'}),
+        data: {
+          'model': 'meta-llama/llama-4-scout-17b-16e-instruct',
+          'messages': [
+            {'role': 'user', 'content': prompt},
+          ],
+          'max_tokens': 8192,
+          'temperature': 1.0,
+          'response_format': {'type': 'json_object'},
+        },
+      );
+
+      AppLogger.logInfo('API response status: ${response.statusCode}');
+
+      if (response.data == null ||
+          response.data['choices'] == null ||
+          response.data['choices'].isEmpty) {
+        throw Exception('API error: No results from Grok');
+      }
+
+      final choice = response.data['choices'][0];
+      final finishReason = choice['finishReason'] as String? ?? 'UNKNOWN';
+      AppLogger.logInfo('Choice finishReason: $finishReason');
+
+      if (choice['message'] == null || choice['message']['content'] == null) {
+        throw Exception('API error: No content from Grok');
+      }
+
+      final generatedText = choice['message']['content'] as String?;
+      if (generatedText == null || generatedText.isEmpty) {
+        throw Exception('API error: Empty content');
+      }
+
+      final storyJson = _extractJsonFromResponse(generatedText);
+      return StoryModel.fromJson(storyJson);
+    } on DioException catch (e) {
+      AppLogger.logError('StoryRemoteDataSource (Grok)', e);
+      ErrorHandler.logError(
+        e,
+        context: 'StoryRemoteDataSource.generateStory (Grok)',
+      );
+
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw Exception('timeout'.tr());
+      } else if (e.type == DioExceptionType.badResponse) {
+        final statusCode = e.response?.statusCode;
+        if (statusCode == 401 || statusCode == 403) {
+          throw Exception('error_auth_failed'.tr());
+        } else if (statusCode != null && statusCode >= 500) {
+          throw Exception('error_server_error'.tr());
+        } else {
+          throw Exception(
+            'error_api_failed_code'.tr(
+              namedArgs: {'code': statusCode.toString()},
+            ),
+          );
+        }
+      } else if (e.type == DioExceptionType.connectionError) {
+        throw Exception('error_no_internet'.tr());
+      } else {
+        throw Exception('error_generation_failed'.tr());
+      }
+    } on FormatException catch (e) {
+      AppLogger.logError('StoryRemoteDataSource (Grok)', e);
+      ErrorHandler.logError(
+        e,
+        context: 'StoryRemoteDataSource.generateStory (Grok)',
+      );
+      throw Exception('error_invalid_json'.tr());
+    } catch (e) {
+      AppLogger.logError('StoryRemoteDataSource (Grok)', e);
+      ErrorHandler.logError(
+        e,
+        context: 'StoryRemoteDataSource.generateStory (Grok)',
+      );
       rethrow;
     }
   }
@@ -332,12 +465,10 @@ FINAL CHECK:
   Map<String, dynamic> _extractJsonFromResponse(String response) {
     String cleaned = response.trim();
 
-    // Strip BOM if present
     if (cleaned.startsWith('\uFEFF')) {
       cleaned = cleaned.substring(1);
     }
 
-    // Strip markdown code fences (handles ```json, ```JSON, ``` with/without language)
     final codeFencePattern = RegExp(r'^```[a-zA-Z]*\s*', multiLine: false);
     cleaned = cleaned.replaceFirst(codeFencePattern, '');
     if (cleaned.endsWith('```')) {
@@ -346,12 +477,10 @@ FINAL CHECK:
 
     cleaned = cleaned.trim();
 
-    // Strategy 1: direct parse
     try {
       return json.decode(cleaned) as Map<String, dynamic>;
     } catch (_) {}
 
-    // Strategy 2: extract the first {...} block (handles Arabic preamble/postamble)
     final firstBrace = cleaned.indexOf('{');
     final lastBrace = cleaned.lastIndexOf('}');
     if (firstBrace != -1 && lastBrace != -1 && lastBrace > firstBrace) {
@@ -366,7 +495,6 @@ FINAL CHECK:
       }
     }
 
-    // Strategy 3: regex greedy match as last resort
     final jsonMatch = RegExp(r'\{[\s\S]*\}').firstMatch(cleaned);
     if (jsonMatch != null) {
       try {

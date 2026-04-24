@@ -39,7 +39,10 @@ class LightTheme {
         shadowColor: AppColors.primaryRed.withValues(alpha: 0.2),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.3), width: 1),
+          side: BorderSide(
+            color: AppColors.darkRed.withValues(alpha: 0.3),
+            width: 1,
+          ),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -76,11 +79,15 @@ class LightTheme {
         fillColor: Colors.grey[100],
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.3)),
+          borderSide: BorderSide(
+            color: AppColors.darkRed.withValues(alpha: 0.3),
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.darkRed.withValues(alpha: 0.3)),
+          borderSide: BorderSide(
+            color: AppColors.darkRed.withValues(alpha: 0.3),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -115,7 +122,10 @@ class LightTheme {
         colors: [Colors.grey[50]!, Colors.white],
       ),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: AppColors.darkRed.withValues(alpha: 0.3), width: 1),
+      border: Border.all(
+        color: AppColors.darkRed.withValues(alpha: 0.3),
+        width: 1,
+      ),
       boxShadow: [
         BoxShadow(
           color: AppColors.primaryRed.withValues(alpha: 0.1),

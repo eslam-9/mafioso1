@@ -1,6 +1,9 @@
 {
   "app_title": "مافيوسو",
   "app_subtitle": "لعبة غموض وجريمة قتل",
+  "select_ai": "اختر الذكاء الاصطناعي",
+  "ai_gemini": "Gemini",
+  "ai_grok": "Grok",
   "start_game": "ابدأ اللعب",
   "how_to_play": "إزاي تلعب",
   "footer_question": "تقدر تلاقي القاتل؟",
