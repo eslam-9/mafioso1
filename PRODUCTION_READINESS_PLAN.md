@@ -18,11 +18,11 @@ This document tracks the implementation of the production readiness plan based o
 
 ## Phase 2: Architecture & Correctness Fixes
 ### Tasks:
-1. [ ] Remove data model imports from domain layer
-2. [ ] Remove localization from domain entity
-3. [ ] Fix `dart:io` web incompatibility
-4. [ ] Localize ErrorHandler
-5. [ ] Guard Android release signing config
+1. [x] Remove data model imports from domain layer
+2. [x] Remove localization from domain entity
+3. [x] Fix `dart:io` web incompatibility
+4. [x] Localize ErrorHandler
+5. [x] Guard Android release signing config
 
 ## Phase 3: Feature Completeness & Polish
 ### Tasks:
