@@ -102,9 +102,8 @@ class RoleRevealContent extends StatelessWidget {
                             player.storyCharacterBehavior!,
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface.withValues(alpha: 0.8),
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.8),
                                   height: 1.5,
                                 ),
                             textAlign: TextAlign.center,

@@ -1,10 +1,7 @@
 import '../../domain/entities/clue.dart';
 
 class ClueModel extends Clue {
-  const ClueModel({
-    required super.text,
-    required super.difficulty,
-  });
+  const ClueModel({required super.text, required super.difficulty});
 
   factory ClueModel.fromJson(Map<String, dynamic> json) {
     return ClueModel(
@@ -17,16 +14,10 @@ class ClueModel extends Clue {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'text': text,
-      'difficulty': difficulty.name,
-    };
+    return {'text': text, 'difficulty': difficulty.name};
   }
 
-  ClueModel copyWith({
-    String? text,
-    ClueDifficulty? difficulty,
-  }) {
+  ClueModel copyWith({String? text, ClueDifficulty? difficulty}) {
     return ClueModel(
       text: text ?? this.text,
       difficulty: difficulty ?? this.difficulty,

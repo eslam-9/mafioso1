@@ -19,32 +19,56 @@ Future<void> init() async {
 
   getIt.registerLazySingleton<SoundService>(() => SoundService()..init());
 
-  // Network
+  // Network — separate Dio instances so Gemini and Grok never share state
   getIt.registerLazySingleton<Dio>(
     () => Dio(
       BaseOptions(
         baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
         connectTimeout: const Duration(seconds: 60),
         receiveTimeout: const Duration(seconds: 60),
+        headers: {'Content-Type': 'application/json'},
       ),
     ),
+    instanceName: 'geminiDio',
+  );
+
+  getIt.registerLazySingleton<Dio>(
+    () => Dio(
+      BaseOptions(
+        baseUrl: 'https://api.groq.com/openai/v1',
+        connectTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(seconds: 60),
+        headers: {'Content-Type': 'application/json'},
+      ),
+    ),
+    instanceName: 'grokDio',
   );
 
   // Environment
   final geminiApiKey = dotenv.env['GEMINI_API_KEY'];
+  final grokApiKey = dotenv.env['GROK_API_KEY'];
   if (geminiApiKey == null) {
     throw Exception('GEMINI_API_KEY not found in .env file');
+  }
+  if (grokApiKey == null) {
+    throw Exception('GROK_API_KEY not found in .env file');
   }
   getIt.registerLazySingleton<String>(
     () => geminiApiKey,
     instanceName: 'geminiApiKey',
   );
+  getIt.registerLazySingleton<String>(
+    () => grokApiKey,
+    instanceName: 'grokApiKey',
+  );
 
   // Story Data Sources
   getIt.registerLazySingleton<StoryRemoteDataSource>(
     () => StoryRemoteDataSourceImpl(
-      dio: getIt<Dio>(),
-      apiKey: getIt<String>(instanceName: 'geminiApiKey'),
+      geminiDio: getIt<Dio>(instanceName: 'geminiDio'),
+      grokDio: getIt<Dio>(instanceName: 'grokDio'),
+      geminiApiKey: getIt<String>(instanceName: 'geminiApiKey'),
+      grokApiKey: getIt<String>(instanceName: 'grokApiKey'),
     ),
   );
 

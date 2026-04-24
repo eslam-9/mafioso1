@@ -47,3 +47,7 @@ app.*.map.json
 
 # Environment variables
 .env
+
+#ai
+claude_helper/
+ai/
