@@ -67,23 +67,23 @@ class StoryRepositoryImpl implements StoryRepository {
       return story;
     } catch (e) {
       AppLogger.logError('StoryRepository [Gemini]', e);
-      AppLogger.logInfo('Gemini failed! Falling back to Grok...');
+      AppLogger.logInfo('Gemini failed! Falling back to Groq...');
     }
 
-    // --- Grok fallback ---
+    // --- Groq fallback ---
     try {
-      AppLogger.logInfo('Attempting Grok API...');
+      AppLogger.logInfo('Attempting Groq API...');
       final story = await remoteDataSource!.generateStory(
         suspectCount: suspectCount,
         hasDetective: hasDetective,
         languageCode: languageCode,
-        aiProvider: AiProvider.grok,
+        aiProvider: AiProvider.groq,
       );
-      AppLogger.logInfo('SUCCESS! Got story from GROK: "${story.title}"');
+      AppLogger.logInfo('SUCCESS! Got story from GROQ: "${story.title}"');
       return story;
     } catch (e) {
-      AppLogger.logError('StoryRepository [Grok]', e);
-      AppLogger.logInfo('Grok also failed! Falling back to offline stories...');
+      AppLogger.logError('StoryRepository [Groq]', e);
+      AppLogger.logInfo('Groq also failed! Falling back to offline stories...');
     }
 
     // --- Offline fallback ---

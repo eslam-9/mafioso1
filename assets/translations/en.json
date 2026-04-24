@@ -3,7 +3,7 @@
   "app_subtitle": "Murder Mystery Game",
   "select_ai": "Select AI",
   "ai_gemini": "Gemini",
-  "ai_grok": "Grok",
+  "ai_groq": "Groq",
   "start_game": "Start Game",
   "how_to_play": "How to Play",
   "footer_question": "Can you find the killer?",

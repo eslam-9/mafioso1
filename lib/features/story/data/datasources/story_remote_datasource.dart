@@ -17,15 +17,15 @@ abstract class StoryRemoteDataSource {
 
 class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   final Dio geminiDio;
-  final Dio grokDio;
+  final Dio groqDio;
   final String geminiApiKey;
-  final String grokApiKey;
+  final String groqApiKey;
 
   StoryRemoteDataSourceImpl({
     required this.geminiDio,
-    required this.grokDio,
+    required this.groqDio,
     required this.geminiApiKey,
-    required this.grokApiKey,
+    required this.groqApiKey,
   });
 
   @override
@@ -35,8 +35,8 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
     required String languageCode,
     required AiProvider aiProvider,
   }) async {
-    if (aiProvider == AiProvider.grok) {
-      return _generateWithGrok(
+    if (aiProvider == AiProvider.groq) {
+      return _generateWithGroq(
         suspectCount: suspectCount,
         hasDetective: hasDetective,
         languageCode: languageCode,
@@ -237,7 +237,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
     }
   }
 
-  Future<StoryModel> _generateWithGrok({
+  Future<StoryModel> _generateWithGroq({
     required int suspectCount,
     required bool hasDetective,
     required String languageCode,
@@ -258,9 +258,9 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
 
       AppLogger.logInfo('Prompt length: ${prompt.length} characters');
 
-      final response = await grokDio.post(
+      final response = await groqDio.post(
         '/chat/completions',
-        options: Options(headers: {'Authorization': 'Bearer $grokApiKey'}),
+        options: Options(headers: {'Authorization': 'Bearer $groqApiKey'}),
         data: {
           'model': 'meta-llama/llama-4-scout-17b-16e-instruct',
           'messages': [
@@ -277,7 +277,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       if (response.data == null ||
           response.data['choices'] == null ||
           response.data['choices'].isEmpty) {
-        throw Exception('API error: No results from Grok');
+        throw Exception('API error: No results from Groq');
       }
 
       final choice = response.data['choices'][0];
@@ -285,7 +285,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       AppLogger.logInfo('Choice finishReason: $finishReason');
 
       if (choice['message'] == null || choice['message']['content'] == null) {
-        throw Exception('API error: No content from Grok');
+        throw Exception('API error: No content from Groq');
       }
 
       final generatedText = choice['message']['content'] as String?;
@@ -296,10 +296,10 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       final storyJson = _extractJsonFromResponse(generatedText);
       return StoryModel.fromJson(storyJson);
     } on DioException catch (e) {
-      AppLogger.logError('StoryRemoteDataSource (Grok)', e);
+      AppLogger.logError('StoryRemoteDataSource (Groq)', e);
       ErrorHandler.logError(
         e,
-        context: 'StoryRemoteDataSource.generateStory (Grok)',
+        context: 'StoryRemoteDataSource.generateStory (Groq)',
       );
 
       if (e.type == DioExceptionType.connectionTimeout ||
@@ -324,17 +324,17 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
         throw Exception('error_generation_failed'.tr());
       }
     } on FormatException catch (e) {
-      AppLogger.logError('StoryRemoteDataSource (Grok)', e);
+      AppLogger.logError('StoryRemoteDataSource (Groq)', e);
       ErrorHandler.logError(
         e,
-        context: 'StoryRemoteDataSource.generateStory (Grok)',
+        context: 'StoryRemoteDataSource.generateStory (Groq)',
       );
       throw Exception('error_invalid_json'.tr());
     } catch (e) {
-      AppLogger.logError('StoryRemoteDataSource (Grok)', e);
+      AppLogger.logError('StoryRemoteDataSource (Groq)', e);
       ErrorHandler.logError(
         e,
-        context: 'StoryRemoteDataSource.generateStory (Grok)',
+        context: 'StoryRemoteDataSource.generateStory (Groq)',
       );
       rethrow;
     }

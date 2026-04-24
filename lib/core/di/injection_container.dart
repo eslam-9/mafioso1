@@ -18,7 +18,7 @@ Future<void> init() async {
 
   getIt.registerLazySingleton<SoundService>(() => SoundService()..init());
 
-  // Network — separate Dio instances so Gemini and Grok never share state
+  // Network — separate Dio instances so Gemini and Groq never share state
   getIt.registerLazySingleton<Dio>(
     () => Dio(
       BaseOptions(
@@ -40,23 +40,23 @@ Future<void> init() async {
         headers: {'Content-Type': 'application/json'},
       ),
     ),
-    instanceName: 'grokDio',
+    instanceName: 'groqDio',
   );
 
   // Environment
   const geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
-  const grokApiKey = String.fromEnvironment('GROQ_API_KEY');
+  const groqApiKey = String.fromEnvironment('GROQ_API_KEY');
   final hasRemoteAiKeys =
-      geminiApiKey.trim().isNotEmpty && grokApiKey.trim().isNotEmpty;
+      geminiApiKey.trim().isNotEmpty && groqApiKey.trim().isNotEmpty;
 
   // Story Data Sources
   if (hasRemoteAiKeys) {
     getIt.registerLazySingleton<StoryRemoteDataSource>(
       () => StoryRemoteDataSourceImpl(
         geminiDio: getIt<Dio>(instanceName: 'geminiDio'),
-        grokDio: getIt<Dio>(instanceName: 'grokDio'),
+        groqDio: getIt<Dio>(instanceName: 'groqDio'),
         geminiApiKey: geminiApiKey,
-        grokApiKey: grokApiKey,
+        groqApiKey: groqApiKey,
       ),
     );
   }
