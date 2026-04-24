@@ -1,7 +1,6 @@
 import 'dart:math';
 import '../../../../features/game_setup/domain/entities/game_config.dart';
 import '../../../../features/story/domain/entities/story.dart';
-import '../../../../features/story/data/models/suspect_model.dart';
 import '../entities/player.dart';
 
 class AssignRolesUseCase {
@@ -33,13 +32,17 @@ class AssignRolesUseCase {
 
     // Assign story characters to players
     if (story.suspects.isNotEmpty) {
-      final killerSuspect = (story.suspects as List<SuspectModel>).firstWhere(
+      // `story.suspects` may be backed by a `List<SuspectModel>` at runtime.
+      // Copying into `List<Suspect>` avoids generic type mismatches in `firstWhere(orElse:)`.
+      final suspects = List.from(story.suspects);
+
+      final killerSuspect = suspects.firstWhere(
         (s) => s.name == story.killerName,
-        orElse: () => story.suspects.first as SuspectModel,
+        orElse: () => suspects.first,
       );
 
       final otherSuspects =
-          story.suspects.where((s) => s.name != killerSuspect.name).toList()
+          suspects.where((s) => s.name != killerSuspect.name).toList()
             ..shuffle(random);
 
       int suspectIndex = 0;
