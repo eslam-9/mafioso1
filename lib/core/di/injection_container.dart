@@ -1,6 +1,5 @@
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../shared/services/connectivity_service.dart';
 import '../../shared/services/sound_service.dart';
 import '../../features/story/data/datasources/story_remote_datasource.dart';
@@ -45,32 +44,22 @@ Future<void> init() async {
   );
 
   // Environment
-  final geminiApiKey = dotenv.env['GEMINI_API_KEY'];
-  final grokApiKey = dotenv.env['GROK_API_KEY'];
-  if (geminiApiKey == null) {
-    throw Exception('GEMINI_API_KEY not found in .env file');
-  }
-  if (grokApiKey == null) {
-    throw Exception('GROK_API_KEY not found in .env file');
-  }
-  getIt.registerLazySingleton<String>(
-    () => geminiApiKey,
-    instanceName: 'geminiApiKey',
-  );
-  getIt.registerLazySingleton<String>(
-    () => grokApiKey,
-    instanceName: 'grokApiKey',
-  );
+  const geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
+  const grokApiKey = String.fromEnvironment('GROQ_API_KEY');
+  final hasRemoteAiKeys =
+      geminiApiKey.trim().isNotEmpty && grokApiKey.trim().isNotEmpty;
 
   // Story Data Sources
-  getIt.registerLazySingleton<StoryRemoteDataSource>(
-    () => StoryRemoteDataSourceImpl(
-      geminiDio: getIt<Dio>(instanceName: 'geminiDio'),
-      grokDio: getIt<Dio>(instanceName: 'grokDio'),
-      geminiApiKey: getIt<String>(instanceName: 'geminiApiKey'),
-      grokApiKey: getIt<String>(instanceName: 'grokApiKey'),
-    ),
-  );
+  if (hasRemoteAiKeys) {
+    getIt.registerLazySingleton<StoryRemoteDataSource>(
+      () => StoryRemoteDataSourceImpl(
+        geminiDio: getIt<Dio>(instanceName: 'geminiDio'),
+        grokDio: getIt<Dio>(instanceName: 'grokDio'),
+        geminiApiKey: geminiApiKey,
+        grokApiKey: grokApiKey,
+      ),
+    );
+  }
 
   getIt.registerLazySingleton<StoryLocalDataSource>(
     () => StoryLocalDataSourceImpl(),
@@ -79,7 +68,9 @@ Future<void> init() async {
   // Story Repository
   getIt.registerLazySingleton<StoryRepository>(
     () => StoryRepositoryImpl(
-      remoteDataSource: getIt<StoryRemoteDataSource>(),
+      remoteDataSource: hasRemoteAiKeys
+          ? getIt<StoryRemoteDataSource>()
+          : null,
       localDataSource: getIt<StoryLocalDataSource>(),
       connectivityService: getIt<ConnectivityService>(),
     ),

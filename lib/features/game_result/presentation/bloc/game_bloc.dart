@@ -43,6 +43,7 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
         currentRound: 1,
         voteHistory: const [],
         revealedClues: const [],
+        errorMessage: null,
       ),
     );
   }
@@ -77,17 +78,17 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
     SubmitVotes event,
     Emitter<presentation.GameState> emit,
   ) async {
-    if (event.votes.isEmpty) {
-      throw ArgumentError('error_empty_votes'.tr());
-    }
-
-    if (state.players.isEmpty) {
-      throw StateError('error_no_initial_players'.tr());
-    }
-
     AppLogger.logBlocEvent('GameBloc', 'SubmitVotes');
 
     try {
+      if (event.votes.isEmpty) {
+        throw ArgumentError('error_empty_votes'.tr());
+      }
+
+      if (state.players.isEmpty) {
+        throw StateError('error_no_initial_players'.tr());
+      }
+
       final result = VoteResult(
         round: state.currentRound,
         votes: event.votes,
@@ -146,6 +147,7 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
             gameState: newGameState,
             currentRound: newRound,
             voteHistory: updatedHistory,
+            errorMessage: null,
           ),
         );
       } else {
@@ -162,6 +164,7 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
           state.copyWith(
             currentRound: state.currentRound + 1,
             voteHistory: updatedHistory,
+            errorMessage: null,
           ),
         );
       }
@@ -172,7 +175,14 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
         stackTrace: stackTrace,
         context: 'GameBloc.submitVotes',
       );
-      rethrow;
+      emit(
+        state.copyWith(
+          errorMessage: ErrorHandler.getUserMessage(
+            e,
+            context: 'submitting votes',
+          ),
+        ),
+      );
     }
   }
 

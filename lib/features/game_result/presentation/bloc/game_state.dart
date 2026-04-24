@@ -12,6 +12,7 @@ class GameState extends Equatable {
   final int currentRound;
   final List<VoteResult> voteHistory;
   final List<Clue> revealedClues;
+  final String? errorMessage;
 
   const GameState({
     this.players = const [],
@@ -20,6 +21,7 @@ class GameState extends Equatable {
     this.currentRound = 1,
     this.voteHistory = const [],
     this.revealedClues = const [],
+    this.errorMessage,
   });
 
   List<player_entity.Player> get alivePlayers =>
@@ -40,6 +42,7 @@ class GameState extends Equatable {
     int? currentRound,
     List<VoteResult>? voteHistory,
     List<Clue>? revealedClues,
+    String? errorMessage,
   }) {
     return GameState(
       players: players ?? this.players,
@@ -48,6 +51,7 @@ class GameState extends Equatable {
       currentRound: currentRound ?? this.currentRound,
       voteHistory: voteHistory ?? this.voteHistory,
       revealedClues: revealedClues ?? this.revealedClues,
+      errorMessage: errorMessage,
     );
   }
 
@@ -59,5 +63,6 @@ class GameState extends Equatable {
     currentRound,
     voteHistory,
     revealedClues,
+    errorMessage,
   ];
 }

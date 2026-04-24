@@ -68,6 +68,12 @@ class _GamePageState extends State<GamePage>
         },
         child: BlocListener<GameBloc, presentation.GameState>(
           listener: (context, state) {
+            if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.errorMessage!)),
+              );
+            }
+
             // Check if there's a new vote result with an elimination
             if (state.voteHistory.isNotEmpty) {
               final lastVote = state.voteHistory.last;

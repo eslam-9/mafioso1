@@ -281,7 +281,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       }
 
       final choice = response.data['choices'][0];
-      final finishReason = choice['finishReason'] as String? ?? 'UNKNOWN';
+      final finishReason = choice['finish_reason'] as String? ?? 'UNKNOWN';
       AppLogger.logInfo('Choice finishReason: $finishReason');
 
       if (choice['message'] == null || choice['message']['content'] == null) {
