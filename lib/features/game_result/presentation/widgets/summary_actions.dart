@@ -17,7 +17,7 @@ class SummaryActions extends StatelessWidget {
             Navigator.pushNamedAndRemoveUntil(
               context,
               RouteNames.gameMode,
-              (route) => false,
+              ModalRoute.withName(RouteNames.home),
             );
           },
           child: Text('play_again'.tr()),
