@@ -4,9 +4,19 @@ class SuspectModel extends Suspect {
   const SuspectModel({required super.name, required super.suspiciousBehavior});
 
   factory SuspectModel.fromJson(Map<String, dynamic> json) {
+    final name = (json['name'] as String?)?.trim() ?? '';
+    final suspiciousBehavior =
+        (json['suspiciousBehavior'] as String?)?.trim() ?? '';
+
+    if (name.isEmpty || suspiciousBehavior.isEmpty) {
+      throw const FormatException(
+        'Invalid suspect payload: name and suspiciousBehavior are required.',
+      );
+    }
+
     return SuspectModel(
-      name: json['name'] as String,
-      suspiciousBehavior: json['suspiciousBehavior'] as String,
+      name: name,
+      suspiciousBehavior: suspiciousBehavior,
     );
   }
 

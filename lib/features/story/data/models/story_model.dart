@@ -16,18 +16,48 @@ class StoryModel extends Story {
   });
 
   factory StoryModel.fromJson(Map<String, dynamic> json) {
+    final title = (json['title'] as String?)?.trim() ?? '';
+    final intro = (json['intro'] as String?)?.trim() ?? '';
+    final crimeDescription =
+        (json['crimeDescription'] as String?)?.trim() ?? '';
+    final twist = (json['twist'] as String?)?.trim() ?? '';
+    final killerName = (json['killerName'] as String?)?.trim() ?? '';
+    final suspectsJson = json['suspects'];
+    final cluesJson = json['clues'];
+
+    if (suspectsJson is! List || cluesJson is! List) {
+      throw const FormatException(
+        'Invalid story payload: suspects and clues must be arrays.',
+      );
+    }
+
+    final suspects = suspectsJson
+        .map((s) => SuspectModel.fromJson(s as Map<String, dynamic>))
+        .toList();
+    final clues = cluesJson
+        .map((c) => ClueModel.fromJson(c as Map<String, dynamic>))
+        .toList();
+
+    if (title.isEmpty ||
+        intro.isEmpty ||
+        crimeDescription.isEmpty ||
+        twist.isEmpty ||
+        killerName.isEmpty ||
+        suspects.isEmpty ||
+        clues.isEmpty) {
+      throw const FormatException(
+        'Invalid story payload: required fields are missing or empty.',
+      );
+    }
+
     return StoryModel(
-      title: json['title'] as String,
-      intro: json['intro'] as String,
-      crimeDescription: json['crimeDescription'] as String,
-      suspects: (json['suspects'] as List)
-          .map((s) => SuspectModel.fromJson(s as Map<String, dynamic>))
-          .toList(),
-      clues: (json['clues'] as List)
-          .map((c) => ClueModel.fromJson(c as Map<String, dynamic>))
-          .toList(),
-      twist: json['twist'] as String,
-      killerName: json['killerName'] as String,
+      title: title,
+      intro: intro,
+      crimeDescription: crimeDescription,
+      suspects: suspects,
+      clues: clues,
+      twist: twist,
+      killerName: killerName,
     );
   }
 
