@@ -60,15 +60,15 @@ Follow these steps to get a local copy up and running.
    flutter pub get
    ```
 
-3. **Configure Environment**
-   Create a `.env` file in the root directory:
-   ```env
-   GEMINI_API_KEY=your_api_key_here
+3. **Provide API keys**
+   Pass keys at runtime with `--dart-define`:
+   ```bash
+   flutter run --dart-define=GEMINI_API_KEY=your_gemini_key --dart-define=GROQ_API_KEY=your_groq_key
    ```
 
 4. **Run the App**
    ```bash
-   flutter run
+   flutter run --dart-define=GEMINI_API_KEY=your_gemini_key --dart-define=GROQ_API_KEY=your_groq_key
    ```
 
 ## 🎮 How to Play
@@ -92,7 +92,7 @@ Follow these steps to get a local copy up and running.
 To build an APK for Android:
 
 ```bash
-flutter build apk --release
+flutter build apk --release --dart-define=GEMINI_API_KEY=your_gemini_key --dart-define=GROQ_API_KEY=your_groq_key
 ```
 The output file will be located at `build/app/outputs/flutter-apk/app-release.apk`.
 

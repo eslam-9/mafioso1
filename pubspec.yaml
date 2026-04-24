@@ -44,9 +44,6 @@ dependencies:
   # Local Storage
   shared_preferences: ^2.3.3
 
-  # Environment Variables
-  flutter_dotenv: ^5.1.0
-  
   # Responsive Design
   flutter_screenutil: ^5.9.0
 
@@ -90,4 +87,3 @@ flutter:
     - assets/data/
     - assets/data/stories_offline_en.json
     - assets/translations/
-    - .env

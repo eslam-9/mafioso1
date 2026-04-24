@@ -8,7 +8,7 @@ import '../datasources/story_remote_datasource.dart';
 import '../datasources/story_local_datasource.dart';
 
 class StoryRepositoryImpl implements StoryRepository {
-  final StoryRemoteDataSource remoteDataSource;
+  final StoryRemoteDataSource? remoteDataSource;
   final StoryLocalDataSource localDataSource;
   final ConnectivityService connectivityService;
 
@@ -47,10 +47,17 @@ class StoryRepositoryImpl implements StoryRepository {
       return localDataSource.getOfflineStory(suspectCount, languageCode);
     }
 
+    if (remoteDataSource == null) {
+      AppLogger.logInfo(
+        'No AI keys available via --dart-define - using offline stories',
+      );
+      return localDataSource.getOfflineStory(suspectCount, languageCode);
+    }
+
     // --- Gemini attempt ---
     try {
       AppLogger.logInfo('Attempting Gemini API...');
-      final story = await remoteDataSource.generateStory(
+      final story = await remoteDataSource!.generateStory(
         suspectCount: suspectCount,
         hasDetective: hasDetective,
         languageCode: languageCode,
@@ -66,7 +73,7 @@ class StoryRepositoryImpl implements StoryRepository {
     // --- Grok fallback ---
     try {
       AppLogger.logInfo('Attempting Grok API...');
-      final story = await remoteDataSource.generateStory(
+      final story = await remoteDataSource!.generateStory(
         suspectCount: suspectCount,
         hasDetective: hasDetective,
         languageCode: languageCode,
