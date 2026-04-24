@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/role_localization_helper.dart';
 import '../../../role_reveal/domain/entities/player.dart';
 
 class EliminationDialog extends StatelessWidget {
@@ -70,7 +71,7 @@ class EliminationDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              eliminatedPlayer.roleDisplayName,
+              RoleLocalizationHelper.getRoleDisplayName(eliminatedPlayer.role),
               style: TextStyle(
                 color:
                     wasKiller || Theme.of(context).brightness == Brightness.dark
