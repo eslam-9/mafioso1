@@ -13,6 +13,32 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+val isReleaseTask =
+    gradle.startParameter.taskNames.any { taskName ->
+        taskName.contains("release", ignoreCase = true)
+    }
+
+val requiredKeystoreKeys = listOf("keyAlias", "keyPassword", "storeFile", "storePassword")
+val hasReleaseSigning =
+    keystorePropertiesFile.exists() &&
+        requiredKeystoreKeys.all { key -> !keystoreProperties.getProperty(key).isNullOrBlank() }
+
+if (isReleaseTask && !hasReleaseSigning) {
+    throw GradleException(
+        """
+        Release signing is not configured.
+
+        Create android/key.properties (or key.properties in the project root) with:
+          storeFile=/absolute/path/to/your.jks
+          storePassword=...
+          keyAlias=...
+          keyPassword=...
+
+        Then re-run: flutter build apk --release
+        """.trimIndent(),
+    )
+}
+
 android {
     namespace = "com.mafioso.game"
     compileSdk = 36
@@ -36,12 +62,14 @@ android {
         multiDexEnabled = true
     }
 
-    signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = keystoreProperties["storeFile"]?.let { file(it as String) }
-            storePassword = keystoreProperties["storePassword"] as String
+    if (hasReleaseSigning) {
+        signingConfigs {
+            create("release") {
+                keyAlias = keystoreProperties.getProperty("keyAlias")!!
+                keyPassword = keystoreProperties.getProperty("keyPassword")!!
+                storeFile = file(keystoreProperties.getProperty("storeFile")!!)
+                storePassword = keystoreProperties.getProperty("storePassword")!!
+            }
         }
     }
 

@@ -1,127 +1,25 @@
+import 'package:easy_localization/easy_localization.dart';
 import '../utils/logger.dart';
 
-/// Error handling utility for the application
 class ErrorHandler {
-  /// Converts technical errors to user-friendly messages
   static String getUserMessage(dynamic error, {String? context}) {
-    if (error is String) {
-      return _parseErrorMessage(error);
-    }
+    final directMessage = _tryExtractDirectMessage(error);
+    if (directMessage != null) return directMessage;
 
-    if (error is Exception) {
-      return _parseException(error, context: context);
-    }
-
-    // Generic fallback
-    if (context != null) {
-      return 'حصل خطأ أثناء $context. حاول تاني.';
-    }
-
-    return 'حصل خطأ مش متوقع. حاول تاني.';
+    final translation = _inferTranslation(error, context: context);
+    if (translation.namedArgs == null) return translation.key.tr();
+    return translation.key.tr(namedArgs: translation.namedArgs!);
   }
 
-  /// Parse string error messages
-  static String _parseErrorMessage(String error) {
-    // Network errors
-    if (error.toLowerCase().contains('network') ||
-        error.toLowerCase().contains('connection')) {
-      return 'مش قادرين نتصل. اتأكد من النت.';
-    }
-
-    if (error.toLowerCase().contains('timeout')) {
-      return 'الطلب خد وقت كتير. حاول تاني.';
-    }
-
-    // API errors
-    if (error.toLowerCase().contains('api') ||
-        error.toLowerCase().contains('gemini')) {
-      return 'مش قادرين نعمل قصة. هنستخدم القصص الأوفلاين.';
-    }
-
-    // Validation errors
-    if (error.toLowerCase().contains('invalid') ||
-        error.toLowerCase().contains('validation')) {
-      return 'البيانات مش صح. راجع اللي كتبته.';
-    }
-
-    // Permission errors
-    if (error.toLowerCase().contains('permission') ||
-        error.toLowerCase().contains('denied')) {
-      return 'الإذن مرفوض. راجع الإعدادات.';
-    }
-
-    return error;
-  }
-
-  /// Parse exceptions to user-friendly messages
-  static String _parseException(Exception error, {String? context}) {
-    final errorString = error.toString().toLowerCase();
-
-    // Network-related exceptions
-    if (errorString.contains('socketexception') ||
-        errorString.contains('connection')) {
-      return 'مفيش نت. هنستخدم القصص الأوفلاين.';
-    }
-
-    if (errorString.contains('timeout')) {
-      return 'الطلب خد وقت كتير. حاول تاني.';
-    }
-
-    // HTTP exceptions
-    if (errorString.contains('404')) {
-      return 'الحاجة اللي طلبتها مش موجودة.';
-    }
-
-    if (errorString.contains('401') || errorString.contains('403')) {
-      return 'المصادقة فشلت. اتأكد من الـ API key.';
-    }
-
-    if (errorString.contains('500') ||
-        errorString.contains('502') ||
-        errorString.contains('503')) {
-      return 'خطأ في السيرفر. حاول بعدين.';
-    }
-
-    // Format exceptions
-    if (errorString.contains('format') || errorString.contains('json')) {
-      return 'مش قادرين نقرا الرد. حاول تاني.';
-    }
-
-    // Generic exception with context
-    if (context != null) {
-      return 'فشل $context. حاول تاني.';
-    }
-
-    return 'حصل خطأ. حاول تاني.';
-  }
-
-  /// Check if error is recoverable
   static bool isRecoverable(dynamic error) {
-    final errorString = error.toString().toLowerCase();
-
-    // Network errors are usually recoverable
-    if (errorString.contains('network') ||
-        errorString.contains('connection') ||
-        errorString.contains('timeout')) {
-      return true;
-    }
-
-    // Server errors might be temporary
-    if (errorString.contains('500') ||
-        errorString.contains('502') ||
-        errorString.contains('503')) {
-      return true;
-    }
-
-    // Format errors might be recoverable
-    if (errorString.contains('format') || errorString.contains('json')) {
-      return true;
-    }
-
-    return false;
+    final key = _inferTranslation(error, context: null).key;
+    return key == 'error_no_internet' ||
+        key == 'error_request_timeout' ||
+        key == 'error_server_error' ||
+        key == 'error_invalid_json' ||
+        key == 'error_api_failed_code';
   }
 
-  /// Log error for debugging
   static void logError(
     dynamic error, {
     StackTrace? stackTrace,
@@ -129,4 +27,99 @@ class ErrorHandler {
   }) {
     AppLogger.logError(context ?? 'Unknown', error, stackTrace: stackTrace);
   }
+
+  static _Translation _inferTranslation(dynamic error, {String? context}) {
+    if (context != null && context.startsWith('error_')) {
+      return _Translation(context);
+    }
+
+    final errorString = error.toString();
+    final lower = errorString.toLowerCase();
+
+    final dioStatusCode = _tryExtractHttpStatusCode(errorString);
+    if (dioStatusCode != null) {
+      if (dioStatusCode == 401 || dioStatusCode == 403) {
+        return const _Translation('error_auth_failed');
+      }
+      if (dioStatusCode == 404) return const _Translation('error_not_found');
+      if (dioStatusCode >= 500 && dioStatusCode < 600) {
+        return const _Translation('error_server_error');
+      }
+      if (dioStatusCode >= 400) {
+        return _Translation(
+          'error_api_failed_code',
+          namedArgs: {'code': dioStatusCode.toString()},
+        );
+      }
+    }
+
+    if (lower.contains('socketexception') ||
+        lower.contains('network') ||
+        lower.contains('connection') ||
+        lower.contains('failed host lookup') ||
+        lower.contains('name not resolved') ||
+        lower.contains('dns')) {
+      return const _Translation('error_no_internet');
+    }
+
+    if (lower.contains('timeout') ||
+        lower.contains('timed out') ||
+        lower.contains('connecttimeout') ||
+        lower.contains('receivetimeout') ||
+        lower.contains('sendtimeout')) {
+      return const _Translation('error_request_timeout');
+    }
+
+    if (lower.contains('format') || lower.contains('json')) {
+      return const _Translation('error_invalid_json');
+    }
+
+    if (lower.contains('invalid') ||
+        lower.contains('validation') ||
+        lower.contains('required') ||
+        lower.contains('missing')) {
+      return const _Translation('error_invalid_data');
+    }
+
+    if (lower.contains('permission') || lower.contains('denied')) {
+      return const _Translation('error_permission_denied');
+    }
+
+    return const _Translation('error_unexpected');
+  }
+
+  static int? _tryExtractHttpStatusCode(String errorString) {
+    // Common Dio message: "DioException [bad response]: ... status code: 401"
+    final match = RegExp(r'status code:\\s*(\\d{3})', caseSensitive: false)
+        .firstMatch(errorString);
+    if (match == null) return null;
+    return int.tryParse(match.group(1) ?? '');
+  }
+
+  static String? _tryExtractDirectMessage(dynamic error) {
+    if (error is String && error.trim().isNotEmpty) return error;
+
+    if (error is ArgumentError) {
+      final message = error.message;
+      if (message is String && message.trim().isNotEmpty) return message;
+    }
+
+    if (error is StateError && error.message.trim().isNotEmpty) {
+      return error.message;
+    }
+
+    if (error is FormatException && error.message.trim().isNotEmpty) {
+      return error.message;
+    }
+
+    return null;
+  }
 }
+
+class _Translation {
+  final String key;
+  final Map<String, String>? namedArgs;
+
+  const _Translation(this.key, {this.namedArgs});
+}
+
