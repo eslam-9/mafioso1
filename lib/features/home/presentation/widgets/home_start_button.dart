@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/constants/route_names.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../game_setup/domain/entities/game_config.dart';
 
 class HomeStartButton extends StatelessWidget {
   const HomeStartButton({super.key});
@@ -14,8 +15,16 @@ class HomeStartButton extends StatelessWidget {
       width: 250.w,
       child: ElevatedButton(
         onPressed: () {
-          AppLogger.logNavigation(RouteNames.gameMode);
-          Navigator.pushNamed(context, RouteNames.gameMode);
+          AppLogger.logNavigation(RouteNames.playerSetup);
+          Navigator.pushNamed(
+            context,
+            RouteNames.playerSetup,
+            arguments: GameConfig(
+              mode: GameMode.withoutDetective,
+              suspectCount: 4,
+              playerNames: List<String>.filled(4, ''),
+            ),
+          );
         },
         child: Text('start_game'.tr()),
       ),

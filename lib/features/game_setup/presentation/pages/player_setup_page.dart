@@ -8,7 +8,6 @@ import '../bloc/game_setup_bloc.dart';
 import '../bloc/game_setup_event.dart';
 import '../bloc/game_setup_state.dart';
 import '../../domain/entities/game_config.dart';
-import '../widgets/mode_display.dart';
 import '../widgets/suspect_count_selector.dart';
 import '../widgets/player_name_inputs.dart';
 import '../widgets/continue_button.dart';
@@ -41,7 +40,7 @@ class PlayerSetupPage extends StatelessWidget {
           create: (context) {
             final bloc = GameSetupBloc();
             if (initialConfig != null) {
-              bloc.add(SetGameMode(initialConfig.mode));
+              bloc.add(const SetGameMode(GameMode.withoutDetective));
               bloc.add(SetSuspectCount(initialConfig.suspectCount));
               for (int i = 0; i < initialConfig.playerNames.length; i++) {
                 bloc.add(SetPlayerName(i, initialConfig.playerNames[i]));
@@ -74,8 +73,6 @@ class PlayerSetupPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const ModeDisplay(),
-                    SizedBox(height: AppSpacing.large),
                     SuspectCountSelector(isLocked: existingStory != null),
                     SizedBox(height: AppSpacing.large),
                     const PlayerNameInputs(),

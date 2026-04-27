@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../constants/route_names.dart';
 import '../../features/home/presentation/pages/home_page.dart';
-import '../../features/game_setup/presentation/pages/game_mode_page.dart';
 import '../../features/game_setup/presentation/pages/player_setup_page.dart';
-import '../../features/game_setup/presentation/bloc/game_setup_bloc.dart';
+import '../../features/game_setup/domain/entities/game_config.dart';
 import '../../features/story/presentation/pages/story_generation_page.dart';
 import '../../features/story/presentation/bloc/story_bloc.dart';
 import '../../features/role_reveal/presentation/pages/role_reveal_page.dart';
@@ -21,7 +20,17 @@ class RouteGenerator {
         return _buildRoute(const HomePage(), settings: settings);
 
       case RouteNames.gameMode:
-        return _buildRoute(const _GameModePageWrapper(), settings: settings);
+        return _buildRoute(
+          const PlayerSetupPage(),
+          settings: RouteSettings(
+            name: RouteNames.playerSetup,
+            arguments: GameConfig(
+              mode: GameMode.withoutDetective,
+              suspectCount: 4,
+              playerNames: List<String>.filled(4, ''),
+            ),
+          ),
+        );
 
       case RouteNames.playerSetup:
         return _buildRoute(const _PlayerSetupPageWrapper(), settings: settings);
@@ -61,18 +70,6 @@ class RouteGenerator {
 }
 
 // Wrapper widgets to provide BLoC context
-class _GameModePageWrapper extends StatelessWidget {
-  const _GameModePageWrapper();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GameSetupBloc(),
-      child: const GameModePage(),
-    );
-  }
-}
-
 class _PlayerSetupPageWrapper extends StatelessWidget {
   const _PlayerSetupPageWrapper();
 
