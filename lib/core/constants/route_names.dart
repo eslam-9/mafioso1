@@ -6,4 +6,6 @@ class RouteNames {
   static const String roleReveal = '/role-reveal';
   static const String game = '/game';
   static const String summary = '/summary';
+  static const String savedStories = '/saved-stories';
+  static const String communityLibrary = '/community-library';
 }
