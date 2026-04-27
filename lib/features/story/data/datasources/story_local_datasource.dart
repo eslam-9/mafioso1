@@ -56,8 +56,9 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
   }
 
   StoryModel _adaptStoryToPlayerCount(StoryModel story, int suspectCount) {
+    final random = Random();
+    final StoryModel adapted;
     if (story.suspects.length > suspectCount) {
-      final random = Random();
       final shuffled = List.from(story.suspects)..shuffle(random);
 
       final killerSuspect = (story.suspects as List<SuspectModel>).firstWhere(
@@ -65,15 +66,17 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
         orElse: () => story.suspects.first as SuspectModel,
       );
 
-      final selectedSuspects = [killerSuspect];
-      for (var suspect in shuffled) {
+      final selectedSuspects = <SuspectModel>[killerSuspect];
+      for (final suspect in shuffled) {
         if (suspect.name != killerSuspect.name &&
             selectedSuspects.length < suspectCount) {
-          selectedSuspects.add(suspect);
+          selectedSuspects.add(suspect as SuspectModel);
         }
       }
 
-      return StoryModel(
+      selectedSuspects.shuffle(random);
+
+      adapted = StoryModel(
         title: story.title,
         intro: story.intro,
         crimeDescription: story.crimeDescription,
@@ -82,8 +85,10 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
         twist: story.twist,
         killerName: story.killerName,
       );
+    } else {
+      adapted = story;
     }
 
-    return story;
+    return adapted.withSuspectsShuffled(random: random);
   }
 }

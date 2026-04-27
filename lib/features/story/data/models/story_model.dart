@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../../domain/entities/story.dart';
 import '../../domain/entities/clue.dart';
 import '../../domain/entities/suspect.dart';
@@ -91,5 +93,17 @@ class StoryModel extends Story {
       twist: twist ?? this.twist,
       killerName: killerName ?? this.killerName,
     );
+  }
+}
+
+extension StoryModelSuspectShuffle on StoryModel {
+  /// Randomizes suspect list order without changing [killerName] or story text.
+  StoryModel withSuspectsShuffled({Random? random}) {
+    if (suspects.length <= 1) return this;
+    final shuffled = List<SuspectModel>.from(
+      suspects.map((s) => s as SuspectModel),
+    );
+    shuffled.shuffle(random ?? Random.secure());
+    return copyWith(suspects: shuffled);
   }
 }

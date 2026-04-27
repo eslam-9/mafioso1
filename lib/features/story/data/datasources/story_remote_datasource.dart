@@ -194,7 +194,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       }
 
       final storyJson = _extractJsonFromResponse(generatedText);
-      return StoryModel.fromJson(storyJson);
+      return StoryModel.fromJson(storyJson).withSuspectsShuffled();
     } on DioException catch (e) {
       AppLogger.logError('StoryRemoteDataSource', e);
       if (e.response?.data != null) {
@@ -294,7 +294,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       }
 
       final storyJson = _extractJsonFromResponse(generatedText);
-      return StoryModel.fromJson(storyJson);
+      return StoryModel.fromJson(storyJson).withSuspectsShuffled();
     } on DioException catch (e) {
       AppLogger.logError('StoryRemoteDataSource (Groq)', e);
       ErrorHandler.logError(
@@ -362,6 +362,12 @@ STORY RULES (IMPORTANT):
 - Use a hidden mechanism (habit / object / trick).
 - The twist must be logical and based on clues.
 
+KILLER CHOICE (CRITICAL — NO POSITIONAL BIAS):
+- Before you write, pick the guilty suspect with a genuinely arbitrary choice among all $suspectCount suspects (as if rolling a fair die).
+- Do NOT default to the last suspect, the second-to-last suspect, the first suspect, or any fixed slot in the JSON list order.
+- Do NOT let list position influence guilt: vary who is guilty across different stories.
+- killerName MUST exactly match one suspect's "name" field (same spelling).
+
 JSON format (STRICT — DO NOT CHANGE KEYS OR STRUCTURE):
 
 {
@@ -423,6 +429,11 @@ CRITICAL RULES:
 - طريقة القتل تكون غير مباشرة وذكية
 - الحل لازم يعتمد على الأدلة
 - في حاجة مخفية (عادة / أداة / حركة)
+
+اختيار القاتل (مهم — ممنوع تكرار نفس المكان في اللستة):
+- اختار القاتل عشوائي من غير ما تربطه بترتيب JSON (ممنوع تخليه دايمًا آخر واحد أو قبل الأخير أو أول واحد).
+- غيّر مين القاتل في كل قصة؛ متخليش ترتيب الأسماء في المصفوفة يحدد مين المذنب.
+- killerName لازم يطابق حرفيًا واحد من أسماء suspects.
 
 JSON format (STRICT — DO NOT TRANSLATE KEYS):
 
