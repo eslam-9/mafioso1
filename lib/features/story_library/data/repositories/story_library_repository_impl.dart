@@ -12,11 +12,13 @@ class StoryLibraryRepositoryImpl implements StoryLibraryRepository {
     int page = 0,
     int limit = 20,
     String languageCode = 'en',
+    int? playerCount,
   }) async {
     return remoteDataSource.getCommunityStories(
       page: page,
       limit: limit,
       languageCode: languageCode,
+      playerCount: playerCount,
     );
   }
 

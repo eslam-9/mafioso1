@@ -8,6 +8,7 @@ abstract class StoryLibraryRemoteDataSource {
     int page = 0,
     int limit = 20,
     String languageCode = 'en',
+    int? playerCount,
   });
   Future<String> uploadStory(
     Map<String, dynamic> storyJson,
@@ -30,14 +31,21 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
     int page = 0,
     int limit = 20,
     String languageCode = 'en',
+    int? playerCount,
   }) async {
     final from = page * limit;
     final to = from + limit - 1;
 
-    final response = await client
+    var query = client
         .from(_ratedStoriesView)
         .select()
-        .eq('language_code', languageCode)
+        .eq('language_code', languageCode);
+
+    if (playerCount != null) {
+      query = query.eq('suspect_count', playerCount);
+    }
+
+    final response = await query
         .order('bayesian_rating', ascending: false)
         .range(from, to);
 
@@ -53,6 +61,7 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
     String languageCode,
   ) async {
     final contentHash = _computeHash(storyJson, languageCode);
+    final suspectCount = _suspectCountFromStoryJson(storyJson);
 
     // Upsert — if story already exists, returns existing row
     final response = await client
@@ -65,6 +74,7 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
           'twist': storyJson['twist'] as String? ?? '',
           'killer_name': storyJson['killerName'] as String? ?? '',
           'language_code': languageCode,
+          'suspect_count': suspectCount,
           'story_json': jsonEncode(storyJson),
           'uploaded_by_device': deviceId,
         }, onConflict: 'content_hash,language_code')
@@ -81,6 +91,12 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
       'device_id': deviceId,
       'rating': rating,
     }, onConflict: 'story_id,device_id');
+  }
+
+  static int _suspectCountFromStoryJson(Map<String, dynamic> storyJson) {
+    final raw = storyJson['suspects'];
+    if (raw is List) return raw.length;
+    return 0;
   }
 
   /// Computes a deterministic SHA-256 hash of the story's core content fields.

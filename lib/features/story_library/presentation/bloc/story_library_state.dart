@@ -14,9 +14,16 @@ class StoryLibraryLoading extends StoryLibraryState {}
 class StoryLibraryLoaded extends StoryLibraryState {
   final List<CommunityStory> stories;
   final bool hasMore;
-  const StoryLibraryLoaded({required this.stories, this.hasMore = true});
+  final int? playerCountFilter;
+
+  const StoryLibraryLoaded({
+    required this.stories,
+    this.hasMore = true,
+    this.playerCountFilter,
+  });
+
   @override
-  List<Object?> get props => [stories, hasMore];
+  List<Object?> get props => [stories, hasMore, playerCountFilter];
 }
 
 class StoryLibraryError extends StoryLibraryState {

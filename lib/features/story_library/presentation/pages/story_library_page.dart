@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/constants/route_names.dart';
 import '../../../../shared/widgets/story_status_badge.dart';
+import '../../../../shared/widgets/player_count_story_filter_bar.dart';
 import '../bloc/story_library_bloc.dart';
 import '../bloc/story_library_event.dart';
 import '../bloc/story_library_state.dart';
@@ -37,6 +38,7 @@ class _StoryLibraryView extends StatefulWidget {
 
 class _StoryLibraryViewState extends State<_StoryLibraryView> {
   final _scrollController = ScrollController();
+  int? _playerCountFilter;
 
   @override
   void initState() {
@@ -57,47 +59,80 @@ class _StoryLibraryViewState extends State<_StoryLibraryView> {
     }
   }
 
+  void _onPlayerFilterChanged(int? count) {
+    setState(() => _playerCountFilter = count);
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(0);
+    }
+    context.read<StoryLibraryBloc>().add(
+      LoadCommunityStories(
+        languageCode: context.locale.languageCode,
+        playerCountFilter: count,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('community_library'.tr())),
-      body: BlocBuilder<StoryLibraryBloc, StoryLibraryState>(
-        builder: (context, state) {
-          if (state is StoryLibraryLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is StoryLibraryError) {
-            return _ErrorView(
-              message: state.message,
-              onRetry: () => context.read<StoryLibraryBloc>().add(
-                LoadCommunityStories(languageCode: context.locale.languageCode),
-              ),
-            );
-          }
-          if (state is StoryLibraryLoaded) {
-            if (state.stories.isEmpty) {
-              return _EmptyView();
-            }
-            return ListView.builder(
-              controller: _scrollController,
-              padding: EdgeInsets.all(16.w),
-              itemCount: state.stories.length + (state.hasMore ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index == state.stories.length) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Center(child: CircularProgressIndicator()),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 4.h),
+            child: PlayerCountStoryFilterBar(
+              selected: _playerCountFilter,
+              onSelected: _onPlayerFilterChanged,
+            ),
+          ),
+          Expanded(
+            child: BlocBuilder<StoryLibraryBloc, StoryLibraryState>(
+              builder: (context, state) {
+                if (state is StoryLibraryLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is StoryLibraryError) {
+                  return _ErrorView(
+                    message: state.message,
+                    onRetry: () => context.read<StoryLibraryBloc>().add(
+                      LoadCommunityStories(
+                        languageCode: context.locale.languageCode,
+                        playerCountFilter: _playerCountFilter,
+                      ),
+                    ),
                   );
                 }
-                return _CommunityStoryCard(
-                  story: state.stories[index],
-                  index: index,
-                );
+                if (state is StoryLibraryLoaded) {
+                  if (state.stories.isEmpty) {
+                    if (_playerCountFilter != null) {
+                      return const _CommunityFilterEmptyView();
+                    }
+                    return const _EmptyView();
+                  }
+                  return ListView.builder(
+                    controller: _scrollController,
+                    padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+                    itemCount: state.stories.length + (state.hasMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == state.stories.length) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+                      return _CommunityStoryCard(
+                        story: state.stories[index],
+                        index: index,
+                      );
+                    },
+                  );
+                }
+                return const SizedBox.shrink();
               },
-            );
-          }
-          return const SizedBox.shrink();
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -289,7 +324,30 @@ class _RatingRow extends StatelessWidget {
   }
 }
 
+class _CommunityFilterEmptyView extends StatelessWidget {
+  const _CommunityFilterEmptyView();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
+        child: Text(
+          'no_stories_for_player_filter'.tr(),
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.outline,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _EmptyView extends StatelessWidget {
+  const _EmptyView();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/constants/route_names.dart';
 import '../../../../shared/widgets/story_status_badge.dart';
+import '../../../../shared/widgets/player_count_story_filter_bar.dart';
 import '../../domain/usecases/delete_story_usecase.dart';
 import '../bloc/story_history_bloc.dart';
 import '../bloc/story_history_event.dart';
@@ -24,32 +25,87 @@ class SavedStoriesPage extends StatelessWidget {
   }
 }
 
-class _SavedStoriesView extends StatelessWidget {
+class _SavedStoriesView extends StatefulWidget {
   const _SavedStoriesView();
+
+  @override
+  State<_SavedStoriesView> createState() => _SavedStoriesViewState();
+}
+
+class _SavedStoriesViewState extends State<_SavedStoriesView> {
+  int? _playerCountFilter;
+
+  List<PlayedStory> _filtered(StoryHistoryLoaded state) {
+    if (_playerCountFilter == null) return state.stories;
+    return state.stories
+        .where((s) => s.story.suspects.length == _playerCountFilter)
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('saved_stories'.tr())),
-      body: BlocBuilder<StoryHistoryBloc, StoryHistoryState>(
-        builder: (context, state) {
-          if (state is StoryHistoryLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is StoryHistoryError) {
-            return _ErrorView(message: state.message);
-          } else if (state is StoryHistoryLoaded) {
-            if (state.stories.isEmpty) {
-              return _EmptyView();
-            }
-            return ListView.builder(
-              padding: EdgeInsets.all(16.w),
-              itemCount: state.stories.length,
-              itemBuilder: (context, index) =>
-                  _StoryCard(story: state.stories[index], index: index),
-            );
-          }
-          return const SizedBox.shrink();
-        },
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 4.h),
+            child: PlayerCountStoryFilterBar(
+              selected: _playerCountFilter,
+              onSelected: (c) => setState(() => _playerCountFilter = c),
+            ),
+          ),
+          Expanded(
+            child: BlocBuilder<StoryHistoryBloc, StoryHistoryState>(
+              builder: (context, state) {
+                if (state is StoryHistoryLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is StoryHistoryError) {
+                  return _ErrorView(message: state.message);
+                }
+                if (state is StoryHistoryLoaded) {
+                  if (state.stories.isEmpty) {
+                    return const _EmptyView();
+                  }
+                  final list = _filtered(state);
+                  if (list.isEmpty) {
+                    return const _FilteredEmptyView();
+                  }
+                  return ListView.builder(
+                    padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+                    itemCount: list.length,
+                    itemBuilder: (context, index) =>
+                        _StoryCard(story: list[index], index: index),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FilteredEmptyView extends StatelessWidget {
+  const _FilteredEmptyView();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
+        child: Text(
+          'no_stories_for_player_filter'.tr(),
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.outline,
+          ),
+        ),
       ),
     );
   }
@@ -237,6 +293,8 @@ extension on _StoryCard {
 }
 
 class _EmptyView extends StatelessWidget {
+  const _EmptyView();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

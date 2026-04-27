@@ -6,6 +6,7 @@ abstract class StoryLibraryRepository {
     int page = 0,
     int limit = 20,
     String languageCode = 'en',
+    int? playerCount,
   });
 
   /// Uploads a story to the community library. Returns the story's DB id.

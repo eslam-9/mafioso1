@@ -9,10 +9,16 @@ abstract class StoryLibraryEvent extends Equatable {
 
 class LoadCommunityStories extends StoryLibraryEvent {
   final String languageCode;
-  const LoadCommunityStories({required this.languageCode});
+  /// `null` = all player counts; `4`/`5`/`6` = filter by suspect/player count.
+  final int? playerCountFilter;
+
+  const LoadCommunityStories({
+    required this.languageCode,
+    this.playerCountFilter,
+  });
 
   @override
-  List<Object?> get props => [languageCode];
+  List<Object?> get props => [languageCode, playerCountFilter];
 }
 
 class LoadMoreCommunityStories extends StoryLibraryEvent {}
