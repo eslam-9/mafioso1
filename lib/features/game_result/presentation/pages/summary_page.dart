@@ -97,6 +97,7 @@ class _SummaryPageState extends State<SummaryPage> {
         final playedStory = PlayedStory(
           id: _playedStoryId!,
           story: gameState.story!,
+          languageCode: context.locale.languageCode,
           playedAt: DateTime.now(),
         );
 

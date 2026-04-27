@@ -7,7 +7,13 @@ abstract class StoryLibraryEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadCommunityStories extends StoryLibraryEvent {}
+class LoadCommunityStories extends StoryLibraryEvent {
+  final String languageCode;
+  const LoadCommunityStories({required this.languageCode});
+
+  @override
+  List<Object?> get props => [languageCode];
+}
 
 class LoadMoreCommunityStories extends StoryLibraryEvent {}
 

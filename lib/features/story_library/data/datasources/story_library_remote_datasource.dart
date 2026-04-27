@@ -7,8 +7,13 @@ abstract class StoryLibraryRemoteDataSource {
   Future<List<CommunityStory>> getCommunityStories({
     int page = 0,
     int limit = 20,
+    String languageCode = 'en',
   });
-  Future<String> uploadStory(Map<String, dynamic> storyJson, String deviceId);
+  Future<String> uploadStory(
+    Map<String, dynamic> storyJson,
+    String deviceId,
+    String languageCode,
+  );
   Future<void> rateStory(String storyId, int rating, String deviceId);
 }
 
@@ -24,6 +29,7 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
   Future<List<CommunityStory>> getCommunityStories({
     int page = 0,
     int limit = 20,
+    String languageCode = 'en',
   }) async {
     final from = page * limit;
     final to = from + limit - 1;
@@ -31,6 +37,7 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
     final response = await client
         .from(_ratedStoriesView)
         .select()
+        .eq('language_code', languageCode)
         .order('bayesian_rating', ascending: false)
         .range(from, to);
 
@@ -43,8 +50,9 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
   Future<String> uploadStory(
     Map<String, dynamic> storyJson,
     String deviceId,
+    String languageCode,
   ) async {
-    final contentHash = _computeHash(storyJson);
+    final contentHash = _computeHash(storyJson, languageCode);
 
     // Upsert — if story already exists, returns existing row
     final response = await client
@@ -56,9 +64,10 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
           'crime_description': storyJson['crimeDescription'] as String? ?? '',
           'twist': storyJson['twist'] as String? ?? '',
           'killer_name': storyJson['killerName'] as String? ?? '',
+          'language_code': languageCode,
           'story_json': jsonEncode(storyJson),
           'uploaded_by_device': deviceId,
-        }, onConflict: 'content_hash')
+        }, onConflict: 'content_hash,language_code')
         .select('id')
         .single();
 
@@ -75,7 +84,7 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
   }
 
   /// Computes a deterministic SHA-256 hash of the story's core content fields.
-  static String _computeHash(Map<String, dynamic> storyJson) {
+  static String _computeHash(Map<String, dynamic> storyJson, String languageCode) {
     // Canonical representation: sort keys, take only content fields
     final canonical = jsonEncode({
       'title': storyJson['title'],
@@ -83,6 +92,7 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
       'crimeDescription': storyJson['crimeDescription'],
       'killerName': storyJson['killerName'],
       'twist': storyJson['twist'],
+      'languageCode': languageCode,
     });
     return sha256.convert(utf8.encode(canonical)).toString();
   }

@@ -22,13 +22,14 @@ class PlayedStoryModelAdapter extends TypeAdapter<PlayedStoryModel> {
       playedAt: fields[2] as DateTime,
       userRating: (fields[3] as num?)?.toInt(),
       isUploaded: fields[4] == null ? false : fields[4] as bool,
+      languageCode: fields[5] == null ? 'en' : fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, PlayedStoryModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class PlayedStoryModelAdapter extends TypeAdapter<PlayedStoryModel> {
       ..writeByte(3)
       ..write(obj.userRating)
       ..writeByte(4)
-      ..write(obj.isUploaded);
+      ..write(obj.isUploaded)
+      ..writeByte(5)
+      ..write(obj.languageCode);
   }
 
   @override

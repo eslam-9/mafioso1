@@ -11,16 +11,22 @@ class StoryLibraryRepositoryImpl implements StoryLibraryRepository {
   Future<List<CommunityStory>> getCommunityStories({
     int page = 0,
     int limit = 20,
+    String languageCode = 'en',
   }) async {
-    return remoteDataSource.getCommunityStories(page: page, limit: limit);
+    return remoteDataSource.getCommunityStories(
+      page: page,
+      limit: limit,
+      languageCode: languageCode,
+    );
   }
 
   @override
   Future<String> uploadStory(
     Map<String, dynamic> storyJson,
     String deviceId,
+    String languageCode,
   ) async {
-    return remoteDataSource.uploadStory(storyJson, deviceId);
+    return remoteDataSource.uploadStory(storyJson, deviceId, languageCode);
   }
 
   @override

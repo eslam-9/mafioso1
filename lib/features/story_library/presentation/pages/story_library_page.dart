@@ -22,7 +22,7 @@ class StoryLibraryPage extends StatelessWidget {
         getCommunityStories: getIt(),
         rateCommunityStory: getIt(),
         deviceIdService: getIt(),
-      )..add(LoadCommunityStories()),
+      )..add(LoadCommunityStories(languageCode: context.locale.languageCode)),
       child: const _StoryLibraryView(),
     );
   }
@@ -69,8 +69,9 @@ class _StoryLibraryViewState extends State<_StoryLibraryView> {
           if (state is StoryLibraryError) {
             return _ErrorView(
               message: state.message,
-              onRetry: () =>
-                  context.read<StoryLibraryBloc>().add(LoadCommunityStories()),
+              onRetry: () => context.read<StoryLibraryBloc>().add(
+                LoadCommunityStories(languageCode: context.locale.languageCode),
+              ),
             );
           }
           if (state is StoryLibraryLoaded) {

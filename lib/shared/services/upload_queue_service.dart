@@ -104,7 +104,14 @@ class UploadQueueService {
         killerName: story.story.killerName,
       );
 
-      final storyId = await uploadStory(storyModel.toJson(), deviceId);
+      AppLogger.logInfo(
+        'UploadQueueService: upload metadata localId=${story.id} lang=${story.languageCode}',
+      );
+      final storyId = await uploadStory(
+        storyModel.toJson(),
+        deviceId,
+        story.languageCode,
+      );
       AppLogger.logInfo(
         'UploadQueueService: uploadStory success localId=${story.id} remoteId=$storyId',
       );

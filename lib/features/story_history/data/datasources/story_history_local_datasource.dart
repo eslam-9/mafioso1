@@ -37,12 +37,13 @@ class StoryHistoryLocalDataSourceImpl implements StoryHistoryLocalDataSource {
     final model = PlayedStoryModel.fromEntity(story);
     final existing = box.get(model.id);
     AppLogger.logInfo(
-      'StoryHistoryLocalDataSource: save id=${model.id} existing=${existing != null} rating=${story.userRating} uploaded=${story.isUploaded}',
+      'StoryHistoryLocalDataSource: save id=${model.id} lang=${story.languageCode} existing=${existing != null} rating=${story.userRating} uploaded=${story.isUploaded}',
     );
     if (existing != null) {
       final merged = PlayedStoryModel(
         id: existing.id,
         storyJson: existing.storyJson,
+        languageCode: existing.languageCode,
         // Keep latest replay time for sorting while preserving other user data.
         playedAt: model.playedAt.isAfter(existing.playedAt)
             ? model.playedAt
