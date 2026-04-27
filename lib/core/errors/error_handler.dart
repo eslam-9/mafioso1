@@ -90,8 +90,10 @@ class ErrorHandler {
 
   static int? _tryExtractHttpStatusCode(String errorString) {
     // Common Dio message: "DioException [bad response]: ... status code: 401"
-    final match = RegExp(r'status code:\\s*(\\d{3})', caseSensitive: false)
-        .firstMatch(errorString);
+    final match = RegExp(
+      r'status code:\\s*(\\d{3})',
+      caseSensitive: false,
+    ).firstMatch(errorString);
     if (match == null) return null;
     return int.tryParse(match.group(1) ?? '');
   }
@@ -122,4 +124,3 @@ class _Translation {
 
   const _Translation(this.key, {this.namedArgs});
 }
-
