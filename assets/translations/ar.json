@@ -126,6 +126,7 @@
   "saved_stories": "القصص المحفوظة",
   "no_saved_stories": "لا توجد قصص محفوظة بعد.",
   "community_library": "مكتبة المجتمع",
+  "story_player_count": "{count} لاعبين",
   "no_community_stories": "لا توجد قصص في مكتبة المجتمع بعد.",
   "play_this_story": "العب هذه القصة",
   "badge_local": "محلي",

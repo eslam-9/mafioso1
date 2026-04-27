@@ -98,37 +98,69 @@ class _StoryCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6.h),
 
-                // — Date + optional star rating
-                Row(
+                // — Date + player count + optional star rating
+                Wrap(
+                  spacing: 12.w,
+                  runSpacing: 6.h,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Icon(
-                      Icons.calendar_today_outlined,
-                      size: 13,
-                      color: theme.colorScheme.outline,
-                    ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      DateFormat.yMMMd().format(story.playedAt),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.outline,
-                      ),
-                    ),
-                    if (story.userRating != null) ...[
-                      SizedBox(width: 12.w),
-                      const Icon(
-                        Icons.star_rounded,
-                        color: Colors.amber,
-                        size: 16,
-                      ),
-                      SizedBox(width: 2.w),
-                      Text(
-                        '${story.userRating}/5',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.amber.shade700,
-                          fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.calendar_today_outlined,
+                          size: 13,
+                          color: theme.colorScheme.outline,
                         ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          DateFormat.yMMMd().format(story.playedAt),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.people_outline,
+                          size: 13,
+                          color: theme.colorScheme.outline,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          'story_player_count'.tr(
+                            namedArgs: {
+                              'count': story.story.suspects.length.toString(),
+                            },
+                          ),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (story.userRating != null)
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.star_rounded,
+                            color: Colors.amber,
+                            size: 16,
+                          ),
+                          SizedBox(width: 2.w),
+                          Text(
+                            '${story.userRating}/5',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: Colors.amber.shade700,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
                   ],
                 ),
                 SizedBox(height: 12.h),

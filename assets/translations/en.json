@@ -126,6 +126,7 @@
   "saved_stories": "Saved Stories",
   "no_saved_stories": "No saved stories yet.",
   "community_library": "Community Library",
+  "story_player_count": "{count} players",
   "no_community_stories": "No stories in the community library yet.",
   "play_this_story": "Play This Story",
   "badge_local": "Local",

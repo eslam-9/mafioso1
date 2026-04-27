@@ -157,6 +157,29 @@ class _CommunityStoryCardState extends State<_CommunityStoryCard> {
 
                   // — Rating bar
                   _RatingRow(rating: rating, votes: widget.story.totalVotes),
+                  SizedBox(height: 6.h),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.people_outline,
+                        size: 14,
+                        color: theme.colorScheme.outline,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        'story_player_count'.tr(
+                          namedArgs: {
+                            'count': _playerCountFromStoryJson(
+                              widget.story.storyJson,
+                            ).toString(),
+                          },
+                        ),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.outline,
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 8.h),
 
                   // — Intro preview
@@ -325,4 +348,10 @@ class _ErrorView extends StatelessWidget {
       ),
     );
   }
+}
+
+int _playerCountFromStoryJson(Map<String, dynamic> json) {
+  final raw = json['suspects'];
+  if (raw is List) return raw.length;
+  return 0;
 }
