@@ -1,1 +1,1 @@
-enum AiProvider { gemini, grok }
+enum AiProvider { gemini, groq }

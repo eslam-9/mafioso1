@@ -8,7 +8,9 @@ import '../bloc/game_setup_bloc.dart';
 import '../bloc/game_setup_state.dart';
 
 class ContinueButton extends StatelessWidget {
-  const ContinueButton({super.key});
+  final dynamic existingStory;
+
+  const ContinueButton({super.key, this.existingStory});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,10 @@ class ContinueButton extends StatelessWidget {
                   Navigator.pushNamed(
                     context,
                     RouteNames.storyGeneration,
-                    arguments: config,
+                    arguments: {
+                      'config': config,
+                      'existingStory': existingStory,
+                    },
                   );
                 }
               : null,

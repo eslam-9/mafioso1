@@ -49,11 +49,8 @@ void main() {
   blocTest<GameBloc, GameState>(
     'clears error state after successful vote submission',
     build: () => GameBloc(),
-    seed: () => GameState(
-      players: players,
-      story: story,
-      errorMessage: 'old error',
-    ),
+    seed: () =>
+        GameState(players: players, story: story, errorMessage: 'old error'),
     act: (bloc) => bloc.add(
       const SubmitVotes([
         Vote(

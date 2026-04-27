@@ -11,6 +11,8 @@ import '../widgets/home_title.dart';
 import '../widgets/home_subtitle.dart';
 import '../widgets/home_start_button.dart';
 import '../widgets/home_how_to_play_button.dart';
+import '../widgets/home_saved_stories_button.dart';
+import '../widgets/home_community_library_button.dart';
 import '../widgets/home_footer.dart';
 import '../widgets/language_switcher_button.dart';
 
@@ -43,6 +45,10 @@ class HomePage extends StatelessWidget {
                         HomeStartButton(),
                         SizedBox(height: AppSpacing.large),
                         HomeHowToPlayButton(),
+                        SizedBox(height: AppSpacing.large),
+                        const HomeSavedStoriesButton(),
+                        SizedBox(height: AppSpacing.large),
+                        const HomeCommunityLibraryButton(),
                         SizedBox(height: AppSpacing.xxlarge),
                         const HomeFooter(),
                       ],

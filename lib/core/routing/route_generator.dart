@@ -10,6 +10,8 @@ import '../../features/story/presentation/bloc/story_bloc.dart';
 import '../../features/role_reveal/presentation/pages/role_reveal_page.dart';
 import '../../features/game_result/presentation/pages/game_page.dart';
 import '../../features/game_result/presentation/pages/summary_page.dart';
+import '../../features/story_history/presentation/pages/saved_stories_page.dart';
+import '../../features/story_library/presentation/pages/story_library_page.dart';
 import '../../core/di/injection_container.dart';
 
 class RouteGenerator {
@@ -38,6 +40,12 @@ class RouteGenerator {
 
       case RouteNames.summary:
         return _buildRoute(const _SummaryPageWrapper(), settings: settings);
+
+      case RouteNames.savedStories:
+        return _buildRoute(const SavedStoriesPage(), settings: settings);
+
+      case RouteNames.communityLibrary:
+        return _buildRoute(const StoryLibraryPage(), settings: settings);
 
       default:
         return _buildRoute(const HomePage(), settings: settings);

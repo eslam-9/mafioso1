@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:uuid/uuid.dart';
 import '../../../../core/constants/route_names.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -12,6 +13,10 @@ import '../widgets/killer_reveal_widget.dart';
 import '../widgets/story_twist_widget.dart';
 import '../widgets/game_stats_widget.dart';
 import '../widgets/summary_actions.dart';
+import '../../../story_history/presentation/widgets/story_rating_widget.dart';
+import '../../../story_history/presentation/bloc/story_history_bloc.dart';
+import '../../../story_history/presentation/bloc/story_history_event.dart';
+import '../../../story_history/domain/entities/played_story.dart';
 
 class SummaryPage extends StatefulWidget {
   const SummaryPage({super.key});
@@ -22,31 +27,47 @@ class SummaryPage extends StatefulWidget {
 
 class _SummaryPageState extends State<SummaryPage> {
   bool _soundPlayed = false;
+  bool _storySaved = false;
+  String? _playedStoryId;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && !_soundPlayed) {
-        _playResultSound();
-        _soundPlayed = true;
-      }
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _handleGameInit();
   }
 
-  void _playResultSound() {
+  void _handleGameInit() {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is Map && args['gameState'] is presentation.GameState) {
       final gameState = args['gameState'] as presentation.GameState;
-      try {
-        final soundService = di.getIt<SoundService>();
-        if (gameState.gameState == domain.GameState.innocentsWin) {
-          soundService.playSound(SoundEffect.win);
-        } else {
-          soundService.playSound(SoundEffect.lose);
+
+      // Play Sound
+      if (!_soundPlayed) {
+        try {
+          final soundService = di.getIt<SoundService>();
+          if (gameState.gameState == domain.GameState.innocentsWin) {
+            soundService.playSound(SoundEffect.win);
+          } else {
+            soundService.playSound(SoundEffect.lose);
+          }
+        } catch (e) {
+          // Sound service might not be available
         }
-      } catch (e) {
-        // Sound service might not be available
+        _soundPlayed = true;
+      }
+
+      // Save Story
+      if (!_storySaved && gameState.story != null) {
+        _storySaved = true;
+        _playedStoryId = const Uuid().v4();
+
+        final playedStory = PlayedStory(
+          id: _playedStoryId!,
+          story: gameState.story!,
+          playedAt: DateTime.now(),
+        );
+
+        di.getIt<StoryHistoryBloc>().add(SaveStory(playedStory));
       }
     }
   }
@@ -95,6 +116,24 @@ class _SummaryPageState extends State<SummaryPage> {
                 revealedClues: gameState.revealedClues.length,
                 totalClues: gameState.availableClues.length,
               ),
+              if (_playedStoryId != null) ...[
+                SizedBox(height: AppSpacing.large),
+                Container(
+                  padding: EdgeInsets.all(AppSpacing.medium),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: StoryRatingWidget(
+                    onRatingSelected: (rating) {
+                      di.getIt<StoryHistoryBloc>().add(
+                        RateStory(_playedStoryId!, rating),
+                      );
+                    },
+                  ),
+                ),
+              ],
               SizedBox(height: AppSpacing.xlarge),
               SummaryActions(),
             ],
