@@ -120,5 +120,15 @@
   "no_alive_players": "مفيش لاعبين على قيد الحياة",
   "killer_eliminated_message": "القاتل اتقبض عليه! الأبرياء كسبوا!",
   "innocent_eliminated_message": "بريء اتشال. التحقيق مستمر...",
-  "error_player_not_found": "اللاعب ده مش موجود"
+  "error_player_not_found": "اللاعب ده مش موجود",
+  "thanks_for_rating": "شكراً لتقييمك!",
+  "rate_this_story": "قيّم هذه القصة",
+  "saved_stories": "القصص المحفوظة",
+  "no_saved_stories": "لا توجد قصص محفوظة بعد.",
+  "community_library": "مكتبة المجتمع",
+  "no_community_stories": "لا توجد قصص في مكتبة المجتمع بعد.",
+  "play_this_story": "العب هذه القصة",
+  "badge_local": "محلي",
+  "badge_uploaded": "تم الرفع",
+  "badge_community": "المجتمع"
 }
