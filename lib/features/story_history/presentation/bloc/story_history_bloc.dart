@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../../shared/services/upload_queue_service.dart';
 import '../../domain/usecases/delete_story_usecase.dart';
 import '../../domain/usecases/get_saved_stories_usecase.dart';
 import '../../domain/usecases/save_played_story_usecase.dart';
@@ -12,12 +15,14 @@ class StoryHistoryBloc extends Bloc<StoryHistoryEvent, StoryHistoryState> {
   final SavePlayedStoryUseCase savePlayedStory;
   final DeleteStoryUseCase deleteStory;
   final RateStoryUseCase rateStory;
+  final UploadQueueService uploadQueueService;
 
   StoryHistoryBloc({
     required this.getSavedStories,
     required this.savePlayedStory,
     required this.deleteStory,
     required this.rateStory,
+    required this.uploadQueueService,
   }) : super(StoryHistoryInitial()) {
     on<LoadSavedStories>(_onLoadSavedStories);
     on<SaveStory>(_onSaveStory);
@@ -75,6 +80,9 @@ class StoryHistoryBloc extends Bloc<StoryHistoryEvent, StoryHistoryState> {
       AppLogger.logInfo(
         'StoryHistoryBloc: saved story id=${event.story.id} rated=${event.story.userRating != null} uploaded=${event.story.isUploaded}',
       );
+      if (event.story.userRating != null && !event.story.isUploaded) {
+        unawaited(uploadQueueService.flushQueue());
+      }
       // Reload stories if currently loaded
       if (state is StoryHistoryLoaded) {
         add(LoadSavedStories());
@@ -98,6 +106,7 @@ class StoryHistoryBloc extends Bloc<StoryHistoryEvent, StoryHistoryState> {
       AppLogger.logInfo(
         'StoryHistoryBloc: rated story id=${event.id} rating=${event.rating}',
       );
+      unawaited(uploadQueueService.flushQueue());
       // Reload stories if currently loaded
       if (state is StoryHistoryLoaded) {
         add(LoadSavedStories());

@@ -13,13 +13,14 @@ import 'presentation/bloc/story_history_bloc.dart';
 final sl = GetIt.instance;
 
 void initStoryHistory() {
-  // Bloc
+  // Bloc — UploadQueueService is registered later in di.init(); resolved when bloc is created.
   sl.registerFactory(
     () => StoryHistoryBloc(
       getSavedStories: sl(),
       savePlayedStory: sl(),
       deleteStory: sl(),
       rateStory: sl(),
+      uploadQueueService: sl(),
     ),
   );
 
