@@ -32,6 +32,7 @@ class ModeSelector extends StatelessWidget {
               BlocBuilder<GameSetupBloc, GameSetupState>(
                 builder: (context, state) {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ModeCard(
                         title: 'with_detective'.tr(),

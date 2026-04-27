@@ -24,60 +24,63 @@ class ModeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: () {
-          final bloc = context.read<GameSetupBloc>();
-          final currentState = bloc.state;
-          // Create config with updated mode
-          final config = GameConfig(
-            mode: mode,
-            suspectCount: currentState.suspectCount,
-            playerNames: currentState.playerNames,
-          );
-          bloc.add(SetGameMode(mode));
-          AppLogger.logNavigation(RouteNames.playerSetup);
-          Navigator.pushNamed(
-            context,
-            RouteNames.playerSetup,
-            arguments: config,
-          );
-        },
-        borderRadius: BorderRadius.circular(16),
-        splashColor: AppColors.bloodRed.withValues(alpha: 0.1),
-        highlightColor: AppColors.bloodRed.withValues(alpha: 0.2),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColors.darkRed.withValues(alpha: 0.5),
-              width: 1,
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        child: InkWell(
+          onTap: () {
+            final bloc = context.read<GameSetupBloc>();
+            final currentState = bloc.state;
+            // Create config with updated mode
+            final config = GameConfig(
+              mode: mode,
+              suspectCount: currentState.suspectCount,
+              playerNames: currentState.playerNames,
+            );
+            bloc.add(SetGameMode(mode));
+            AppLogger.logNavigation(RouteNames.playerSetup);
+            Navigator.pushNamed(
+              context,
+              RouteNames.playerSetup,
+              arguments: config,
+            );
+          },
+          borderRadius: BorderRadius.circular(16),
+          splashColor: AppColors.bloodRed.withValues(alpha: 0.1),
+          highlightColor: AppColors.bloodRed.withValues(alpha: 0.2),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: AppColors.darkRed.withValues(alpha: 0.5),
+                width: 1,
+              ),
             ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 64, color: AppColors.bloodRed),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontWeight: FontWeight.bold,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 64, color: AppColors.bloodRed),
+                const SizedBox(height: 16),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.8),
+                const SizedBox(height: 8),
+                Text(
+                  description,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.8),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
