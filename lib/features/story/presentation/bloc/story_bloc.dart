@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/utils/logger.dart';
+import '../../domain/entities/story.dart';
 import '../../domain/usecases/generate_story_usecase.dart';
 import 'story_event.dart';
 import 'story_state.dart';
@@ -10,6 +11,7 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
 
   StoryBloc({required this.generateStoryUseCase}) : super(const StoryState()) {
     on<GenerateStory>(_onGenerateStory);
+    on<UseExistingStory>(_onUseExistingStory);
     on<ResetStory>(_onResetStory);
   }
 
@@ -44,6 +46,13 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
       AppLogger.logBlocState('StoryBloc', 'StoryError: $errorMessage');
       emit(state.copyWith(isLoading: false, errorMessage: errorMessage));
     }
+  }
+
+  void _onUseExistingStory(UseExistingStory event, Emitter<StoryState> emit) {
+    final Story story = event.story;
+    AppLogger.logBlocEvent('StoryBloc', 'UseExistingStory');
+    AppLogger.logBlocState('StoryBloc', 'ExistingStoryLoaded: ${story.title}');
+    emit(StoryState(isLoading: false, story: story, errorMessage: null));
   }
 
   void _onResetStory(ResetStory event, Emitter<StoryState> emit) {

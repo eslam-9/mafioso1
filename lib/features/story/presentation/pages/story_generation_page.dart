@@ -5,6 +5,8 @@ import '../../../../core/constants/route_names.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../game_setup/domain/entities/game_config.dart';
+import '../../data/models/story_model.dart';
+import '../../domain/entities/story.dart';
 import '../bloc/story_bloc.dart';
 import '../bloc/story_event.dart';
 import '../bloc/story_state.dart';
@@ -39,12 +41,39 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
     );
   }
 
+  void _useExistingStory(BuildContext context, Story story) {
+    if (!mounted || _storyGenerated) return;
+    _storyGenerated = true;
+    context.read<StoryBloc>().add(UseExistingStory(story));
+  }
+
   @override
   Widget build(BuildContext context) {
     AppLogger.logNavigation(RouteNames.storyGeneration);
 
     final args = ModalRoute.of(context)?.settings.arguments;
-    final config = args is GameConfig ? args : null;
+    GameConfig? config;
+    Story? existingStory;
+
+    if (args is GameConfig) {
+      config = args;
+    } else if (args is Map<String, dynamic>) {
+      config = args['config'] as GameConfig?;
+      final storyArg = args['existingStory'];
+      if (storyArg is Story) {
+        existingStory = storyArg;
+      } else if (storyArg is Map<String, dynamic>) {
+        try {
+          existingStory = StoryModel.fromJson(storyArg);
+        } catch (e, stackTrace) {
+          AppLogger.logError(
+            'StoryGenerationPage',
+            e,
+            stackTrace: stackTrace,
+          );
+        }
+      }
+    }
 
     if (config == null) {
       return Scaffold(
@@ -53,11 +82,15 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
       );
     }
 
-    // Auto-generate story on view load
+    // Prefer a selected existing story, otherwise generate a new one.
     if (!_storyGenerated) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          _generateStory(context, config);
+          if (existingStory != null) {
+            _useExistingStory(context, existingStory);
+          } else {
+            _generateStory(context, config!);
+          }
         }
       });
     }
@@ -87,7 +120,7 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
                           errorMessage: state.errorMessage!,
                           onRetry: () {
                             _storyGenerated = false;
-                            _generateStory(context, config);
+                            _generateStory(context, config!);
                           },
                         );
                       } else if (state.story != null) {
@@ -102,7 +135,7 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
                   builder: (context, state) {
                     if (state.story != null && !state.isLoading) {
                       return StoryContinueButton(
-                        config: config,
+                        config: config!,
                         story: state.story!,
                       );
                     }

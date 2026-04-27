@@ -19,6 +19,15 @@ class SaveStory extends StoryHistoryEvent {
   List<Object?> get props => [story];
 }
 
+class DeleteStory extends StoryHistoryEvent {
+  final String id;
+
+  const DeleteStory(this.id);
+
+  @override
+  List<Object?> get props => [id];
+}
+
 class RateStory extends StoryHistoryEvent {
   final String id;
   final int rating;

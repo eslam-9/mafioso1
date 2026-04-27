@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/constants/route_names.dart';
 import '../../../../shared/widgets/story_status_badge.dart';
+import '../../domain/usecases/delete_story_usecase.dart';
 import '../bloc/story_history_bloc.dart';
 import '../bloc/story_history_event.dart';
 import '../bloc/story_history_state.dart';
@@ -88,6 +89,11 @@ class _StoryCard extends StatelessWidget {
                     ),
                     SizedBox(width: 8.w),
                     StoryStatusBadge(status: _status),
+                    IconButton(
+                      onPressed: () => _confirmDelete(context),
+                      icon: const Icon(Icons.delete_outline_rounded),
+                      tooltip: 'Delete',
+                    ),
                   ],
                 ),
                 SizedBox(height: 6.h),
@@ -158,6 +164,43 @@ class _StoryCard extends StatelessWidget {
         .animate()
         .fadeIn(delay: Duration(milliseconds: index * 60))
         .slideY(begin: 0.08, end: 0, curve: Curves.easeOut);
+  }
+}
+
+extension on _StoryCard {
+  Future<void> _confirmDelete(BuildContext context) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Delete story'),
+          content: Text('Delete "${story.story.title}" from saved stories?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete == true && context.mounted) {
+      final bloc = context.read<StoryHistoryBloc>();
+      try {
+        bloc.add(DeleteStory(story.id));
+      } catch (_) {
+        // Fallback for stale bloc instances after hot-reload.
+        await getIt<DeleteStoryUseCase>()(story.id);
+        if (context.mounted) {
+          bloc.add(LoadSavedStories());
+        }
+      }
+    }
   }
 }
 

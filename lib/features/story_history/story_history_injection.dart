@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'data/datasources/story_history_local_datasource.dart';
 import 'data/repositories/story_history_repository_impl.dart';
 import 'domain/repositories/story_history_repository.dart';
+import 'domain/usecases/delete_story_usecase.dart';
 import 'domain/usecases/get_pending_uploads_usecase.dart';
 import 'domain/usecases/get_saved_stories_usecase.dart';
 import 'domain/usecases/mark_as_uploaded_usecase.dart';
@@ -17,6 +18,7 @@ void initStoryHistory() {
     () => StoryHistoryBloc(
       getSavedStories: sl(),
       savePlayedStory: sl(),
+      deleteStory: sl(),
       rateStory: sl(),
     ),
   );
@@ -24,6 +26,7 @@ void initStoryHistory() {
   // Use Cases
   sl.registerLazySingleton(() => GetSavedStoriesUseCase(sl()));
   sl.registerLazySingleton(() => SavePlayedStoryUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteStoryUseCase(sl()));
   sl.registerLazySingleton(() => RateStoryUseCase(sl()));
   sl.registerLazySingleton(() => GetPendingUploadsUseCase(sl()));
   sl.registerLazySingleton(() => MarkAsUploadedUseCase(sl()));

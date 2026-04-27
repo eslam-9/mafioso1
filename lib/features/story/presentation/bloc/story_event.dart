@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../game_setup/domain/entities/game_config.dart';
+import '../../domain/entities/story.dart';
 
 abstract class StoryEvent extends Equatable {
   const StoryEvent();
@@ -16,6 +17,15 @@ class GenerateStory extends StoryEvent {
 
   @override
   List<Object?> get props => [config, languageCode];
+}
+
+class UseExistingStory extends StoryEvent {
+  final Story story;
+
+  const UseExistingStory(this.story);
+
+  @override
+  List<Object?> get props => [story];
 }
 
 class ResetStory extends StoryEvent {

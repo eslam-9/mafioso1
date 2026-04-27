@@ -18,6 +18,11 @@ class StoryHistoryRepositoryImpl implements StoryHistoryRepository {
   }
 
   @override
+  Future<void> deleteStory(String id) async {
+    await localDataSource.deleteStory(id);
+  }
+
+  @override
   Future<void> rateStory(String id, int rating) async {
     await localDataSource.rateStory(id, rating);
   }
