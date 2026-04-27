@@ -12,6 +12,8 @@ import '../widgets/story_loading_widget.dart';
 import '../widgets/story_content_widget.dart';
 import '../widgets/story_error_widget.dart';
 import '../widgets/story_continue_button.dart';
+import '../../domain/entities/story.dart';
+import '../../data/models/story_model.dart';
 
 class StoryGenerationPage extends StatefulWidget {
   const StoryGenerationPage({super.key});
@@ -44,7 +46,42 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
     AppLogger.logNavigation(RouteNames.storyGeneration);
 
     final args = ModalRoute.of(context)?.settings.arguments;
-    final config = args is GameConfig ? args : null;
+    GameConfig? config;
+    dynamic existingStory;
+
+    if (args is GameConfig) {
+      config = args;
+    } else if (args is Map<String, dynamic>) {
+      existingStory = args['existingStory'];
+      config = args['config'] is GameConfig
+          ? args['config'] as GameConfig
+          : null;
+
+      // If we have an existing story but no config yet, derive a pseudo-config
+      if (existingStory != null && config == null) {
+        Story? storyObj;
+        if (existingStory is Story) {
+          storyObj = existingStory;
+        } else if (existingStory is Map<String, dynamic>) {
+          try {
+            storyObj = StoryModel.fromJson(existingStory);
+          } catch (e) {
+            AppLogger.logError(
+              'StoryGenerationPage',
+              'Failed to parse story JSON: $e',
+            );
+          }
+        }
+
+        if (storyObj != null) {
+          config = GameConfig(
+            mode: GameMode.withoutDetective,
+            suspectCount: storyObj.suspects.length,
+            playerNames: storyObj.suspects.map((s) => s.name).toList(),
+          );
+        }
+      }
+    }
 
     if (config == null) {
       return Scaffold(
@@ -53,11 +90,16 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
       );
     }
 
-    // Auto-generate story on view load
+    // Auto-generate or set existing story on view load
     if (!_storyGenerated) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          _generateStory(context, config);
+          if (existingStory != null) {
+            _storyGenerated = true;
+            context.read<StoryBloc>().add(SetExistingStory(existingStory));
+          } else {
+            _generateStory(context, config!);
+          }
         }
       });
     }
@@ -87,7 +129,7 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
                           errorMessage: state.errorMessage!,
                           onRetry: () {
                             _storyGenerated = false;
-                            _generateStory(context, config);
+                            _generateStory(context, config!);
                           },
                         );
                       } else if (state.story != null) {
@@ -102,7 +144,7 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
                   builder: (context, state) {
                     if (state.story != null && !state.isLoading) {
                       return StoryContinueButton(
-                        config: config,
+                        config: config!,
                         story: state.story!,
                       );
                     }

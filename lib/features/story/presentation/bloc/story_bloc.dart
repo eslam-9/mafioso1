@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/utils/logger.dart';
 import '../../domain/usecases/generate_story_usecase.dart';
+import '../../domain/entities/story.dart';
+import '../../data/models/story_model.dart';
 import 'story_event.dart';
 import 'story_state.dart';
 
@@ -11,6 +13,26 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
   StoryBloc({required this.generateStoryUseCase}) : super(const StoryState()) {
     on<GenerateStory>(_onGenerateStory);
     on<ResetStory>(_onResetStory);
+    on<SetExistingStory>(_onSetExistingStory);
+  }
+
+  void _onSetExistingStory(SetExistingStory event, Emitter<StoryState> emit) {
+    AppLogger.logBlocEvent('StoryBloc', 'SetExistingStory');
+    try {
+      if (event.story is Story) {
+        emit(state.copyWith(story: event.story as Story, isLoading: false));
+      } else if (event.story is Map<String, dynamic>) {
+        final story = StoryModel.fromJson(event.story as Map<String, dynamic>);
+        emit(state.copyWith(story: story, isLoading: false));
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Failed to load existing story',
+        ),
+      );
+    }
   }
 
   Future<void> _onGenerateStory(

@@ -21,3 +21,12 @@ class GenerateStory extends StoryEvent {
 class ResetStory extends StoryEvent {
   const ResetStory();
 }
+
+class SetExistingStory extends StoryEvent {
+  final dynamic story; // Can be Story object or Map
+
+  const SetExistingStory(this.story);
+
+  @override
+  List<Object?> get props => [story];
+}

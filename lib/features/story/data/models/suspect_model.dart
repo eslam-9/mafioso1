@@ -14,10 +14,7 @@ class SuspectModel extends Suspect {
       );
     }
 
-    return SuspectModel(
-      name: name,
-      suspiciousBehavior: suspiciousBehavior,
-    );
+    return SuspectModel(name: name, suspiciousBehavior: suspiciousBehavior);
   }
 
   Map<String, dynamic> toJson() {

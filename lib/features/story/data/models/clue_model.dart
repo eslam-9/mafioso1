@@ -12,15 +12,10 @@ class ClueModel extends Clue {
     );
 
     if (text.isEmpty) {
-      throw const FormatException(
-        'Invalid clue payload: text is required.',
-      );
+      throw const FormatException('Invalid clue payload: text is required.');
     }
 
-    return ClueModel(
-      text: text,
-      difficulty: difficulty,
-    );
+    return ClueModel(text: text, difficulty: difficulty);
   }
 
   Map<String, dynamic> toJson() {
