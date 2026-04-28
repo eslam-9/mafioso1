@@ -10,6 +10,7 @@ import '../bloc/game_event.dart';
 import '../bloc/game_state.dart' as presentation;
 import '../widgets/game_tabs.dart';
 import '../widgets/elimination_dialog.dart';
+import '../../../../shared/errors/app_error_localizer.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -68,10 +69,12 @@ class _GamePageState extends State<GamePage>
         },
         child: BlocListener<GameBloc, presentation.GameState>(
           listener: (context, state) {
-            if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
+            if (state.error != null) {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+              ).showSnackBar(
+                SnackBar(content: Text(AppErrorLocalizer.localize(state.error!))),
+              );
             }
 
             // Check if there's a new vote result with an elimination

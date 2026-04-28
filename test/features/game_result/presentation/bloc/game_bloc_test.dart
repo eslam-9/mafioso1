@@ -8,6 +8,7 @@ import 'package:mafioso/features/story/domain/entities/clue.dart';
 import 'package:mafioso/features/story/domain/entities/story.dart';
 import 'package:mafioso/features/story/domain/entities/suspect.dart';
 import 'package:mafioso/features/voting/domain/entities/vote.dart';
+import 'package:mafioso/core/errors/app_error.dart';
 
 void main() {
   final story = Story(
@@ -39,8 +40,8 @@ void main() {
     act: (bloc) => bloc.add(const SubmitVotes([])),
     expect: () => [
       isA<GameState>().having(
-        (state) => state.errorMessage,
-        'errorMessage',
+        (state) => state.error,
+        'error',
         isNotNull,
       ),
     ],
@@ -50,7 +51,11 @@ void main() {
     'clears error state after successful vote submission',
     build: () => GameBloc(),
     seed: () =>
-        GameState(players: players, story: story, errorMessage: 'old error'),
+        GameState(
+          players: players,
+          story: story,
+          error: const AppError('error_unexpected'),
+        ),
     act: (bloc) => bloc.add(
       const SubmitVotes([
         Vote(
@@ -63,8 +68,8 @@ void main() {
     ),
     expect: () => [
       isA<GameState>().having(
-        (state) => state.errorMessage,
-        'errorMessage',
+        (state) => state.error,
+        'error',
         isNull,
       ),
     ],

@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/utils/logger.dart';
 import '../../features/story_history/domain/usecases/get_pending_uploads_usecase.dart';
 import '../../features/story_history/domain/usecases/mark_as_uploaded_usecase.dart';
@@ -20,6 +21,8 @@ class UploadQueueService {
   final RateCommunityStoryUseCase rateCommunityStory;
   final DeviceIdService deviceIdService;
   final Connectivity connectivity;
+
+  final Set<String> _blockedLocalIds = <String>{};
 
   UploadQueueService({
     required this.getPendingUploads,
@@ -68,6 +71,12 @@ class UploadQueueService {
       );
 
       for (final story in pending) {
+        if (_blockedLocalIds.contains(story.id)) {
+          AppLogger.logInfo(
+            'UploadQueueService: skip blocked localId=${story.id}',
+          );
+          continue;
+        }
         AppLogger.logInfo(
           'UploadQueueService: upload candidate localId=${story.id} title="${story.story.title}" rating=${story.userRating}',
         );
@@ -134,7 +143,25 @@ class UploadQueueService {
         e,
       );
       log('UploadQueueService: failed to upload story ${story.id} — $e');
+
+      if (_isRlsDenied(e)) {
+        _blockedLocalIds.add(story.id);
+        AppLogger.logInfo(
+          'UploadQueueService: blocking further retries for localId=${story.id} (RLS denied). Fix Supabase RLS policy or enable authenticated uploads.',
+        );
+        return;
+      }
+
       // Leave in queue so next flush retries it
     }
+  }
+
+  bool _isRlsDenied(Object e) {
+    if (e is PostgrestException) {
+      return e.code == '42501' ||
+          e.message.toLowerCase().contains('row-level security');
+    }
+    final text = e.toString().toLowerCase();
+    return text.contains('row-level security') || text.contains('code: 42501');
   }
 }

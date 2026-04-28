@@ -52,19 +52,16 @@ lib/
 -   **Offline Fallback**: If the internet is unavailable, the app falls back to a pre-defined JSON library of generic stories (`stories_offline_en.json` / `stories_offline_ar.json`).
 
 ### 4.2. Game Logic & Roles
-The game supports standard roles with specific abilities:
--   **Killer**: Chooses a victim to eliminate each night.
--   **Detective**: Investigates one player's role each night. *Special Ability: Votes count as 2 during the day phase.*
--   **Doctor**: Chooses one player to save each night.
--   **Civilian**: No special night abilities; participates in discussions and voting.
+The current build uses **no-detective mode**:
+-   **Killer**: Hidden among the suspects.
+-   **Innocent**: Everyone else; cooperate to find the killer.
 
 ### 4.3. Voting System
--   **Mechanism**: Players vote synchronously on their devices (pass-and-play or simplified local UI).
+-   **Mechanism**: Pass-and-play voting on a single device.
 -   **Rules**:
     -   Self-voting is disabled.
     -   Eliminated players cannot vote.
-    -   Detective's vote has double weight.
-    -   The player with the most votes is eliminated (unless there is a tie, usually resulting in no elimination).
+    -   The player with the most votes is eliminated (ties result in no elimination).
 
 ### 4.4. Localization (i18n)
 -   **Package**: `easy_localization`
@@ -86,12 +83,12 @@ The game supports standard roles with specific abilities:
 -   `google_fonts`: Custom typography.
 
 ### Environment Management
--   The app uses `flutter_dotenv` to manage sensitive keys.
--   **Required**: A `.env` file in the root directory containing `GEMINI_API_KEY`.
+-   The app reads compile-time keys via `--dart-define` / `--dart-define-from-file` (see `lib/main.dart`).
+-   Optional: `GEMINI_API_KEY`, `GROQ_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`.
 
 ## 6. How to Run
 1.  Ensure **Flutter** is installed (`flutter doctor`).
 2.  Clone the repository.
-3.  Add your Gemini API key to `.env`.
+3.  (Optional) Provide AI/Supabase keys via `--dart-define` or `--dart-define-from-file`.
 4.  Run `flutter pub get` to install dependencies.
 5.  Run `flutter run` to start the app on an emulator or physical device.

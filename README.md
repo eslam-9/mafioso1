@@ -81,7 +81,7 @@ flutter run --dart-define-from-file=secrets.json
 
 `secrets.json` should **not** be committed; add it to `.gitignore` if you use it.
 
-If Gemini and Groq keys are both empty, the app still runs but uses **offline** story assets when generating.
+If neither `GEMINI_API_KEY` nor `GROQ_API_KEY` is provided, the app still runs but uses **offline** story assets. If you provide only one key, the app uses that provider.
 
 ---
 

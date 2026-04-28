@@ -102,6 +102,7 @@
   "error_invalid_api_response_empty": "رد مش صحيح من الـ API: محتوى فاضي",
   "error_request_timeout": "الطلب خد وقت كتير. حاول تاني.",
   "error_auth_failed": "المصادقة فشلت. اتأكد من الـ API key.",
+  "error_ai_provider_not_configured": "{provider} مش متظبط. ضيف الـ API key بتاعه.",
   "error_server_error": "خطأ في السيرفر. حاول بعدين.",
   "error_api_failed_code": "طلب الـ API فشل بكود {code}",
   "error_no_internet": "مفيش نت. اتأكد من النت.",

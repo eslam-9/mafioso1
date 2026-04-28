@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/ai_provider/ai_provider.dart';
 import '../../../../core/errors/error_handler.dart';
+import '../../../../core/errors/app_error.dart';
+import '../../../../core/errors/app_error_exception.dart';
 import '../../../../core/utils/logger.dart';
 import '../models/story_model.dart';
 
 abstract class StoryRemoteDataSource {
+  bool canUse(AiProvider aiProvider);
+
   Future<StoryModel> generateStory({
     required int suspectCount,
     required bool hasDetective,
@@ -18,8 +21,8 @@ abstract class StoryRemoteDataSource {
 class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   final Dio geminiDio;
   final Dio groqDio;
-  final String geminiApiKey;
-  final String groqApiKey;
+  final String? geminiApiKey;
+  final String? groqApiKey;
 
   StoryRemoteDataSourceImpl({
     required this.geminiDio,
@@ -29,12 +32,29 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   });
 
   @override
+  bool canUse(AiProvider aiProvider) {
+    if (aiProvider == AiProvider.gemini) {
+      return (geminiApiKey ?? '').trim().isNotEmpty;
+    }
+    return (groqApiKey ?? '').trim().isNotEmpty;
+  }
+
+  @override
   Future<StoryModel> generateStory({
     required int suspectCount,
     required bool hasDetective,
     required String languageCode,
     required AiProvider aiProvider,
   }) async {
+    if (!canUse(aiProvider)) {
+      throw AppErrorException(
+        AppError(
+          'error_ai_provider_not_configured',
+          namedArgs: {'provider': aiProvider.name},
+        ),
+      );
+    }
+
     if (aiProvider == AiProvider.groq) {
       return _generateWithGroq(
         suspectCount: suspectCount,
@@ -207,29 +227,30 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
 
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
-        throw Exception('timeout'.tr());
+        throw const AppErrorException(AppError('error_request_timeout'));
       } else if (e.type == DioExceptionType.badResponse) {
         final statusCode = e.response?.statusCode;
         if (statusCode == 401 || statusCode == 403) {
-          throw Exception('error_auth_failed'.tr());
+          throw const AppErrorException(AppError('error_auth_failed'));
         } else if (statusCode != null && statusCode >= 500) {
-          throw Exception('error_server_error'.tr());
+          throw const AppErrorException(AppError('error_server_error'));
         } else {
-          throw Exception(
-            'error_api_failed_code'.tr(
+          throw AppErrorException(
+            AppError(
+              'error_api_failed_code',
               namedArgs: {'code': statusCode.toString()},
             ),
           );
         }
       } else if (e.type == DioExceptionType.connectionError) {
-        throw Exception('error_no_internet'.tr());
+        throw const AppErrorException(AppError('error_no_internet'));
       } else {
-        throw Exception('error_generation_failed'.tr());
+        throw const AppErrorException(AppError('error_generation_failed'));
       }
     } on FormatException catch (e) {
       AppLogger.logError('StoryRemoteDataSource', e);
       ErrorHandler.logError(e, context: 'StoryRemoteDataSource.generateStory');
-      throw Exception('error_invalid_json'.tr());
+      throw const AppErrorException(AppError('error_invalid_json'));
     } catch (e) {
       AppLogger.logError('StoryRemoteDataSource', e);
       ErrorHandler.logError(e, context: 'StoryRemoteDataSource.generateStory');
@@ -304,24 +325,25 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
 
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
-        throw Exception('timeout'.tr());
+        throw const AppErrorException(AppError('error_request_timeout'));
       } else if (e.type == DioExceptionType.badResponse) {
         final statusCode = e.response?.statusCode;
         if (statusCode == 401 || statusCode == 403) {
-          throw Exception('error_auth_failed'.tr());
+          throw const AppErrorException(AppError('error_auth_failed'));
         } else if (statusCode != null && statusCode >= 500) {
-          throw Exception('error_server_error'.tr());
+          throw const AppErrorException(AppError('error_server_error'));
         } else {
-          throw Exception(
-            'error_api_failed_code'.tr(
+          throw AppErrorException(
+            AppError(
+              'error_api_failed_code',
               namedArgs: {'code': statusCode.toString()},
             ),
           );
         }
       } else if (e.type == DioExceptionType.connectionError) {
-        throw Exception('error_no_internet'.tr());
+        throw const AppErrorException(AppError('error_no_internet'));
       } else {
-        throw Exception('error_generation_failed'.tr());
+        throw const AppErrorException(AppError('error_generation_failed'));
       }
     } on FormatException catch (e) {
       AppLogger.logError('StoryRemoteDataSource (Groq)', e);
@@ -329,7 +351,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
         e,
         context: 'StoryRemoteDataSource.generateStory (Groq)',
       );
-      throw Exception('error_invalid_json'.tr());
+      throw const AppErrorException(AppError('error_invalid_json'));
     } catch (e) {
       AppLogger.logError('StoryRemoteDataSource (Groq)', e);
       ErrorHandler.logError(

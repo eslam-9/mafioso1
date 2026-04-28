@@ -67,17 +67,18 @@ Future<void> init() async {
   // Environment
   const geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
   const groqApiKey = String.fromEnvironment('GROQ_API_KEY');
-  final hasRemoteAiKeys =
-      geminiApiKey.trim().isNotEmpty && groqApiKey.trim().isNotEmpty;
+  final hasGeminiKey = geminiApiKey.trim().isNotEmpty;
+  final hasGroqKey = groqApiKey.trim().isNotEmpty;
+  final hasAnyRemoteAiKey = hasGeminiKey || hasGroqKey;
 
   // Story AI Data Sources
-  if (hasRemoteAiKeys) {
+  if (hasAnyRemoteAiKey) {
     getIt.registerLazySingleton<StoryRemoteDataSource>(
       () => StoryRemoteDataSourceImpl(
         geminiDio: getIt<Dio>(instanceName: 'geminiDio'),
         groqDio: getIt<Dio>(instanceName: 'groqDio'),
-        geminiApiKey: geminiApiKey,
-        groqApiKey: groqApiKey,
+        geminiApiKey: hasGeminiKey ? geminiApiKey : null,
+        groqApiKey: hasGroqKey ? groqApiKey : null,
       ),
     );
   }
@@ -88,7 +89,8 @@ Future<void> init() async {
   // Story Repository + Use Cases + BLoC
   getIt.registerLazySingleton<StoryRepository>(
     () => StoryRepositoryImpl(
-      remoteDataSource: hasRemoteAiKeys ? getIt<StoryRemoteDataSource>() : null,
+      remoteDataSource:
+          hasAnyRemoteAiKey ? getIt<StoryRemoteDataSource>() : null,
       localDataSource: getIt<StoryLocalDataSource>(),
       connectivityService: getIt<ConnectivityService>(),
     ),

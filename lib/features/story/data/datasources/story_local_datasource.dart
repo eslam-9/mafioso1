@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/errors/error_handler.dart';
+import '../../../../core/errors/app_error_exception.dart';
+import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/logger.dart';
 import '../models/story_model.dart';
 import '../models/suspect_model.dart';
@@ -32,7 +33,7 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
       AppLogger.logInfo('Found ${storiesList.length} offline stories');
 
       if (storiesList.isEmpty) {
-        throw Exception('error_no_offline_stories'.tr());
+        throw const AppErrorException(AppError('error_no_offline_stories'));
       }
 
       final random = Random();
@@ -51,7 +52,7 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
         stackTrace: stackTrace,
         context: 'StoryLocalDataSource.getOfflineStory',
       );
-      throw Exception('${'error_load_offline_stories'.tr()}: ${e.toString()}');
+      throw const AppErrorException(AppError('error_load_offline_stories'));
     }
   }
 

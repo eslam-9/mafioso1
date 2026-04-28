@@ -14,6 +14,7 @@ import '../widgets/story_loading_widget.dart';
 import '../widgets/story_content_widget.dart';
 import '../widgets/story_error_widget.dart';
 import '../widgets/story_continue_button.dart';
+import '../../../../shared/errors/app_error_localizer.dart';
 
 class StoryGenerationPage extends StatefulWidget {
   const StoryGenerationPage({super.key});
@@ -115,9 +116,9 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
                     builder: (context, state) {
                       if (state.isLoading) {
                         return const StoryLoadingWidget();
-                      } else if (state.errorMessage != null) {
+                      } else if (state.error != null) {
                         return StoryErrorWidget(
-                          errorMessage: state.errorMessage!,
+                          errorMessage: AppErrorLocalizer.localize(state.error!),
                           onRetry: () {
                             _storyGenerated = false;
                             _generateStory(context, config!);

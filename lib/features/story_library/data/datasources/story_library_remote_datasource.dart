@@ -63,25 +63,39 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
     final contentHash = _computeHash(storyJson, languageCode);
     final suspectCount = _suspectCountFromStoryJson(storyJson);
 
-    // Upsert — if story already exists, returns existing row
-    final response = await client
-        .from(_storiesTable)
-        .upsert({
-          'content_hash': contentHash,
-          'title': storyJson['title'] as String? ?? '',
-          'intro': storyJson['intro'] as String? ?? '',
-          'crime_description': storyJson['crimeDescription'] as String? ?? '',
-          'twist': storyJson['twist'] as String? ?? '',
-          'killer_name': storyJson['killerName'] as String? ?? '',
-          'language_code': languageCode,
-          'suspect_count': suspectCount,
-          'story_json': jsonEncode(storyJson),
-          'uploaded_by_device': deviceId,
-        }, onConflict: 'content_hash,language_code')
-        .select('id')
-        .single();
+    try {
+      // Prefer INSERT to avoid requiring UPDATE permissions under RLS.
+      final response = await client
+          .from(_storiesTable)
+          .insert({
+            'content_hash': contentHash,
+            'title': storyJson['title'] as String? ?? '',
+            'intro': storyJson['intro'] as String? ?? '',
+            'crime_description': storyJson['crimeDescription'] as String? ?? '',
+            'twist': storyJson['twist'] as String? ?? '',
+            'killer_name': storyJson['killerName'] as String? ?? '',
+            'language_code': languageCode,
+            'suspect_count': suspectCount,
+            'story_json': jsonEncode(storyJson),
+            'uploaded_by_device': deviceId,
+          })
+          .select('id')
+          .single();
 
-    return response['id'] as String;
+      return response['id'] as String;
+    } on PostgrestException catch (e) {
+      // Unique constraint violation (already uploaded): fetch existing id.
+      if (e.code == '23505') {
+        final existing = await client
+            .from(_storiesTable)
+            .select('id')
+            .eq('content_hash', contentHash)
+            .eq('language_code', languageCode)
+            .single();
+        return existing['id'] as String;
+      }
+      rethrow;
+    }
   }
 
   @override
