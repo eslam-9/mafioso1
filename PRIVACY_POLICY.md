@@ -1,48 +1,59 @@
 # Privacy Policy
 
-**Effective Date:** 2026-04-10
+**Effective Date:** 2026-04-28
 
-Eslam Abozied built the **Mafioso** app as a Free/Ad-Supported/Premium app. This SERVICE is provided by Eslam Abozied at no cost and is intended for use "as is". 
+This Privacy Policy explains how information is handled when you use the **Mafioso** application.
 
-This Privacy Policy explains how your information is handled when you use the Mafioso application. Given the nature of a local "pass-and-play" party game, we deeply value your privacy and have architected the app to ask for minimal permissions and collect zero personally identifiable information (PII).
+Mafioso is a local “pass-and-play” party game. The app is designed to minimize data collection while still supporting optional online features (AI story generation and the community library).
 
-## Data Collection and Use
+## Data We Handle
 
-**1. Personal Information and Gameplay Data**
-- All gameplay happens locally on your device.
-- Player names entered during the "Game Setup" phase are used strictly for local gameplay mechanics (e.g., assigning roles and resolving game results). **These names are never transmitted to any external server.**
+### 1) Personal information
+- Mafioso does not require you to create an account.
+- Mafioso does not intentionally collect personally identifiable information (PII) such as real names, email addresses, or phone numbers.
 
-**2. Third-Party Story Generation (Google Gemini API)**
-To provide dynamic and unique murder mystery narratives, Mafioso uses the **Google Gemini API**. 
-When generating a new story, the application sends only the following generic parameters to the API:
-- The total number of generic suspects (`suspectCount`).
-- Whether the game includes a Detective role (`hasDetective`).
-- Your device's selected language output (`languageCode`).
+### 2) Gameplay data (local)
+- Player names you enter are used only for local gameplay (role reveal, voting, results).
+- Gameplay state is processed locally on-device.
 
-**No player names, identities, or personal data are ever included in the prompt sent to Google's servers.** Note that whenever your device makes external network requests, your IP address is inherently exposed to the service provider. For more information on how Google handles API requests, please review [Google's Privacy Policy](https://policies.google.com/privacy).
+### 3) Saved stories (local storage)
+Mafioso can store finished games on your device so you can replay them later. Stored data may include:
+- Story content (title/intro/crime/suspects/clues/twist/killer name)
+- Language code
+- Play timestamp
+- Your rating (if you rate)
+- Upload status (whether a community upload was completed)
 
-**3. Offline Functionality**
-The application uses local device connectivity checks to determine if you are online. If an active internet connection is unavailable, it securely defaults to a library of pre-generated offline stories embedded entirely within the app.
+### 4) AI story generation (third-party providers)
+If you provide API keys at build/run time (via `--dart-define` / `--dart-define-from-file`), Mafioso may generate stories using third-party AI providers (for example: Google Gemini and/or Groq).
+- Mafioso sends a prompt containing game configuration such as suspect count and language preference.
+- Mafioso is designed not to include the player names you enter in the prompt.
+- When your device makes network requests, your IP address is visible to the service provider as part of normal internet communication.
 
-## Analytics, Tracking, and Cookies
+### 5) Community library uploads (Supabase)
+If you rate a story and community features are enabled, Mafioso may upload story data to a Supabase backend so it can appear in the community library.
+- Uploaded data may include story JSON/content, language code, suspect count, a content hash (to prevent duplicates), and a device identifier used for deduplication/spam prevention.
+- If you submit a rating for a community story, the rating and device identifier may be stored to prevent duplicate votes.
+- Supabase will receive your IP address as part of standard network communication.
 
-Mafioso is designed to be lightweight and private:
-- The app **does not** integrate with Google Analytics, Firebase Crashlytics, or other tracking platforms.
-- The app **does not** collect, transmit, or store crash logs.
-- The app **does not** use browser cookies or any persistent local storage for tracking. 
+### 6) Connectivity checks
+Mafioso uses connectivity checks to decide whether to attempt online generation/uploads or to fall back to offline stories.
+
+## Analytics, Tracking, and Advertising
+- Mafioso does not integrate with ad networks.
+- Mafioso does not include third-party analytics/telemetry SDKs (e.g., Google Analytics / Firebase Crashlytics) by default.
+- The app may write diagnostic logs locally (visible in device logs during development). These logs are not intentionally sent to our servers.
+- The app uses local storage for app functionality (saved stories and preferences), not for cross-app tracking.
 
 ## Children’s Privacy
-
-Because the app does not collect personal data, it does not collect data from children. However, the themes of the app (a "murder mystery" social deduction game) may not be suitable for very young audiences. We do not knowingly solicit personal information from anyone under the age of 13.
+Mafioso does not intentionally collect personal data from children. However, the themes of the app (a “murder mystery” social deduction game) may not be suitable for very young audiences. We do not knowingly solicit personal information from anyone under the age of 13.
 
 ## Security
-
-We value your trust in our application. All communication from the application to the narrative generation service (Google Gemini) is done securely over encrypted HTTPS connections. Because your actual gameplay and player names exist only in your device's memory and are cleared when the game concludes, your data remains fully private.
+When Mafioso communicates with external services (AI providers and/or Supabase), it uses encrypted HTTPS connections. No method of transmission or storage is 100% secure; please use the app at your own discretion.
 
 ## Changes to This Privacy Policy
-
-We may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page.
+We may update this Privacy Policy from time to time. Please review it periodically for changes. Updates are effective when posted in the app repository/build.
 
 ## Contact Us
+If you have any questions or suggestions about this Privacy Policy, please contact the developer (Eslam Abozied).
 
-If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact Eslam Abozied.
