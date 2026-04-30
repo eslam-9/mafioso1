@@ -14,6 +14,9 @@ class StoryCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = context.locale.languageCode == 'ar';
+    final double fontScale = isArabic ? 1.4 : 1.0;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -25,6 +28,7 @@ class StoryCardWidget extends StatelessWidget {
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
+                fontSize: (Theme.of(context).textTheme.titleLarge?.fontSize ?? 22) * fontScale,
               ),
             ),
             const SizedBox(height: 12),
@@ -34,7 +38,8 @@ class StoryCardWidget extends StatelessWidget {
                 color: Theme.of(
                   context,
                 ).colorScheme.onSurface.withValues(alpha: 0.9),
-                height: 1.5,
+                height: 1.6,
+                fontSize: (Theme.of(context).textTheme.bodyLarge?.fontSize ?? 16) * fontScale,
               ),
             ),
             const SizedBox(height: 16),
@@ -44,7 +49,8 @@ class StoryCardWidget extends StatelessWidget {
                 color: Theme.of(
                   context,
                 ).colorScheme.onSurface.withValues(alpha: 0.8),
-                height: 1.5,
+                height: 1.6,
+                fontSize: (Theme.of(context).textTheme.bodyMedium?.fontSize ?? 14) * fontScale,
               ),
             ),
           ],

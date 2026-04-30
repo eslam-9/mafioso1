@@ -11,6 +11,9 @@ class SuspectsListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = context.locale.languageCode == 'ar';
+    final double fontScale = isArabic ? 1.4 : 1.0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -19,6 +22,7 @@ class SuspectsListWidget extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
+            fontSize: (Theme.of(context).textTheme.titleLarge?.fontSize ?? 22) * fontScale,
           ),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 16),
@@ -43,6 +47,8 @@ class SuspectsListWidget extends StatelessWidget {
                           suspect.name,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: 16 * fontScale,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         subtitle: Text(
@@ -51,6 +57,7 @@ class SuspectsListWidget extends StatelessWidget {
                             color: Theme.of(
                               context,
                             ).colorScheme.onSurface.withValues(alpha: 0.7),
+                            fontSize: 14 * fontScale,
                           ),
                         ),
                       ),

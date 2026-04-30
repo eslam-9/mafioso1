@@ -13,6 +13,8 @@ class RoleRevealContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final roleColor = _getRoleColor(player.role);
+    final isArabic = context.locale.languageCode == 'ar';
+    final double fontScale = isArabic ? 1.4 : 1.0;
 
     return Card(
       child: SingleChildScrollView(
@@ -44,6 +46,7 @@ class RoleRevealContent extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: roleColor,
                   fontWeight: FontWeight.bold,
+                  fontSize: (Theme.of(context).textTheme.headlineMedium?.fontSize ?? 28) * fontScale,
                 ),
                 textAlign: TextAlign.center,
               ).animate().fadeIn(delay: 200.ms),
@@ -74,6 +77,7 @@ class RoleRevealContent extends StatelessWidget {
                                 ?.copyWith(
                                   color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.bold,
+                                  fontSize: (Theme.of(context).textTheme.titleSmall?.fontSize ?? 14) * fontScale,
                                 ),
                           ),
                         ],
@@ -84,6 +88,7 @@ class RoleRevealContent extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
+                          fontSize: (Theme.of(context).textTheme.titleLarge?.fontSize ?? 22) * fontScale,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -105,6 +110,7 @@ class RoleRevealContent extends StatelessWidget {
                                   color: Theme.of(context).colorScheme.onSurface
                                       .withValues(alpha: 0.8),
                                   height: 1.5,
+                                  fontSize: (Theme.of(context).textTheme.bodyMedium?.fontSize ?? 14) * fontScale,
                                 ),
                             textAlign: TextAlign.center,
                           ),
@@ -121,6 +127,7 @@ class RoleRevealContent extends StatelessWidget {
                           context,
                         ).colorScheme.onSurface.withValues(alpha: 0.8),
                         height: 1.5,
+                        fontSize: (Theme.of(context).textTheme.bodyLarge?.fontSize ?? 16) * fontScale,
                       ),
                       textAlign: TextAlign.center,
                     ),
