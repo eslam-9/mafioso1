@@ -21,6 +21,7 @@ class LightTheme {
         ThemeData.light().textTheme.apply(
           bodyColor: Colors.black87,
           displayColor: Colors.black,
+          fontFamilyFallback: ['Marhey'],
         ),
       ),
       appBarTheme: AppBarTheme(
@@ -31,7 +32,7 @@ class LightTheme {
           fontSize: 24,
           fontWeight: FontWeight.bold,
           color: Colors.black87,
-        ),
+        ).copyWith(fontFamilyFallback: []), // App title should NOT use Marhey
       ),
       cardTheme: CardThemeData(
         color: Colors.grey[50],
@@ -57,7 +58,7 @@ class LightTheme {
           textStyle: GoogleFonts.crimsonText(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-          ),
+          ).copyWith(fontFamilyFallback: ['Marhey']),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -71,7 +72,7 @@ class LightTheme {
           textStyle: GoogleFonts.crimsonText(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-          ),
+          ).copyWith(fontFamilyFallback: ['Marhey']),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -93,8 +94,12 @@ class LightTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.bloodRed, width: 2),
         ),
-        labelStyle: GoogleFonts.crimsonText(color: Colors.black87),
-        hintStyle: GoogleFonts.crimsonText(color: Colors.black54),
+        labelStyle: GoogleFonts.crimsonText(
+          color: Colors.black87,
+        ).copyWith(fontFamilyFallback: ['Marhey']),
+        hintStyle: GoogleFonts.crimsonText(
+          color: Colors.black54,
+        ).copyWith(fontFamilyFallback: ['Marhey']),
       ),
       dividerTheme: DividerThemeData(
         color: AppColors.darkRed.withValues(alpha: 0.2),

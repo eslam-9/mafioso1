@@ -16,6 +16,7 @@ class HomeTitle extends StatelessWidget {
         fontWeight: FontWeight.bold,
         color: Theme.of(context).colorScheme.primary,
         letterSpacing: 8,
+        fontFamilyFallback: [], // App title should NOT use Marhey
         shadows: [
           Shadow(
             color: AppColors.primaryRed.withValues(alpha: 0.8),

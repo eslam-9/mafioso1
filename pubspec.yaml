@@ -96,3 +96,17 @@ flutter:
     - assets/data/
     - assets/data/stories_offline_en.json
     - assets/translations/
+
+  fonts:
+    - family: Marhey
+      fonts:
+        - asset: assets/fonts/Marhey/Marhey-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Marhey/Marhey-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Marhey/Marhey-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Marhey/Marhey-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Marhey/Marhey-Bold.ttf
+          weight: 700
