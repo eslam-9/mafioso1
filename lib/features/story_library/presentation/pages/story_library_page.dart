@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/constants/route_names.dart';
 import '../../../../shared/widgets/story_status_badge.dart';
@@ -204,9 +203,7 @@ class _CommunityStoryCardState extends State<_CommunityStoryCard> {
                       Text(
                         'story_player_count'.tr(
                           namedArgs: {
-                            'count': _playerCountFromStoryJson(
-                              widget.story.storyJson,
-                            ).toString(),
+                            'count': widget.story.suspectCount.toString(),
                           },
                         ),
                         style: theme.textTheme.bodySmall?.copyWith(
@@ -270,10 +267,7 @@ class _CommunityStoryCardState extends State<_CommunityStoryCard> {
               ),
             ),
           ),
-        )
-        .animate()
-        .fadeIn(delay: Duration(milliseconds: widget.index * 60))
-        .slideY(begin: 0.08, end: 0, curve: Curves.easeOut);
+        );
   }
 }
 
@@ -408,8 +402,3 @@ class _ErrorView extends StatelessWidget {
   }
 }
 
-int _playerCountFromStoryJson(Map<String, dynamic> json) {
-  final raw = json['suspects'];
-  if (raw is List) return raw.length;
-  return 0;
-}

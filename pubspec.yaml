@@ -52,6 +52,7 @@ dependencies:
   json_annotation: 4.9.0
   hive_ce: ^2.19.3
   hive_ce_flutter: ^2.3.4
+  url_launcher: ^6.3.2
 
 
 dev_dependencies:

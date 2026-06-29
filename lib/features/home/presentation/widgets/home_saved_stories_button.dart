@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:mafioso/core/constants/route_names.dart';
@@ -19,6 +18,6 @@ class HomeSavedStoriesButton extends StatelessWidget {
         },
         child: Text('saved_stories'.tr()),
       ),
-    ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.3, end: 0);
+    );
   }
 }

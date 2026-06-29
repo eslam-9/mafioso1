@@ -7,6 +7,7 @@ import '../../shared/services/connectivity_service.dart';
 import '../../shared/services/sound_service.dart';
 import '../../shared/services/upload_queue_service.dart';
 import '../../core/services/device_id_service.dart';
+import '../../core/services/rating_service.dart';
 import '../../features/story/data/datasources/story_remote_datasource.dart';
 import '../../features/story/data/datasources/story_local_datasource.dart';
 import '../../features/story/domain/repositories/story_repository.dart';
@@ -35,6 +36,9 @@ Future<void> init() async {
   // Core services
   getIt.registerLazySingleton<DeviceIdService>(
     () => DeviceIdService(getIt<SharedPreferences>()),
+  );
+  getIt.registerLazySingleton<RatingService>(
+    () => RatingService(getIt<SharedPreferences>()),
   );
   getIt.registerLazySingleton<ConnectivityService>(() => ConnectivityService());
   getIt.registerLazySingleton<SoundService>(() => SoundService()..init());
@@ -89,8 +93,9 @@ Future<void> init() async {
   // Story Repository + Use Cases + BLoC
   getIt.registerLazySingleton<StoryRepository>(
     () => StoryRepositoryImpl(
-      remoteDataSource:
-          hasAnyRemoteAiKey ? getIt<StoryRemoteDataSource>() : null,
+      remoteDataSource: hasAnyRemoteAiKey
+          ? getIt<StoryRemoteDataSource>()
+          : null,
       localDataSource: getIt<StoryLocalDataSource>(),
       connectivityService: getIt<ConnectivityService>(),
     ),

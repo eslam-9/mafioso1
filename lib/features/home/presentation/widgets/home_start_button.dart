@@ -31,6 +31,6 @@ class HomeStartButton extends StatelessWidget {
           child: Text('start_game'.tr()),
         ),
       ),
-    ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.3, end: 0);
+    );
   }
 }

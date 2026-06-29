@@ -145,6 +145,7 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
       bayesianRating: (row['bayesian_rating'] as num?)?.toDouble() ?? 0.0,
       totalVotes: (row['total_votes'] as num?)?.toInt() ?? 0,
       uploadedAt: DateTime.parse(row['created_at'] as String),
+      suspectCount: (row['suspect_count'] as num?)?.toInt() ?? 0,
     );
   }
 }

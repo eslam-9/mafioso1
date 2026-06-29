@@ -19,6 +19,8 @@ import '../../../story_history/presentation/bloc/story_history_bloc.dart';
 import '../../../story_history/presentation/bloc/story_history_event.dart';
 import '../../../story_history/domain/entities/played_story.dart';
 import '../../../story/domain/entities/story.dart';
+import '../../../../core/services/rating_service.dart';
+import '../widgets/rate_app_dialog.dart';
 
 class SummaryPage extends StatefulWidget {
   const SummaryPage({super.key});
@@ -30,6 +32,7 @@ class SummaryPage extends StatefulWidget {
 class _SummaryPageState extends State<SummaryPage> {
   bool _soundPlayed = false;
   bool _storySaved = false;
+  bool _ratingChecked = false;
   String? _playedStoryId;
 
   String _buildStableStoryId(Story story) {
@@ -39,19 +42,11 @@ class _SummaryPageState extends State<SummaryPage> {
       'crimeDescription': story.crimeDescription,
       'suspects': story.suspects
           .map(
-            (s) => {
-              'name': s.name,
-              'suspiciousBehavior': s.suspiciousBehavior,
-            },
+            (s) => {'name': s.name, 'suspiciousBehavior': s.suspiciousBehavior},
           )
           .toList(),
       'clues': story.clues
-          .map(
-            (c) => {
-              'text': c.text,
-              'difficulty': c.difficulty.name,
-            },
-          )
+          .map((c) => {'text': c.text, 'difficulty': c.difficulty.name})
           .toList(),
       'twist': story.twist,
       'killerName': story.killerName,
@@ -105,6 +100,22 @@ class _SummaryPageState extends State<SummaryPage> {
           'SummaryPage: dispatch SaveStory id=${playedStory.id} rated=${playedStory.userRating != null}',
         );
         di.getIt<StoryHistoryBloc>().add(SaveStory(playedStory));
+      }
+
+      // Check and show app rating dialog after game ends
+      if (!_ratingChecked) {
+        _ratingChecked = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          final ratingService = di.getIt<RatingService>();
+          if (ratingService.shouldShowDialog) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => const RateAppDialog(),
+            );
+          }
+        });
       }
     }
   }

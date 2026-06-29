@@ -135,5 +135,10 @@
   "play_this_story": "العب هذه القصة",
   "badge_local": "محلي",
   "badge_uploaded": "تم الرفع",
-  "badge_community": "المجتمع"
+  "badge_community": "المجتمع",
+  "rate_dialog_title": "عاجباك لعبة مافيوسو؟",
+  "rate_dialog_body": "لو عجبتك اللعبة، يا ريت تقيمها على Google Play. ده هيساعدنا جداً!",
+  "rate_now": "قيم دلوقتي ⭐",
+  "maybe_later": "ممكن بعدين",
+  "no_thanks": "شكراً، مش عاوز"
 }

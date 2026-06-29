@@ -132,8 +132,12 @@
   "player_filter_all": "All",
   "no_stories_for_player_filter": "No stories for this player count.",
   "no_community_stories": "No stories in the community library yet.",
-  "play_this_story": "Play This Story",
   "badge_local": "Local",
   "badge_uploaded": "Uploaded",
-  "badge_community": "Community"
+  "badge_community": "Community",
+  "rate_dialog_title": "Enjoying Mafioso?",
+  "rate_dialog_body": "If you like the game, please take a moment to rate it on the Google Play Store. It really helps!",
+  "rate_now": "Rate Now ⭐",
+  "maybe_later": "Maybe Later",
+  "no_thanks": "No Thanks"
 }

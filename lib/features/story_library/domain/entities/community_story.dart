@@ -13,6 +13,7 @@ class CommunityStory extends Equatable {
   final double bayesianRating;
   final int totalVotes;
   final DateTime uploadedAt;
+  final int suspectCount;
 
   const CommunityStory({
     required this.id,
@@ -26,6 +27,7 @@ class CommunityStory extends Equatable {
     required this.bayesianRating,
     required this.totalVotes,
     required this.uploadedAt,
+    required this.suspectCount,
   });
 
   @override
