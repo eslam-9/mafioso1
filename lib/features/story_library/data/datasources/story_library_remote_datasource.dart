@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../../shared/utils/story_content_hasher.dart';
 import '../../../story_library/domain/entities/community_story.dart';
 import '../models/story_upload_payload.dart';
 
@@ -131,16 +131,14 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
     Map<String, dynamic> storyJson,
     String languageCode,
   ) {
-    // Canonical representation: sort keys, take only content fields
-    final canonical = jsonEncode({
-      'title': storyJson['title'],
-      'intro': storyJson['intro'],
-      'crimeDescription': storyJson['crimeDescription'],
-      'killerName': storyJson['killerName'],
-      'twist': storyJson['twist'],
-      'languageCode': languageCode,
-    });
-    return sha256.convert(utf8.encode(canonical)).toString();
+    return StoryContentHasher.hash(
+      title: storyJson['title'] as String? ?? '',
+      intro: storyJson['intro'] as String? ?? '',
+      crimeDescription: storyJson['crimeDescription'] as String? ?? '',
+      killerName: storyJson['killerName'] as String? ?? '',
+      twist: storyJson['twist'] as String? ?? '',
+      languageCode: languageCode,
+    );
   }
 
   static CommunityStory _mapToCommunityStory(Map<String, dynamic> row) {
