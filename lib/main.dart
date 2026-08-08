@@ -22,12 +22,14 @@ void main() async {
   );
 
   await AppLocalization.init();
+
   await di.init();
   runApp(
     EasyLocalization(
+      startLocale: const Locale('ar'),
       supportedLocales: AppLocalization.supportedLocales,
       path: 'assets/translations',
-      fallbackLocale: const Locale('en'),
+      fallbackLocale: const Locale('ar'),
       child: const MafiosoApp(),
     ),
   );
