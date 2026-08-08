@@ -9,10 +9,10 @@ import '../../shared/services/upload_queue_service.dart';
 import '../../core/services/device_id_service.dart';
 import '../../core/services/rating_service.dart';
 import '../../features/story/data/datasources/story_remote_datasource.dart';
-import '../../features/story/data/datasources/story_local_datasource.dart';
 import '../../features/story/domain/repositories/story_repository.dart';
 import '../../features/story/data/repositories/story_repository_impl.dart';
 import '../../features/story/domain/usecases/generate_story_usecase.dart';
+import '../../features/story/domain/usecases/get_community_fallback_story_usecase.dart';
 import '../../features/story/presentation/bloc/story_bloc.dart';
 import '../../features/role_reveal/domain/usecases/assign_roles_usecase.dart';
 import '../../features/story_history/story_history_injection.dart';
@@ -22,6 +22,7 @@ import '../../features/story_library/domain/repositories/story_library_repositor
 import '../../features/story_library/domain/usecases/get_community_stories_usecase.dart';
 import '../../features/story_library/domain/usecases/upload_story_usecase.dart';
 import '../../features/story_library/domain/usecases/rate_community_story_usecase.dart';
+import '../../features/story_history/domain/repositories/story_history_repository.dart';
 
 final getIt = GetIt.instance;
 
@@ -86,9 +87,6 @@ Future<void> init() async {
       ),
     );
   }
-  getIt.registerLazySingleton<StoryLocalDataSource>(
-    () => StoryLocalDataSourceImpl(),
-  );
 
   // Story Repository + Use Cases + BLoC
   getIt.registerLazySingleton<StoryRepository>(
@@ -96,7 +94,7 @@ Future<void> init() async {
       remoteDataSource: hasAnyRemoteAiKey
           ? getIt<StoryRemoteDataSource>()
           : null,
-      localDataSource: getIt<StoryLocalDataSource>(),
+      communityFallbackStory: getIt<GetCommunityFallbackStoryUseCase>(),
       connectivityService: getIt<ConnectivityService>(),
     ),
   );
@@ -117,6 +115,12 @@ Future<void> init() async {
   getIt.registerLazySingleton<StoryLibraryRepository>(
     () => StoryLibraryRepositoryImpl(
       remoteDataSource: getIt<StoryLibraryRemoteDataSource>(),
+    ),
+  );
+  getIt.registerLazySingleton<GetCommunityFallbackStoryUseCase>(
+    () => GetCommunityFallbackStoryUseCase(
+      storyLibraryRepository: getIt<StoryLibraryRepository>(),
+      storyHistoryRepository: getIt<StoryHistoryRepository>(),
     ),
   );
   getIt.registerLazySingleton<GetCommunityStoriesUseCase>(
