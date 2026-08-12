@@ -56,9 +56,9 @@ android {
     defaultConfig {
         applicationId = "com.mafioso.game"
         minSdk = flutter.minSdkVersion
-        targetSdk = 35
-        versionCode = 7
-        versionName = "2.1.0"
+        targetSdk = flutter.targetSdkVersion
+        versionCode = 8
+        versionName = "2.2.0"
         multiDexEnabled = true
     }
 
