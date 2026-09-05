@@ -7,8 +7,14 @@ abstract class StoryLibraryRemoteDataSource {
   Future<List<CommunityStory>> getCommunityStories({
     int page = 0,
     int limit = 20,
+    String languageCode = 'en',
+    int? playerCount,
   });
-  Future<String> uploadStory(Map<String, dynamic> storyJson, String deviceId);
+  Future<String> uploadStory(
+    Map<String, dynamic> storyJson,
+    String deviceId,
+    String languageCode,
+  );
   Future<void> rateStory(String storyId, int rating, String deviceId);
 }
 
@@ -24,13 +30,22 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
   Future<List<CommunityStory>> getCommunityStories({
     int page = 0,
     int limit = 20,
+    String languageCode = 'en',
+    int? playerCount,
   }) async {
     final from = page * limit;
     final to = from + limit - 1;
 
-    final response = await client
+    var query = client
         .from(_ratedStoriesView)
         .select()
+        .eq('language_code', languageCode);
+
+    if (playerCount != null) {
+      query = query.eq('suspect_count', playerCount);
+    }
+
+    final response = await query
         .order('bayesian_rating', ascending: false)
         .range(from, to);
 
@@ -43,26 +58,44 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
   Future<String> uploadStory(
     Map<String, dynamic> storyJson,
     String deviceId,
+    String languageCode,
   ) async {
-    final contentHash = _computeHash(storyJson);
+    final contentHash = _computeHash(storyJson, languageCode);
+    final suspectCount = _suspectCountFromStoryJson(storyJson);
 
-    // Upsert — if story already exists, returns existing row
-    final response = await client
-        .from(_storiesTable)
-        .upsert({
-          'content_hash': contentHash,
-          'title': storyJson['title'] as String? ?? '',
-          'intro': storyJson['intro'] as String? ?? '',
-          'crime_description': storyJson['crimeDescription'] as String? ?? '',
-          'twist': storyJson['twist'] as String? ?? '',
-          'killer_name': storyJson['killerName'] as String? ?? '',
-          'story_json': jsonEncode(storyJson),
-          'uploaded_by_device': deviceId,
-        }, onConflict: 'content_hash')
-        .select('id')
-        .single();
+    try {
+      // Prefer INSERT to avoid requiring UPDATE permissions under RLS.
+      final response = await client
+          .from(_storiesTable)
+          .insert({
+            'content_hash': contentHash,
+            'title': storyJson['title'] as String? ?? '',
+            'intro': storyJson['intro'] as String? ?? '',
+            'crime_description': storyJson['crimeDescription'] as String? ?? '',
+            'twist': storyJson['twist'] as String? ?? '',
+            'killer_name': storyJson['killerName'] as String? ?? '',
+            'language_code': languageCode,
+            'suspect_count': suspectCount,
+            'story_json': jsonEncode(storyJson),
+            'uploaded_by_device': deviceId,
+          })
+          .select('id')
+          .single();
 
-    return response['id'] as String;
+      return response['id'] as String;
+    } on PostgrestException catch (e) {
+      // Unique constraint violation (already uploaded): fetch existing id.
+      if (e.code == '23505') {
+        final existing = await client
+            .from(_storiesTable)
+            .select('id')
+            .eq('content_hash', contentHash)
+            .eq('language_code', languageCode)
+            .single();
+        return existing['id'] as String;
+      }
+      rethrow;
+    }
   }
 
   @override
@@ -74,8 +107,14 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
     }, onConflict: 'story_id,device_id');
   }
 
+  static int _suspectCountFromStoryJson(Map<String, dynamic> storyJson) {
+    final raw = storyJson['suspects'];
+    if (raw is List) return raw.length;
+    return 0;
+  }
+
   /// Computes a deterministic SHA-256 hash of the story's core content fields.
-  static String _computeHash(Map<String, dynamic> storyJson) {
+  static String _computeHash(Map<String, dynamic> storyJson, String languageCode) {
     // Canonical representation: sort keys, take only content fields
     final canonical = jsonEncode({
       'title': storyJson['title'],
@@ -83,6 +122,7 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
       'crimeDescription': storyJson['crimeDescription'],
       'killerName': storyJson['killerName'],
       'twist': storyJson['twist'],
+      'languageCode': languageCode,
     });
     return sha256.convert(utf8.encode(canonical)).toString();
   }
@@ -105,6 +145,7 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
       bayesianRating: (row['bayesian_rating'] as num?)?.toDouble() ?? 0.0,
       totalVotes: (row['total_votes'] as num?)?.toInt() ?? 0,
       uploadedAt: DateTime.parse(row['created_at'] as String),
+      suspectCount: (row['suspect_count'] as num?)?.toInt() ?? 0,
     );
   }
 }

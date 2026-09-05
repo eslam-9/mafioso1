@@ -6,6 +6,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/constants/route_names.dart';
 import '../../../../shared/widgets/story_status_badge.dart';
+import '../../../../shared/widgets/player_count_story_filter_bar.dart';
+import '../../domain/usecases/delete_story_usecase.dart';
 import '../bloc/story_history_bloc.dart';
 import '../bloc/story_history_event.dart';
 import '../bloc/story_history_state.dart';
@@ -23,32 +25,87 @@ class SavedStoriesPage extends StatelessWidget {
   }
 }
 
-class _SavedStoriesView extends StatelessWidget {
+class _SavedStoriesView extends StatefulWidget {
   const _SavedStoriesView();
+
+  @override
+  State<_SavedStoriesView> createState() => _SavedStoriesViewState();
+}
+
+class _SavedStoriesViewState extends State<_SavedStoriesView> {
+  int? _playerCountFilter;
+
+  List<PlayedStory> _filtered(StoryHistoryLoaded state) {
+    if (_playerCountFilter == null) return state.stories;
+    return state.stories
+        .where((s) => s.story.suspects.length == _playerCountFilter)
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('saved_stories'.tr())),
-      body: BlocBuilder<StoryHistoryBloc, StoryHistoryState>(
-        builder: (context, state) {
-          if (state is StoryHistoryLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is StoryHistoryError) {
-            return _ErrorView(message: state.message);
-          } else if (state is StoryHistoryLoaded) {
-            if (state.stories.isEmpty) {
-              return _EmptyView();
-            }
-            return ListView.builder(
-              padding: EdgeInsets.all(16.w),
-              itemCount: state.stories.length,
-              itemBuilder: (context, index) =>
-                  _StoryCard(story: state.stories[index], index: index),
-            );
-          }
-          return const SizedBox.shrink();
-        },
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 4.h),
+            child: PlayerCountStoryFilterBar(
+              selected: _playerCountFilter,
+              onSelected: (c) => setState(() => _playerCountFilter = c),
+            ),
+          ),
+          Expanded(
+            child: BlocBuilder<StoryHistoryBloc, StoryHistoryState>(
+              builder: (context, state) {
+                if (state is StoryHistoryLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is StoryHistoryError) {
+                  return _ErrorView(message: state.message);
+                }
+                if (state is StoryHistoryLoaded) {
+                  if (state.stories.isEmpty) {
+                    return const _EmptyView();
+                  }
+                  final list = _filtered(state);
+                  if (list.isEmpty) {
+                    return const _FilteredEmptyView();
+                  }
+                  return ListView.builder(
+                    padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+                    itemCount: list.length,
+                    itemBuilder: (context, index) =>
+                        _StoryCard(story: list[index], index: index),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FilteredEmptyView extends StatelessWidget {
+  const _FilteredEmptyView();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
+        child: Text(
+          'no_stories_for_player_filter'.tr(),
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.outline,
+          ),
+        ),
       ),
     );
   }
@@ -88,41 +145,78 @@ class _StoryCard extends StatelessWidget {
                     ),
                     SizedBox(width: 8.w),
                     StoryStatusBadge(status: _status),
+                    IconButton(
+                      onPressed: () => _confirmDelete(context),
+                      icon: const Icon(Icons.delete_outline_rounded),
+                      tooltip: 'Delete',
+                    ),
                   ],
                 ),
                 SizedBox(height: 6.h),
 
-                // — Date + optional star rating
-                Row(
+                // — Date + player count + optional star rating
+                Wrap(
+                  spacing: 12.w,
+                  runSpacing: 6.h,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Icon(
-                      Icons.calendar_today_outlined,
-                      size: 13,
-                      color: theme.colorScheme.outline,
-                    ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      DateFormat.yMMMd().format(story.playedAt),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.outline,
-                      ),
-                    ),
-                    if (story.userRating != null) ...[
-                      SizedBox(width: 12.w),
-                      const Icon(
-                        Icons.star_rounded,
-                        color: Colors.amber,
-                        size: 16,
-                      ),
-                      SizedBox(width: 2.w),
-                      Text(
-                        '${story.userRating}/5',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.amber.shade700,
-                          fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.calendar_today_outlined,
+                          size: 13,
+                          color: theme.colorScheme.outline,
                         ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          DateFormat.yMMMd().format(story.playedAt),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.people_outline,
+                          size: 13,
+                          color: theme.colorScheme.outline,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          'story_player_count'.tr(
+                            namedArgs: {
+                              'count': story.story.suspects.length.toString(),
+                            },
+                          ),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (story.userRating != null)
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.star_rounded,
+                            color: Colors.amber,
+                            size: 16,
+                          ),
+                          SizedBox(width: 2.w),
+                          Text(
+                            '${story.userRating}/5',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: Colors.amber.shade700,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
                   ],
                 ),
                 SizedBox(height: 12.h),
@@ -161,7 +255,46 @@ class _StoryCard extends StatelessWidget {
   }
 }
 
+extension on _StoryCard {
+  Future<void> _confirmDelete(BuildContext context) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Delete story'),
+          content: Text('Delete "${story.story.title}" from saved stories?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete == true && context.mounted) {
+      final bloc = context.read<StoryHistoryBloc>();
+      try {
+        bloc.add(DeleteStory(story.id));
+      } catch (_) {
+        // Fallback for stale bloc instances after hot-reload.
+        await getIt<DeleteStoryUseCase>()(story.id);
+        if (context.mounted) {
+          bloc.add(LoadSavedStories());
+        }
+      }
+    }
+  }
+}
+
 class _EmptyView extends StatelessWidget {
+  const _EmptyView();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

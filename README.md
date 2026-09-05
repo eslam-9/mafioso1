@@ -1,108 +1,136 @@
-# Mafioso 🕵️‍♂️🎭
+# Mafioso
 
-**Mafioso** is a modern, AI-powered reimagining of the classic social deduction party game "Mafia" (also known as Werewolf). 
+**Mafioso** is a Flutter murder-mystery party game. Each session uses **AI-generated stories** (Google Gemini and/or Groq) with suspects, clues, and a hidden killer. Players read the story, get secret roles, reveal clues, vote to eliminate suspects, and try to catch the killer before the innocents lose.
 
-Gone are the days of needing a human moderator to sit out the fun. Mafioso uses **Google Gemini AI** to act as an infinite, dynamic Narrator, cultivating unique and immersive stories for every single game session.
+There is no human moderator: the app guides setup, story, role reveal, investigation, and summary.
 
 ---
 
-## ✨ Features
+## Features
 
-- **🤖 AI Narrator**: Powered by the Gemini API, the game generates unique murder mystery narratives based on player actions in real-time.
-- **🌍 Bilingual Support**: Fully localized for both **English** and **Arabic** speakers.
-- **⚡ Offline Mode**: Internet down? The game seamlessly falls back to a library of pre-generated thrillers so the fun never stops.
-- **🎭 Classic Roles**:
-  - **🔪 Killer**: Eliminate the innocents at night.
-  - **🕵️‍♂️ Detective**: Investigate roles to find the truth.
-  - **🩺 Doctor**: Save one person from elimination each night.
-  - **👥 Civilians**: Deduce, discuss, and vote to survive.
-- **🗳️ In-App Voting**: Integrated voting system to democratically eliminate suspects during the day phase.
-- **🎨 Premium Aesthetic**: A sleek, dark-themed UI designed for late-night gaming sessions.
+- **AI stories**: Generate a new mystery from the number of suspects (4–6), with clues and a solvable twist. Provider can be **Gemini** and/or **Groq** (see configuration).
+- **Replay without regenerating**: Opening a **saved** story or a **community** story runs player setup, then uses that story as-is (no new AI call for the same play-through).
+- **Offline play**: If remote AI keys are missing or the network fails, the app can load stories from bundled JSON (`assets/data/`).
+- **English & Arabic**: UI and story prompts are localized (`easy_localization`, `assets/translations/`).
+- **Saved stories**: Finished games are stored locally (Hive). You can delete entries, replay them, and rate them. Ratings can queue an upload to the community library when online.
+- **Community library**: Browse community-submitted stories (Supabase), filter by **language** (matches app locale) and by **player count** (4 / 5 / 6). Uploads include `language_code` and `suspect_count` for filtering.
+- **Player count on cards**: Saved and community story cards show how many players the story supports (suspect count; current rules use **no detective**, so players = suspects).
+- **Filters**: Saved stories and the community list support chips for **All**, **4**, **5**, or **6** players.
+- **Dark UI**: Themed layout with `flutter_screenutil` for responsive sizing.
 
-## 📱 Screens
+---
 
-| Role Reveal | Story Mode | Voting Phase |
-|:-----------:|:----------:|:------------:|
-| ![Role Reveal](assets/images/logo.png) | ![Story](assets/images/logo.png) | ![Voting](assets/images/logo.png) |
+## Tech stack
 
-*(Note: Replace reference images with actual screenshots)*
+| Area | Packages / services |
+|------|----------------------|
+| Framework | Flutter (Dart SDK ^3.8.1) |
+| State | `flutter_bloc`, `equatable` |
+| DI | `get_it` |
+| AI / HTTP | `dio` (separate clients for Gemini and Groq) |
+| Backend | `supabase_flutter` (community library + ratings) |
+| Local storage | `hive_ce`, `hive_ce_flutter` |
+| Localization | `easy_localization` |
+| Other | `connectivity_plus`, `crypto`, `uuid`, `shared_preferences`, `flutter_animate`, etc. |
 
-## 🛠️ Tech Stack
+---
 
-- **Framework**: [Flutter](https://flutter.dev/) (SDK 3.8.1+)
-- **Language**: Dart
-- **State Management**: [flutter_bloc](https://pub.dev/packages/flutter_bloc)
-- **AI Integration**: [Google Gemini API](https://ai.google.dev/)
-- **Localization**: [easy_localization](https://pub.dev/packages/easy_localization)
-- **Styling**: Custom Dark Theme / Flutter ScreenUtil
-- **Network**: Dio
-
-## 🚀 Getting Started
-
-Follow these steps to get a local copy up and running.
+## Getting started
 
 ### Prerequisites
 
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) installed.
-- Android Studio / VS Code with Flutter extensions.
-- A valid **Gemini API Key** from [Google AI Studio](https://aistudio.google.com/).
+- [Flutter](https://docs.flutter.dev/get-started/install) (see `pubspec.yaml` for SDK constraint).
+- Optional: **Gemini** and **Groq** API keys for live AI generation.
+- Optional: **Supabase** project URL + anon key for the community library and uploads.
 
-### Installation
-
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/yourusername/mafioso.git
-   cd mafioso
-   ```
-
-2. **Install Dependencies**
-   ```bash
-   flutter pub get
-   ```
-
-3. **Provide API keys**
-   Pass keys at runtime with `--dart-define`:
-   ```bash
-   flutter run --dart-define=GEMINI_API_KEY=your_gemini_key --dart-define=GROQ_API_KEY=your_groq_key
-   ```
-
-4. **Run the App**
-   ```bash
-   flutter run --dart-define=GEMINI_API_KEY=your_gemini_key --dart-define=GROQ_API_KEY=your_groq_key
-   ```
-
-## 🎮 How to Play
-
-1. **Setup**: Select the number of players (minimum 4).
-2. **Role Reveal**: Pass the phone around. Each player sees their secret role.
-3. **Night Phase**:
-   - The **Killer** chooses a victim.
-   - The **Detective** investigates a player.
-   - The **Doctor** chooses someone to save.
-4. **Day Phase**: 
-   - The AI narrates the events of the night (who died, who was saved).
-   - Players discuss and debate who the Killer is.
-5. **Voting**: Players vote to eliminate a suspect.
-6. **Win Condition**: 
-   - **Innocents Win**: If the Killer is eliminated.
-   - **Killer Wins**: If the Killer outnumbers or equals the Innocents.
-
-## 📦 Building for Release
-
-To build an APK for Android:
+### Install & run
 
 ```bash
-flutter build apk --release --dart-define=GEMINI_API_KEY=your_gemini_key --dart-define=GROQ_API_KEY=your_groq_key
+git clone <your-repo-url>
+cd mafioso
+flutter pub get
+flutter run
 ```
-The output file will be located at `build/app/outputs/flutter-apk/app-release.apk`.
 
-## 🛡️ Privacy Policy
+### API keys and Supabase (`dart-define`)
 
-This application respects your privacy and is built with transparency in mind. For the full details on what we collect and how we handle third-party APIs (like Google Gemini), please see our [Privacy Policy](PRIVACY_POLICY.md).
+The app reads compile-time defines (see `lib/main.dart` and `lib/core/di/injection_container.dart`):
 
-## 📄 License
+| Define | Purpose |
+|--------|---------|
+| `GEMINI_API_KEY` | Google Generative Language (Gemini) story generation |
+| `GROQ_API_KEY` | Groq OpenAI-compatible API for story generation |
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_ANON_KEY` | Supabase anon (public) key |
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Example:
+
+```bash
+flutter run \
+  --dart-define=GEMINI_API_KEY=your_key \
+  --dart-define=GROQ_API_KEY=your_key \
+  --dart-define=SUPABASE_URL=https://xxxx.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=your_anon_key
+```
+
+You can also use a JSON file (e.g. for local dev):
+
+```bash
+flutter run --dart-define-from-file=secrets.json
+```
+
+`secrets.json` should **not** be committed; add it to `.gitignore` if you use it.
+
+If neither `GEMINI_API_KEY` nor `GROQ_API_KEY` is provided, the app still runs but uses **offline** story assets. If you provide only one key, the app uses that provider.
 
 ---
-*Built with ❤️ by Eslam Abozied*
+
+## Game flow (high level)
+
+1. **Start** → **Player setup**: choose suspect count (4–6), enter unique player names (no detective mode in the current build).
+2. **Story**: AI or offline story matching the suspect count.
+3. **Role reveal**: roles are shuffled; one killer, rest innocents; each player is matched to a story character where applicable.
+4. **Investigation / game**: read clues, vote to eliminate suspects until win/loss.
+5. **Summary**: outcome, optional rating; story may be saved locally and optionally uploaded to the community feed when rated and the device is online.
+
+---
+
+## Supabase schema notes
+
+Community features expect roughly:
+
+- Table **`community_stories`** with at least: `content_hash`, `language_code`, `story_json`, title/intro/crime/twist/killer metadata as used by the app, **`suspect_count`** (for player-count filters), and timestamps.
+- A view such as **`community_stories_with_ratings`** used for listing (rating aggregates + `language_code` / `suspect_count` exposed for PostgREST filters).
+- Table **`story_ratings`** for per-device ratings.
+
+Apply migrations in the Supabase SQL editor to match your RLS and column names. After schema changes, regenerate any linked policies or views as needed.
+
+---
+
+## Building for release
+
+Android APK example:
+
+```bash
+flutter build apk --release --dart-define-from-file=secrets.json
+```
+
+Or pass the same `--dart-define=...` values as for `flutter run`.
+
+Output (default): `build/app/outputs/flutter-apk/app-release.apk`.
+
+---
+
+## Privacy
+
+See [PRIVACY_POLICY.md](PRIVACY_POLICY.md) for data handling, third-party APIs (e.g. Google AI), and Supabase.
+
+---
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for details.
+
+---
+
+*Built with care by Eslam Abozied*

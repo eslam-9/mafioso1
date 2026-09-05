@@ -102,6 +102,7 @@
   "error_invalid_api_response_empty": "Invalid API response: Empty content",
   "error_request_timeout": "Request timed out. Please try again.",
   "error_auth_failed": "Authentication failed. Check API key.",
+  "error_ai_provider_not_configured": "{provider} is not configured. Add its API key.",
   "error_server_error": "Server error. Try again later.",
   "error_api_failed_code": "API request failed with code {code}",
   "error_no_internet": "No internet connection.",
@@ -126,9 +127,17 @@
   "saved_stories": "Saved Stories",
   "no_saved_stories": "No saved stories yet.",
   "community_library": "Community Library",
+  "story_player_count": "{count} players",
+  "filter_by_players": "Filter by players",
+  "player_filter_all": "All",
+  "no_stories_for_player_filter": "No stories for this player count.",
   "no_community_stories": "No stories in the community library yet.",
-  "play_this_story": "Play This Story",
   "badge_local": "Local",
   "badge_uploaded": "Uploaded",
-  "badge_community": "Community"
+  "badge_community": "Community",
+  "rate_dialog_title": "Enjoying Mafioso?",
+  "rate_dialog_body": "If you like the game, please take a moment to rate it on the Google Play Store. It really helps!",
+  "rate_now": "Rate Now ⭐",
+  "maybe_later": "Maybe Later",
+  "no_thanks": "No Thanks"
 }

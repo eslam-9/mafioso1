@@ -7,6 +7,7 @@ import '../../shared/services/connectivity_service.dart';
 import '../../shared/services/sound_service.dart';
 import '../../shared/services/upload_queue_service.dart';
 import '../../core/services/device_id_service.dart';
+import '../../core/services/rating_service.dart';
 import '../../features/story/data/datasources/story_remote_datasource.dart';
 import '../../features/story/data/datasources/story_local_datasource.dart';
 import '../../features/story/domain/repositories/story_repository.dart';
@@ -35,6 +36,9 @@ Future<void> init() async {
   // Core services
   getIt.registerLazySingleton<DeviceIdService>(
     () => DeviceIdService(getIt<SharedPreferences>()),
+  );
+  getIt.registerLazySingleton<RatingService>(
+    () => RatingService(getIt<SharedPreferences>()),
   );
   getIt.registerLazySingleton<ConnectivityService>(() => ConnectivityService());
   getIt.registerLazySingleton<SoundService>(() => SoundService()..init());
@@ -67,17 +71,18 @@ Future<void> init() async {
   // Environment
   const geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
   const groqApiKey = String.fromEnvironment('GROQ_API_KEY');
-  final hasRemoteAiKeys =
-      geminiApiKey.trim().isNotEmpty && groqApiKey.trim().isNotEmpty;
+  final hasGeminiKey = geminiApiKey.trim().isNotEmpty;
+  final hasGroqKey = groqApiKey.trim().isNotEmpty;
+  final hasAnyRemoteAiKey = hasGeminiKey || hasGroqKey;
 
   // Story AI Data Sources
-  if (hasRemoteAiKeys) {
+  if (hasAnyRemoteAiKey) {
     getIt.registerLazySingleton<StoryRemoteDataSource>(
       () => StoryRemoteDataSourceImpl(
         geminiDio: getIt<Dio>(instanceName: 'geminiDio'),
         groqDio: getIt<Dio>(instanceName: 'groqDio'),
-        geminiApiKey: geminiApiKey,
-        groqApiKey: groqApiKey,
+        geminiApiKey: hasGeminiKey ? geminiApiKey : null,
+        groqApiKey: hasGroqKey ? groqApiKey : null,
       ),
     );
   }
@@ -88,7 +93,9 @@ Future<void> init() async {
   // Story Repository + Use Cases + BLoC
   getIt.registerLazySingleton<StoryRepository>(
     () => StoryRepositoryImpl(
-      remoteDataSource: hasRemoteAiKeys ? getIt<StoryRemoteDataSource>() : null,
+      remoteDataSource: hasAnyRemoteAiKey
+          ? getIt<StoryRemoteDataSource>()
+          : null,
       localDataSource: getIt<StoryLocalDataSource>(),
       connectivityService: getIt<ConnectivityService>(),
     ),

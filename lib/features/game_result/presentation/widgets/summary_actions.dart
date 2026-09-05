@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/constants/route_names.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../game_setup/domain/entities/game_config.dart';
 
 class SummaryActions extends StatelessWidget {
   const SummaryActions({super.key});
@@ -13,11 +14,16 @@ class SummaryActions extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () {
-            AppLogger.logNavigation(RouteNames.gameMode);
+            AppLogger.logNavigation(RouteNames.playerSetup);
             Navigator.pushNamedAndRemoveUntil(
               context,
-              RouteNames.gameMode,
+              RouteNames.playerSetup,
               ModalRoute.withName(RouteNames.home),
+              arguments: GameConfig(
+                mode: GameMode.withoutDetective,
+                suspectCount: 4,
+                playerNames: List<String>.filled(4, ''),
+              ),
             );
           },
           child: Text('play_again'.tr()),

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../../core/errors/app_error.dart';
 import '../../../role_reveal/domain/entities/player.dart' as player_entity;
 import '../../../story/domain/entities/story.dart';
 import '../../../story/domain/entities/clue.dart';
@@ -12,7 +13,7 @@ class GameState extends Equatable {
   final int currentRound;
   final List<VoteResult> voteHistory;
   final List<Clue> revealedClues;
-  final String? errorMessage;
+  final AppError? error;
 
   const GameState({
     this.players = const [],
@@ -21,7 +22,7 @@ class GameState extends Equatable {
     this.currentRound = 1,
     this.voteHistory = const [],
     this.revealedClues = const [],
-    this.errorMessage,
+    this.error,
   });
 
   List<player_entity.Player> get alivePlayers =>
@@ -42,7 +43,7 @@ class GameState extends Equatable {
     int? currentRound,
     List<VoteResult>? voteHistory,
     List<Clue>? revealedClues,
-    String? errorMessage,
+    AppError? error,
   }) {
     return GameState(
       players: players ?? this.players,
@@ -51,7 +52,7 @@ class GameState extends Equatable {
       currentRound: currentRound ?? this.currentRound,
       voteHistory: voteHistory ?? this.voteHistory,
       revealedClues: revealedClues ?? this.revealedClues,
-      errorMessage: errorMessage,
+      error: error,
     );
   }
 
@@ -63,6 +64,6 @@ class GameState extends Equatable {
     currentRound,
     voteHistory,
     revealedClues,
-    errorMessage,
+    error,
   ];
 }

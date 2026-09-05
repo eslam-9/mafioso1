@@ -1,23 +1,28 @@
-import 'package:easy_localization/easy_localization.dart';
 import '../utils/logger.dart';
+import 'app_error.dart';
+import 'app_error_exception.dart';
 
 class ErrorHandler {
-  static String getUserMessage(dynamic error, {String? context}) {
-    final directMessage = _tryExtractDirectMessage(error);
-    if (directMessage != null) return directMessage;
+  static AppError toAppError(dynamic error, {String? context}) {
+    if (error is AppErrorException) return error.error;
 
-    final translation = _inferTranslation(error, context: context);
-    if (translation.namedArgs == null) return translation.key.tr();
-    return translation.key.tr(namedArgs: translation.namedArgs!);
+    if (context != null && context.startsWith('error_')) {
+      return AppError(context);
+    }
+
+    final directKey = _tryExtractDirectKey(error);
+    if (directKey != null) return AppError(directKey);
+
+    final inferred = _inferKey(error);
+    return inferred;
   }
 
-  static bool isRecoverable(dynamic error) {
-    final key = _inferTranslation(error, context: null).key;
-    return key == 'error_no_internet' ||
-        key == 'error_request_timeout' ||
-        key == 'error_server_error' ||
-        key == 'error_invalid_json' ||
-        key == 'error_api_failed_code';
+  static bool isRecoverable(AppError error) {
+    return error.key == 'error_no_internet' ||
+        error.key == 'error_request_timeout' ||
+        error.key == 'error_server_error' ||
+        error.key == 'error_invalid_json' ||
+        error.key == 'error_api_failed_code';
   }
 
   static void logError(
@@ -28,25 +33,21 @@ class ErrorHandler {
     AppLogger.logError(context ?? 'Unknown', error, stackTrace: stackTrace);
   }
 
-  static _Translation _inferTranslation(dynamic error, {String? context}) {
-    if (context != null && context.startsWith('error_')) {
-      return _Translation(context);
-    }
-
+  static AppError _inferKey(dynamic error) {
     final errorString = error.toString();
     final lower = errorString.toLowerCase();
 
     final dioStatusCode = _tryExtractHttpStatusCode(errorString);
     if (dioStatusCode != null) {
       if (dioStatusCode == 401 || dioStatusCode == 403) {
-        return const _Translation('error_auth_failed');
+        return const AppError('error_auth_failed');
       }
-      if (dioStatusCode == 404) return const _Translation('error_not_found');
+      if (dioStatusCode == 404) return const AppError('error_not_found');
       if (dioStatusCode >= 500 && dioStatusCode < 600) {
-        return const _Translation('error_server_error');
+        return const AppError('error_server_error');
       }
       if (dioStatusCode >= 400) {
-        return _Translation(
+        return AppError(
           'error_api_failed_code',
           namedArgs: {'code': dioStatusCode.toString()},
         );
@@ -59,7 +60,7 @@ class ErrorHandler {
         lower.contains('failed host lookup') ||
         lower.contains('name not resolved') ||
         lower.contains('dns')) {
-      return const _Translation('error_no_internet');
+      return const AppError('error_no_internet');
     }
 
     if (lower.contains('timeout') ||
@@ -67,25 +68,25 @@ class ErrorHandler {
         lower.contains('connecttimeout') ||
         lower.contains('receivetimeout') ||
         lower.contains('sendtimeout')) {
-      return const _Translation('error_request_timeout');
+      return const AppError('error_request_timeout');
     }
 
     if (lower.contains('format') || lower.contains('json')) {
-      return const _Translation('error_invalid_json');
+      return const AppError('error_invalid_json');
     }
 
     if (lower.contains('invalid') ||
         lower.contains('validation') ||
         lower.contains('required') ||
         lower.contains('missing')) {
-      return const _Translation('error_invalid_data');
+      return const AppError('error_invalid_data');
     }
 
     if (lower.contains('permission') || lower.contains('denied')) {
-      return const _Translation('error_permission_denied');
+      return const AppError('error_permission_denied');
     }
 
-    return const _Translation('error_unexpected');
+    return const AppError('error_unexpected');
   }
 
   static int? _tryExtractHttpStatusCode(String errorString) {
@@ -98,29 +99,24 @@ class ErrorHandler {
     return int.tryParse(match.group(1) ?? '');
   }
 
-  static String? _tryExtractDirectMessage(dynamic error) {
-    if (error is String && error.trim().isNotEmpty) return error;
+  static String? _tryExtractDirectKey(dynamic error) {
+    if (error is String && error.trim().startsWith('error_')) return error;
 
     if (error is ArgumentError) {
       final message = error.message;
-      if (message is String && message.trim().isNotEmpty) return message;
+      if (message is String && message.trim().startsWith('error_')) {
+        return message.trim();
+      }
     }
 
-    if (error is StateError && error.message.trim().isNotEmpty) {
-      return error.message;
+    if (error is StateError && error.message.trim().startsWith('error_')) {
+      return error.message.trim();
     }
 
-    if (error is FormatException && error.message.trim().isNotEmpty) {
-      return error.message;
+    if (error is FormatException && error.message.trim().startsWith('error_')) {
+      return error.message.trim();
     }
 
     return null;
   }
-}
-
-class _Translation {
-  final String key;
-  final Map<String, String>? namedArgs;
-
-  const _Translation(this.key, {this.namedArgs});
 }

@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/errors/error_handler.dart';
+import '../../../../core/errors/app_error_exception.dart';
+import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/logger.dart';
 import '../models/story_model.dart';
 import '../models/suspect_model.dart';
@@ -32,7 +33,7 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
       AppLogger.logInfo('Found ${storiesList.length} offline stories');
 
       if (storiesList.isEmpty) {
-        throw Exception('error_no_offline_stories'.tr());
+        throw const AppErrorException(AppError('error_no_offline_stories'));
       }
 
       final random = Random();
@@ -51,13 +52,14 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
         stackTrace: stackTrace,
         context: 'StoryLocalDataSource.getOfflineStory',
       );
-      throw Exception('${'error_load_offline_stories'.tr()}: ${e.toString()}');
+      throw const AppErrorException(AppError('error_load_offline_stories'));
     }
   }
 
   StoryModel _adaptStoryToPlayerCount(StoryModel story, int suspectCount) {
+    final random = Random();
+    final StoryModel adapted;
     if (story.suspects.length > suspectCount) {
-      final random = Random();
       final shuffled = List.from(story.suspects)..shuffle(random);
 
       final killerSuspect = (story.suspects as List<SuspectModel>).firstWhere(
@@ -65,15 +67,17 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
         orElse: () => story.suspects.first as SuspectModel,
       );
 
-      final selectedSuspects = [killerSuspect];
-      for (var suspect in shuffled) {
+      final selectedSuspects = <SuspectModel>[killerSuspect];
+      for (final suspect in shuffled) {
         if (suspect.name != killerSuspect.name &&
             selectedSuspects.length < suspectCount) {
-          selectedSuspects.add(suspect);
+          selectedSuspects.add(suspect as SuspectModel);
         }
       }
 
-      return StoryModel(
+      selectedSuspects.shuffle(random);
+
+      adapted = StoryModel(
         title: story.title,
         intro: story.intro,
         crimeDescription: story.crimeDescription,
@@ -82,8 +86,10 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
         twist: story.twist,
         killerName: story.killerName,
       );
+    } else {
+      adapted = story;
     }
 
-    return story;
+    return adapted.withSuspectsShuffled(random: random);
   }
 }

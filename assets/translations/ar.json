@@ -102,6 +102,7 @@
   "error_invalid_api_response_empty": "رد مش صحيح من الـ API: محتوى فاضي",
   "error_request_timeout": "الطلب خد وقت كتير. حاول تاني.",
   "error_auth_failed": "المصادقة فشلت. اتأكد من الـ API key.",
+  "error_ai_provider_not_configured": "{provider} مش متظبط. ضيف الـ API key بتاعه.",
   "error_server_error": "خطأ في السيرفر. حاول بعدين.",
   "error_api_failed_code": "طلب الـ API فشل بكود {code}",
   "error_no_internet": "مفيش نت. اتأكد من النت.",
@@ -126,9 +127,18 @@
   "saved_stories": "القصص المحفوظة",
   "no_saved_stories": "لا توجد قصص محفوظة بعد.",
   "community_library": "مكتبة المجتمع",
+  "story_player_count": "{count} لاعبين",
+  "filter_by_players": "تصفية حسب عدد اللاعبين",
+  "player_filter_all": "الكل",
+  "no_stories_for_player_filter": "لا توجد قصص لهذا العدد.",
   "no_community_stories": "لا توجد قصص في مكتبة المجتمع بعد.",
   "play_this_story": "العب هذه القصة",
   "badge_local": "محلي",
   "badge_uploaded": "تم الرفع",
-  "badge_community": "المجتمع"
+  "badge_community": "المجتمع",
+  "rate_dialog_title": "عاجباك لعبة مافيوسو؟",
+  "rate_dialog_body": "لو عجبتك اللعبة، يا ريت تقيمها على Google Play. ده هيساعدنا جداً!",
+  "rate_now": "قيم دلوقتي ⭐",
+  "maybe_later": "ممكن بعدين",
+  "no_thanks": "شكراً، مش عاوز"
 }

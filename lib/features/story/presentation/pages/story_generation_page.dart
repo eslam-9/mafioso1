@@ -5,6 +5,8 @@ import '../../../../core/constants/route_names.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../game_setup/domain/entities/game_config.dart';
+import '../../data/models/story_model.dart';
+import '../../domain/entities/story.dart';
 import '../bloc/story_bloc.dart';
 import '../bloc/story_event.dart';
 import '../bloc/story_state.dart';
@@ -12,8 +14,7 @@ import '../widgets/story_loading_widget.dart';
 import '../widgets/story_content_widget.dart';
 import '../widgets/story_error_widget.dart';
 import '../widgets/story_continue_button.dart';
-import '../../domain/entities/story.dart';
-import '../../data/models/story_model.dart';
+import '../../../../shared/errors/app_error_localizer.dart';
 
 class StoryGenerationPage extends StatefulWidget {
   const StoryGenerationPage({super.key});
@@ -41,43 +42,35 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
     );
   }
 
+  void _useExistingStory(BuildContext context, Story story) {
+    if (!mounted || _storyGenerated) return;
+    _storyGenerated = true;
+    context.read<StoryBloc>().add(UseExistingStory(story));
+  }
+
   @override
   Widget build(BuildContext context) {
     AppLogger.logNavigation(RouteNames.storyGeneration);
 
     final args = ModalRoute.of(context)?.settings.arguments;
     GameConfig? config;
-    dynamic existingStory;
+    Story? existingStory;
 
     if (args is GameConfig) {
       config = args;
     } else if (args is Map<String, dynamic>) {
-      existingStory = args['existingStory'];
-      config = args['config'] is GameConfig
-          ? args['config'] as GameConfig
-          : null;
-
-      // If we have an existing story but no config yet, derive a pseudo-config
-      if (existingStory != null && config == null) {
-        Story? storyObj;
-        if (existingStory is Story) {
-          storyObj = existingStory;
-        } else if (existingStory is Map<String, dynamic>) {
-          try {
-            storyObj = StoryModel.fromJson(existingStory);
-          } catch (e) {
-            AppLogger.logError(
-              'StoryGenerationPage',
-              'Failed to parse story JSON: $e',
-            );
-          }
-        }
-
-        if (storyObj != null) {
-          config = GameConfig(
-            mode: GameMode.withoutDetective,
-            suspectCount: storyObj.suspects.length,
-            playerNames: storyObj.suspects.map((s) => s.name).toList(),
+      config = args['config'] as GameConfig?;
+      final storyArg = args['existingStory'];
+      if (storyArg is Story) {
+        existingStory = storyArg;
+      } else if (storyArg is Map<String, dynamic>) {
+        try {
+          existingStory = StoryModel.fromJson(storyArg);
+        } catch (e, stackTrace) {
+          AppLogger.logError(
+            'StoryGenerationPage',
+            e,
+            stackTrace: stackTrace,
           );
         }
       }
@@ -90,13 +83,12 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
       );
     }
 
-    // Auto-generate or set existing story on view load
+    // Prefer a selected existing story, otherwise generate a new one.
     if (!_storyGenerated) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           if (existingStory != null) {
-            _storyGenerated = true;
-            context.read<StoryBloc>().add(SetExistingStory(existingStory));
+            _useExistingStory(context, existingStory);
           } else {
             _generateStory(context, config!);
           }
@@ -124,9 +116,9 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
                     builder: (context, state) {
                       if (state.isLoading) {
                         return const StoryLoadingWidget();
-                      } else if (state.errorMessage != null) {
+                      } else if (state.error != null) {
                         return StoryErrorWidget(
-                          errorMessage: state.errorMessage!,
+                          errorMessage: AppErrorLocalizer.localize(state.error!),
                           onRetry: () {
                             _storyGenerated = false;
                             _generateStory(context, config!);

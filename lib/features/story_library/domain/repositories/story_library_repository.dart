@@ -5,11 +5,17 @@ abstract class StoryLibraryRepository {
   Future<List<CommunityStory>> getCommunityStories({
     int page = 0,
     int limit = 20,
+    String languageCode = 'en',
+    int? playerCount,
   });
 
   /// Uploads a story to the community library. Returns the story's DB id.
   /// If the story already exists (same content_hash), returns its existing id.
-  Future<String> uploadStory(Map<String, dynamic> storyJson, String deviceId);
+  Future<String> uploadStory(
+    Map<String, dynamic> storyJson,
+    String deviceId,
+    String languageCode,
+  );
 
   /// Submits a rating for a story, keyed by the device's anonymous id.
   Future<void> rateStory(String storyId, int rating, String deviceId);

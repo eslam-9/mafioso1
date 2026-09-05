@@ -12,6 +12,8 @@ class StoryLibraryBloc extends Bloc<StoryLibraryEvent, StoryLibraryState> {
 
   static const int _pageSize = 20;
   int _currentPage = 0;
+  String _currentLanguageCode = 'en';
+  int? _playerCountFilter;
   final List _loadedStories = [];
 
   StoryLibraryBloc({
@@ -30,14 +32,21 @@ class StoryLibraryBloc extends Bloc<StoryLibraryEvent, StoryLibraryState> {
   ) async {
     emit(StoryLibraryLoading());
     _currentPage = 0;
+    _currentLanguageCode = event.languageCode;
+    _playerCountFilter = event.playerCountFilter;
     _loadedStories.clear();
     try {
-      final stories = await getCommunityStories(page: 0);
+      final stories = await getCommunityStories(
+        page: 0,
+        languageCode: _currentLanguageCode,
+        playerCount: _playerCountFilter,
+      );
       _loadedStories.addAll(stories);
       emit(
         StoryLibraryLoaded(
           stories: List.from(_loadedStories),
           hasMore: stories.length == _pageSize,
+          playerCountFilter: _playerCountFilter,
         ),
       );
     } catch (e) {
@@ -55,12 +64,17 @@ class StoryLibraryBloc extends Bloc<StoryLibraryEvent, StoryLibraryState> {
 
     try {
       _currentPage++;
-      final stories = await getCommunityStories(page: _currentPage);
+      final stories = await getCommunityStories(
+        page: _currentPage,
+        languageCode: _currentLanguageCode,
+        playerCount: _playerCountFilter,
+      );
       _loadedStories.addAll(stories);
       emit(
         StoryLibraryLoaded(
           stories: List.from(_loadedStories),
           hasMore: stories.length == _pageSize,
+          playerCountFilter: _playerCountFilter,
         ),
       );
     } catch (_) {

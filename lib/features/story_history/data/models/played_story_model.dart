@@ -25,12 +25,16 @@ class PlayedStoryModel extends HiveObject {
   @HiveField(4)
   final bool isUploaded;
 
+  @HiveField(5)
+  final String languageCode;
+
   PlayedStoryModel({
     required this.id,
     required this.storyJson,
     required this.playedAt,
     this.userRating,
     this.isUploaded = false,
+    this.languageCode = 'en',
   });
 
   /// Converts this Hive model to the domain [PlayedStory] entity.
@@ -38,6 +42,7 @@ class PlayedStoryModel extends HiveObject {
     return PlayedStory(
       id: id,
       story: StoryModel.fromJson(jsonDecode(storyJson) as Map<String, dynamic>),
+      languageCode: languageCode,
       playedAt: playedAt,
       userRating: userRating,
       isUploaded: isUploaded,
@@ -50,19 +55,25 @@ class PlayedStoryModel extends HiveObject {
     return PlayedStoryModel(
       id: entity.id,
       storyJson: jsonEncode(storyModel.toJson()),
+      languageCode: entity.languageCode,
       playedAt: entity.playedAt,
       userRating: entity.userRating,
       isUploaded: entity.isUploaded,
     );
   }
 
-  PlayedStoryModel copyWith({int? userRating, bool? isUploaded}) {
+  PlayedStoryModel copyWith({
+    int? userRating,
+    bool? isUploaded,
+    String? languageCode,
+  }) {
     return PlayedStoryModel(
       id: id,
       storyJson: storyJson,
       playedAt: playedAt,
       userRating: userRating ?? this.userRating,
       isUploaded: isUploaded ?? this.isUploaded,
+      languageCode: languageCode ?? this.languageCode,
     );
   }
 

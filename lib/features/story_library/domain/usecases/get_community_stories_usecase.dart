@@ -5,6 +5,14 @@ class GetCommunityStoriesUseCase {
   final StoryLibraryRepository repository;
   const GetCommunityStoriesUseCase(this.repository);
 
-  Future<List<CommunityStory>> call({int page = 0}) =>
-      repository.getCommunityStories(page: page);
+  Future<List<CommunityStory>> call({
+    int page = 0,
+    String languageCode = 'en',
+    int? playerCount,
+  }) =>
+      repository.getCommunityStories(
+        page: page,
+        languageCode: languageCode,
+        playerCount: playerCount,
+      );
 }

@@ -54,37 +54,33 @@ class StoryRepositoryImpl implements StoryRepository {
       return localDataSource.getOfflineStory(suspectCount, languageCode);
     }
 
-    // --- Gemini attempt ---
-    try {
-      AppLogger.logInfo('Attempting Gemini API...');
-      final story = await remoteDataSource!.generateStory(
-        suspectCount: suspectCount,
-        hasDetective: hasDetective,
-        languageCode: languageCode,
-        aiProvider: AiProvider.gemini,
-      );
-      AppLogger.logInfo('SUCCESS! Got story from GEMINI: "${story.title}"');
-      return story;
-    } catch (e) {
-      AppLogger.logError('StoryRepository [Gemini]', e);
-      AppLogger.logInfo('Gemini failed! Falling back to Groq...');
+    final providersToTry = <AiProvider>[];
+    if (remoteDataSource!.canUse(AiProvider.gemini)) {
+      providersToTry.add(AiProvider.gemini);
+    }
+    if (remoteDataSource!.canUse(AiProvider.groq)) {
+      providersToTry.add(AiProvider.groq);
     }
 
-    // --- Groq fallback ---
-    try {
-      AppLogger.logInfo('Attempting Groq API...');
-      final story = await remoteDataSource!.generateStory(
-        suspectCount: suspectCount,
-        hasDetective: hasDetective,
-        languageCode: languageCode,
-        aiProvider: AiProvider.groq,
-      );
-      AppLogger.logInfo('SUCCESS! Got story from GROQ: "${story.title}"');
-      return story;
-    } catch (e) {
-      AppLogger.logError('StoryRepository [Groq]', e);
-      AppLogger.logInfo('Groq also failed! Falling back to offline stories...');
+    for (final provider in providersToTry) {
+      try {
+        AppLogger.logInfo('Attempting ${provider.name} API...');
+        final story = await remoteDataSource!.generateStory(
+          suspectCount: suspectCount,
+          hasDetective: hasDetective,
+          languageCode: languageCode,
+          aiProvider: provider,
+        );
+        AppLogger.logInfo(
+          'SUCCESS! Got story from ${provider.name.toUpperCase()}: "${story.title}"',
+        );
+        return story;
+      } catch (e) {
+        AppLogger.logError('StoryRepository [${provider.name}]', e);
+      }
     }
+
+    AppLogger.logInfo('All configured AI providers failed - using offline');
 
     // --- Offline fallback ---
     return localDataSource.getOfflineStory(suspectCount, languageCode);

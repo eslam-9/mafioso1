@@ -17,6 +17,9 @@ class EliminationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = context.locale.languageCode == 'ar';
+    final double fontScale = isArabic ? 1.4 : 1.0;
+
     return AlertDialog(
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
@@ -39,7 +42,7 @@ class EliminationDialog extends StatelessWidget {
             style: TextStyle(
               color: wasKiller ? AppColors.bloodRed : AppColors.lightGray,
               fontWeight: FontWeight.bold,
-              fontSize: 24,
+              fontSize: 24 * fontScale,
             ),
             textAlign: TextAlign.center,
           ),
@@ -52,7 +55,7 @@ class EliminationDialog extends StatelessWidget {
             eliminatedPlayer.name,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurface,
-              fontSize: 28,
+              fontSize: 28 * fontScale,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
@@ -77,7 +80,7 @@ class EliminationDialog extends StatelessWidget {
                     wasKiller || Theme.of(context).brightness == Brightness.dark
                     ? Theme.of(context).colorScheme.onPrimary
                     : Theme.of(context).colorScheme.onSurface,
-                fontSize: 20,
+                fontSize: 20 * fontScale,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -91,7 +94,7 @@ class EliminationDialog extends StatelessWidget {
               color: Theme.of(
                 context,
               ).colorScheme.onSurface.withValues(alpha: 0.8),
-              fontSize: 16,
+              fontSize: 16 * fontScale,
             ),
             textAlign: TextAlign.center,
           ),
@@ -114,7 +117,7 @@ class EliminationDialog extends StatelessWidget {
             child: Text(
               'continue'.tr(),
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 18 * fontScale,
                 color:
                     wasKiller || Theme.of(context).brightness == Brightness.dark
                     ? Theme.of(context).colorScheme.onPrimary

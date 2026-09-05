@@ -1,7 +1,7 @@
 name: mafioso
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.0.3+4
+version: 2.0.1+6
 
 environment:
   sdk: ^3.8.1
@@ -52,6 +52,7 @@ dependencies:
   json_annotation: 4.9.0
   hive_ce: ^2.19.3
   hive_ce_flutter: ^2.3.4
+  url_launcher: ^6.3.2
 
 
 dev_dependencies:
@@ -96,3 +97,17 @@ flutter:
     - assets/data/
     - assets/data/stories_offline_en.json
     - assets/translations/
+
+  fonts:
+    - family: Marhey
+      fonts:
+        - asset: assets/fonts/Marhey/Marhey-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Marhey/Marhey-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Marhey/Marhey-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Marhey/Marhey-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Marhey/Marhey-Bold.ttf
+          weight: 700

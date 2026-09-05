@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/errors/error_handler.dart';
+import '../../../../core/errors/app_error_exception.dart';
+import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../role_reveal/domain/entities/player.dart' as player_entity;
 import '../../../story/domain/entities/clue.dart';
@@ -21,7 +22,7 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
   void _onInitGame(InitGame event, Emitter<presentation.GameState> emit) {
     AppLogger.logBlocEvent('GameBloc', 'InitGame');
 
-    // Sort clues by difficulty (hardest to easiest)
+    // Sort clues by difficulty (hardest to easiest).
     final sortedClues = List<Clue>.from(event.story.clues)
       ..sort((a, b) => b.difficulty.index.compareTo(a.difficulty.index));
 
@@ -43,7 +44,7 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
         currentRound: 1,
         voteHistory: const [],
         revealedClues: const [],
-        errorMessage: null,
+        error: null,
       ),
     );
   }
@@ -82,11 +83,11 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
 
     try {
       if (event.votes.isEmpty) {
-        throw ArgumentError('error_empty_votes'.tr());
+        throw const AppErrorException(AppError('error_empty_votes'));
       }
 
       if (state.players.isEmpty) {
-        throw StateError('error_no_initial_players'.tr());
+        throw const AppErrorException(AppError('error_no_initial_players'));
       }
 
       final result = VoteResult(
@@ -100,7 +101,8 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
       if (mostVotedId != null) {
         final eliminatedPlayer = state.players.firstWhere(
           (p) => p.id == mostVotedId,
-          orElse: () => throw StateError('error_player_not_found'.tr()),
+          orElse: () =>
+              throw const AppErrorException(AppError('error_player_not_found')),
         );
 
         final updatedPlayers = state.players.map((p) {
@@ -147,7 +149,7 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
             gameState: newGameState,
             currentRound: newRound,
             voteHistory: updatedHistory,
-            errorMessage: null,
+            error: null,
           ),
         );
       } else {
@@ -164,7 +166,7 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
           state.copyWith(
             currentRound: state.currentRound + 1,
             voteHistory: updatedHistory,
-            errorMessage: null,
+            error: null,
           ),
         );
       }
@@ -177,10 +179,7 @@ class GameBloc extends Bloc<GameEvent, presentation.GameState> {
       );
       emit(
         state.copyWith(
-          errorMessage: ErrorHandler.getUserMessage(
-            e,
-            context: 'submitting votes',
-          ),
+          error: ErrorHandler.toAppError(e),
         ),
       );
     }

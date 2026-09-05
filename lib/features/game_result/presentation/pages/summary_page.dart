@@ -1,6 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:crypto/crypto.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:uuid/uuid.dart';
 import '../../../../core/constants/route_names.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -17,6 +18,9 @@ import '../../../story_history/presentation/widgets/story_rating_widget.dart';
 import '../../../story_history/presentation/bloc/story_history_bloc.dart';
 import '../../../story_history/presentation/bloc/story_history_event.dart';
 import '../../../story_history/domain/entities/played_story.dart';
+import '../../../story/domain/entities/story.dart';
+import '../../../../core/services/rating_service.dart';
+import '../widgets/rate_app_dialog.dart';
 
 class SummaryPage extends StatefulWidget {
   const SummaryPage({super.key});
@@ -28,7 +32,28 @@ class SummaryPage extends StatefulWidget {
 class _SummaryPageState extends State<SummaryPage> {
   bool _soundPlayed = false;
   bool _storySaved = false;
+  bool _ratingChecked = false;
   String? _playedStoryId;
+
+  String _buildStableStoryId(Story story) {
+    final canonical = jsonEncode({
+      'title': story.title,
+      'intro': story.intro,
+      'crimeDescription': story.crimeDescription,
+      'suspects': story.suspects
+          .map(
+            (s) => {'name': s.name, 'suspiciousBehavior': s.suspiciousBehavior},
+          )
+          .toList(),
+      'clues': story.clues
+          .map((c) => {'text': c.text, 'difficulty': c.difficulty.name})
+          .toList(),
+      'twist': story.twist,
+      'killerName': story.killerName,
+    });
+    final digest = sha256.convert(utf8.encode(canonical)).toString();
+    return 'local_$digest';
+  }
 
   @override
   void didChangeDependencies() {
@@ -59,15 +84,38 @@ class _SummaryPageState extends State<SummaryPage> {
       // Save Story
       if (!_storySaved && gameState.story != null) {
         _storySaved = true;
-        _playedStoryId = const Uuid().v4();
+        _playedStoryId = _buildStableStoryId(gameState.story!);
+        AppLogger.logInfo(
+          'SummaryPage: prepared local story id=$_playedStoryId for "${gameState.story!.title}"',
+        );
 
         final playedStory = PlayedStory(
           id: _playedStoryId!,
           story: gameState.story!,
+          languageCode: context.locale.languageCode,
           playedAt: DateTime.now(),
         );
 
+        AppLogger.logInfo(
+          'SummaryPage: dispatch SaveStory id=${playedStory.id} rated=${playedStory.userRating != null}',
+        );
         di.getIt<StoryHistoryBloc>().add(SaveStory(playedStory));
+      }
+
+      // Check and show app rating dialog after game ends
+      if (!_ratingChecked) {
+        _ratingChecked = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          final ratingService = di.getIt<RatingService>();
+          if (ratingService.shouldShowDialog) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => const RateAppDialog(),
+            );
+          }
+        });
       }
     }
   }
@@ -127,6 +175,9 @@ class _SummaryPageState extends State<SummaryPage> {
                   ),
                   child: StoryRatingWidget(
                     onRatingSelected: (rating) {
+                      AppLogger.logInfo(
+                        'SummaryPage: user rated story id=$_playedStoryId rating=$rating',
+                      );
                       di.getIt<StoryHistoryBloc>().add(
                         RateStory(_playedStoryId!, rating),
                       );

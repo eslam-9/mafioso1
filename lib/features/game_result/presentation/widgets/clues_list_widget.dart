@@ -10,6 +10,9 @@ class CluesListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = context.locale.languageCode == 'ar';
+    final double fontScale = isArabic ? 1.4 : 1.0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -18,6 +21,7 @@ class CluesListWidget extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
+            fontSize: (Theme.of(context).textTheme.titleLarge?.fontSize ?? 22) * fontScale,
           ),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 16),
@@ -31,6 +35,7 @@ class CluesListWidget extends StatelessWidget {
                   color: Theme.of(
                     context,
                   ).colorScheme.onSurface.withValues(alpha: 0.8),
+                  fontSize: (Theme.of(context).textTheme.bodyMedium?.fontSize ?? 14) * fontScale,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -82,6 +87,7 @@ class CluesListWidget extends StatelessWidget {
                                             clue.difficulty,
                                           ),
                                           fontWeight: FontWeight.bold,
+                                          fontSize: (Theme.of(context).textTheme.labelSmall?.fontSize ?? 11) * fontScale,
                                         ),
                                   ),
                                   const SizedBox(height: 4),
@@ -95,6 +101,7 @@ class CluesListWidget extends StatelessWidget {
                                               .colorScheme
                                               .onSurface
                                               .withValues(alpha: 0.8),
+                                          fontSize: (Theme.of(context).textTheme.bodyMedium?.fontSize ?? 14) * fontScale,
                                         ),
                                   ),
                                 ],
