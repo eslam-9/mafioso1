@@ -1,7 +1,9 @@
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/utils/logger.dart';
+import '../../../../shared/utils/story_content_hasher.dart';
 import '../../../story_library/domain/entities/community_story.dart';
+import '../models/story_upload_payload.dart';
 
 abstract class StoryLibraryRemoteDataSource {
   Future<List<CommunityStory>> getCommunityStories({
@@ -60,8 +62,12 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
     String deviceId,
     String languageCode,
   ) async {
-    final contentHash = _computeHash(storyJson, languageCode);
-    final suspectCount = _suspectCountFromStoryJson(storyJson);
+    final payload = StoryUploadPayload.fromJson(storyJson);
+    final suspectCount = payload.suspectCount;
+    final contentHash = _computeHash(payload.storyJson, languageCode);
+    AppLogger.logInfo(
+      'StoryLibraryRemoteDataSource: uploading suspectCount=$suspectCount',
+    );
 
     try {
       // Prefer INSERT to avoid requiring UPDATE permissions under RLS.
@@ -76,12 +82,14 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
             'killer_name': storyJson['killerName'] as String? ?? '',
             'language_code': languageCode,
             'suspect_count': suspectCount,
-            'story_json': jsonEncode(storyJson),
+            // Keep the established wire/storage shape for older app versions.
+            'story_json': jsonEncode(payload.storyJson),
             'uploaded_by_device': deviceId,
           })
-          .select('id')
+          .select('id,suspect_count')
           .single();
 
+      _verifyStoredSuspectCount(response, suspectCount);
       return response['id'] as String;
     } on PostgrestException catch (e) {
       // Unique constraint violation (already uploaded): fetch existing id.
@@ -90,7 +98,6 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
             .from(_storiesTable)
             .select('id')
             .eq('content_hash', contentHash)
-            .eq('language_code', languageCode)
             .single();
         return existing['id'] as String;
       }
@@ -107,24 +114,31 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
     }, onConflict: 'story_id,device_id');
   }
 
-  static int _suspectCountFromStoryJson(Map<String, dynamic> storyJson) {
-    final raw = storyJson['suspects'];
-    if (raw is List) return raw.length;
-    return 0;
+  static void _verifyStoredSuspectCount(
+    Map<String, dynamic> row,
+    int expected,
+  ) {
+    final stored = (row['suspect_count'] as num?)?.toInt();
+    if (stored != expected) {
+      throw StateError(
+        'Supabase stored suspect_count=$stored; expected $expected.',
+      );
+    }
   }
 
   /// Computes a deterministic SHA-256 hash of the story's core content fields.
-  static String _computeHash(Map<String, dynamic> storyJson, String languageCode) {
-    // Canonical representation: sort keys, take only content fields
-    final canonical = jsonEncode({
-      'title': storyJson['title'],
-      'intro': storyJson['intro'],
-      'crimeDescription': storyJson['crimeDescription'],
-      'killerName': storyJson['killerName'],
-      'twist': storyJson['twist'],
-      'languageCode': languageCode,
-    });
-    return sha256.convert(utf8.encode(canonical)).toString();
+  static String _computeHash(
+    Map<String, dynamic> storyJson,
+    String languageCode,
+  ) {
+    return StoryContentHasher.hash(
+      title: storyJson['title'] as String? ?? '',
+      intro: storyJson['intro'] as String? ?? '',
+      crimeDescription: storyJson['crimeDescription'] as String? ?? '',
+      killerName: storyJson['killerName'] as String? ?? '',
+      twist: storyJson['twist'] as String? ?? '',
+      languageCode: languageCode,
+    );
   }
 
   static CommunityStory _mapToCommunityStory(Map<String, dynamic> row) {
@@ -145,7 +159,17 @@ class StoryLibraryRemoteDataSourceImpl implements StoryLibraryRemoteDataSource {
       bayesianRating: (row['bayesian_rating'] as num?)?.toDouble() ?? 0.0,
       totalVotes: (row['total_votes'] as num?)?.toInt() ?? 0,
       uploadedAt: DateTime.parse(row['created_at'] as String),
-      suspectCount: (row['suspect_count'] as num?)?.toInt() ?? 0,
+      suspectCount: _readSuspectCount(row, storyJson),
+    );
+  }
+
+  static int _readSuspectCount(
+    Map<String, dynamic> row,
+    Map<String, dynamic> storyJson,
+  ) {
+    return StoryUploadPayload.resolveSuspectCount(
+      row['suspect_count'],
+      storyJson,
     );
   }
 }
