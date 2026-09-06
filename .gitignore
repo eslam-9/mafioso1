@@ -52,3 +52,5 @@ app.*.map.json
 claude_helper/
 ai/
 secrets.json
+
+docs/
