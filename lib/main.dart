@@ -18,7 +18,7 @@ void main() async {
   // Remote backend
   await Supabase.initialize(
     url: const String.fromEnvironment('SUPABASE_URL'),
-    anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY'),
+    publishableKey: const String.fromEnvironment('SUPABASE_ANON_KEY'),
   );
 
   await AppLocalization.init();
