@@ -39,7 +39,8 @@ dependencies:
   google_fonts: ^6.2.1
   
   # Connectivity
-  connectivity_plus: ^6.1.0
+  connectivity_plus: ^7.3.1
+  package_info_plus: ^10.2.1
   
   # Local Storage
   shared_preferences: ^2.3.3
@@ -53,6 +54,8 @@ dependencies:
   hive_ce: ^2.19.3
   hive_ce_flutter: ^2.3.4
   url_launcher: ^6.3.2
+  livekit_client: ^2.11.0
+  permission_handler: ^11.3.1
 
 
 dev_dependencies:
