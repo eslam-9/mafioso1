@@ -11,6 +11,12 @@ import '../../features/game_result/presentation/pages/game_page.dart';
 import '../../features/game_result/presentation/pages/summary_page.dart';
 import '../../features/story_history/presentation/pages/saved_stories_page.dart';
 import '../../features/story_library/presentation/pages/story_library_page.dart';
+import '../../features/online_room/presentation/pages/online_mode_selection_page.dart';
+import '../../features/online_room/presentation/pages/create_room_page.dart';
+import '../../features/online_room/presentation/pages/join_room_page.dart';
+import '../../features/online_room/presentation/pages/online_lobby_page.dart';
+import '../../features/online_room/presentation/pages/online_game_page.dart';
+import '../../features/online_room/presentation/bloc/online_room_bloc.dart';
 import '../../core/di/injection_container.dart';
 
 class RouteGenerator {
@@ -55,6 +61,45 @@ class RouteGenerator {
 
       case RouteNames.communityLibrary:
         return _buildRoute(const StoryLibraryPage(), settings: settings);
+
+      case RouteNames.onlineMode:
+        return _buildRoute(const OnlineModeSelectionPage(), settings: settings);
+
+      case RouteNames.createRoom:
+        return _buildRoute(
+          BlocProvider.value(
+            value: getIt<OnlineRoomBloc>(),
+            child: const CreateRoomPage(),
+          ),
+          settings: settings,
+        );
+
+      case RouteNames.joinRoom:
+        return _buildRoute(
+          BlocProvider.value(
+            value: getIt<OnlineRoomBloc>(),
+            child: const JoinRoomPage(),
+          ),
+          settings: settings,
+        );
+
+      case RouteNames.onlineLobby:
+        return _buildRoute(
+          BlocProvider.value(
+            value: getIt<OnlineRoomBloc>(),
+            child: const OnlineLobbyPage(),
+          ),
+          settings: settings,
+        );
+
+      case RouteNames.onlineGame:
+        return _buildRoute(
+          BlocProvider.value(
+            value: getIt<OnlineRoomBloc>(),
+            child: const OnlineGamePage(),
+          ),
+          settings: settings,
+        );
 
       default:
         return _buildRoute(const HomePage(), settings: settings);
