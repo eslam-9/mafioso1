@@ -20,6 +20,7 @@ import '../../features/story_library/data/datasources/story_library_remote_datas
 import '../../features/story_library/data/repositories/story_library_repository_impl.dart';
 import '../../features/story_library/domain/repositories/story_library_repository.dart';
 import '../../features/story_library/domain/usecases/get_community_stories_usecase.dart';
+import '../../features/story_library/presentation/bloc/story_library_bloc.dart';
 import '../../features/story_library/domain/usecases/upload_story_usecase.dart';
 import '../../features/story_library/domain/usecases/rate_community_story_usecase.dart';
 import '../../features/story_history/domain/repositories/story_history_repository.dart';
@@ -131,6 +132,13 @@ Future<void> init() async {
   );
   getIt.registerLazySingleton<RateCommunityStoryUseCase>(
     () => RateCommunityStoryUseCase(getIt<StoryLibraryRepository>()),
+  );
+  getIt.registerFactory<StoryLibraryBloc>(
+    () => StoryLibraryBloc(
+      getCommunityStories: getIt<GetCommunityStoriesUseCase>(),
+      rateCommunityStory: getIt<RateCommunityStoryUseCase>(),
+      deviceIdService: getIt<DeviceIdService>(),
+    ),
   );
 
   // Upload Queue — offline retry service
