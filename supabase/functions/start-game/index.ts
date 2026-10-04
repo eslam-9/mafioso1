@@ -71,7 +71,31 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Not enough players' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Assign roles logic
+    // Fetch story suspects to validate player count AND assign characters
+    const { data: story, error: storyFetchError } = await supabaseAdmin
+      .from('community_stories')
+      .select('story_json')
+      .eq('id', room.selected_story_id)
+      .single();
+
+    if (storyFetchError || !story) {
+      return new Response(JSON.stringify({ error: 'Story not found' }), { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    let storyJson = story.story_json;
+    if (typeof storyJson === 'string') {
+      storyJson = JSON.parse(storyJson);
+    }
+
+    const suspects = storyJson.suspects || [];
+
+    // Enforce exact match: number of players must equal number of suspects
+    if (members.length !== suspects.length) {
+      return new Response(JSON.stringify({
+        error: `Need exactly ${suspects.length} players to start this story, but room has ${members.length}.`,
+      }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
     const totalPlayers = members.length;
     let roles = ['killer'];
     if (room.game_mode === 'with_detective') {
@@ -84,15 +108,6 @@ serve(async (req) => {
     // Shuffle roles
     roles = roles.sort(() => Math.random() - 0.5);
     
-    // Fetch story suspects to assign characters
-    const { data: story } = await supabaseAdmin.from('community_stories').select('story_json').eq('id', room.selected_story_id).single();
-    
-    let storyJson = story.story_json;
-    if (typeof storyJson === 'string') {
-      storyJson = JSON.parse(storyJson);
-    }
-    
-    const suspects = storyJson.suspects || [];
     let killerSuspect = suspects.find((s: any) => s.name === storyJson.killerName);
     if (!killerSuspect && suspects.length > 0) killerSuspect = suspects[0];
     

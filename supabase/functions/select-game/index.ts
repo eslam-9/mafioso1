@@ -58,17 +58,44 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Cannot change game after starting' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Update room
+    // Fetch the story to count suspects — this becomes the required player count
+    const { data: story, error: storyError } = await supabaseAdmin
+      .from('community_stories')
+      .select('story_json')
+      .eq('id', storyId)
+      .single();
+
+    if (storyError || !story) {
+      return new Response(JSON.stringify({ error: 'Story not found' }), { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    let storyJson = story.story_json;
+    if (typeof storyJson === 'string') {
+      storyJson = JSON.parse(storyJson);
+    }
+
+    const suspects = storyJson.suspects ?? [];
+    if (suspects.length < 2) {
+      return new Response(JSON.stringify({ error: 'Story must have at least 2 suspects' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    const requiredPlayers = suspects.length;
+
+    // Update room with story, game mode, and required player count
     const { error: updateError } = await supabaseAdmin
       .from('rooms')
-      .update({ selected_story_id: storyId, game_mode: gameMode })
+      .update({
+        selected_story_id: storyId,
+        game_mode: gameMode,
+        required_players: requiredPlayers,
+      })
       .eq('id', roomId);
 
     if (updateError) {
       throw updateError;
     }
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, requiredPlayers }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });
