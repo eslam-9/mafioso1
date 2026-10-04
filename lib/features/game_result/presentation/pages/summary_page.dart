@@ -20,6 +20,7 @@ import '../../../story_history/presentation/bloc/story_history_event.dart';
 import '../../../story_history/domain/entities/played_story.dart';
 import '../../../story/domain/entities/story.dart';
 import '../../../../core/services/rating_service.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../widgets/rate_app_dialog.dart';
 
 class SummaryPage extends StatefulWidget {
@@ -79,6 +80,14 @@ class _SummaryPageState extends State<SummaryPage> {
           // Sound service might not be available
         }
         _soundPlayed = true;
+        
+        // Analytics
+        di.getIt<AnalyticsService>().logGameCompleted(
+          winner: gameState.gameState == domain.GameState.innocentsWin ? 'innocents' : 'killer',
+          rounds: gameState.currentRound,
+          playerCount: gameState.players.length,
+          eliminatedCount: gameState.players.length - gameState.alivePlayers.length,
+        );
       }
 
       // Save Story
@@ -181,6 +190,8 @@ class _SummaryPageState extends State<SummaryPage> {
                       di.getIt<StoryHistoryBloc>().add(
                         RateStory(_playedStoryId!, rating),
                       );
+                      // Analytics
+                      di.getIt<AnalyticsService>().logStoryRated(rating: rating);
                     },
                   ),
                 ),

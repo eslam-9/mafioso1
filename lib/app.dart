@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'core/theme/theme_cubit.dart';
 import 'core/routing/route_generator.dart';
 import 'core/localization/app_localization.dart';
@@ -40,6 +41,9 @@ class MafiosoApp extends StatelessWidget {
                         title: 'app_title'.tr(),
                         theme: themeState.themeData,
                         debugShowCheckedModeBanner: false,
+                        navigatorObservers: [
+                          FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+                        ],
                         locale: languageState.locale,
                         supportedLocales: AppLocalization.supportedLocales,
                         localizationsDelegates: [

@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/constants/route_names.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../../core/services/analytics_service.dart';
+import '../../../../core/di/injection_container.dart' as di;
 import '../bloc/game_setup_bloc.dart';
 import '../bloc/game_setup_state.dart';
 
@@ -20,6 +22,13 @@ class ContinueButton extends StatelessWidget {
           onPressed: state.isValid
               ? () {
                   final config = state.toGameConfig();
+                  
+                  // Analytics
+                  di.getIt<AnalyticsService>().logGameStarted(
+                    mode: config.hasDetective ? 'with_detective' : 'without_detective',
+                    playerCount: config.totalPlayers,
+                  );
+
                   AppLogger.logNavigation(RouteNames.storyGeneration);
                   Navigator.pushNamed(
                     context,

@@ -7,6 +7,8 @@ import '../../../../shared/errors/app_error_localizer.dart';
 import '../bloc/online_room_bloc.dart';
 import '../bloc/online_room_event.dart';
 import '../bloc/online_room_state.dart';
+import '../../../story_library/domain/entities/community_story.dart';
+import '../widgets/game_selection_sheet.dart';
 
 class CreateRoomPage extends StatefulWidget {
   const CreateRoomPage({super.key});
@@ -19,6 +21,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _displayNameController = TextEditingController();
+  CommunityStory? _selectedStory;
 
   @override
   void dispose() {
@@ -44,6 +47,12 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
       );
       return;
     }
+    if (_selectedStory == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('select_story'.tr())),
+      );
+      return;
+    }
 
     final password = _passwordController.text.trim();
     context.read<OnlineRoomBloc>().add(
@@ -51,6 +60,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
         name: name,
         password: password.isEmpty ? null : password,
         displayName: displayName,
+        storyId: _selectedStory!.id,
       ),
     );
   }
@@ -76,39 +86,59 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
           
           return Padding(
             padding: EdgeInsets.all(20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextField(
-                  controller: _displayNameController,
-                  decoration: InputDecoration(
-                    labelText: 'your_name'.tr(),
-                    border: const OutlineInputBorder(),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextField(
+                    controller: _displayNameController,
+                    decoration: InputDecoration(
+                      labelText: 'your_name'.tr(),
+                      border: const OutlineInputBorder(),
+                    ),
                   ),
-                ),
-                SizedBox(height: 20.h),
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: 'room_name'.tr(),
-                    border: const OutlineInputBorder(),
+                  SizedBox(height: 20.h),
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: 'room_name'.tr(),
+                      border: const OutlineInputBorder(),
+                    ),
                   ),
-                ),
-                SizedBox(height: 20.h),
-                TextField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'password_optional'.tr(),
-                    border: const OutlineInputBorder(),
+                  SizedBox(height: 20.h),
+                  TextField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'password_optional'.tr(),
+                      border: const OutlineInputBorder(),
+                    ),
+                    obscureText: true,
                   ),
-                  obscureText: true,
-                ),
-                SizedBox(height: 40.h),
-                ElevatedButton(
-                  onPressed: _createRoom,
-                  child: Text('create'.tr()),
-                ),
-              ],
+                  SizedBox(height: 20.h),
+                  InkWell(
+                    onTap: () async {
+                      final story = await GameSelectionSheet.show(context);
+                      if (story != null && context.mounted) {
+                        setState(() {
+                          _selectedStory = story;
+                        });
+                      }
+                    },
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        labelText: 'select_story'.tr(),
+                        border: const OutlineInputBorder(),
+                      ),
+                      child: Text(_selectedStory?.title ?? 'select_story'.tr()),
+                    ),
+                  ),
+                  SizedBox(height: 40.h),
+                  ElevatedButton(
+                    onPressed: _createRoom,
+                    child: Text('create'.tr()),
+                  ),
+                ],
+              ),
             ),
           );
         },

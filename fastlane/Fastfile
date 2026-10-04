@@ -4,13 +4,13 @@ platform :android do
   desc "Build and distribute the production APK"
   lane :firebase_distribution do
     # Build the flutter application using the secrets.json passed during CI
-    sh("flutter", "build", "apk", "--release", "--dart-define-from-file=secrets.json")
+    sh("flutter", "build", "apk", "--release", "--target-platform=android-arm64","--dart-define-from-file=secrets.json")
 
     # Upload to Firebase App Distribution
     firebase_app_distribution(
       app: ENV["FIREBASE_APP_ID"],
       groups: "testers",
-      release_notes: ENV["RELEASE_NOTES"] || "CI build from Github Actions",
+      release_notes: ENV["RELEASE_NOTES"] || "test the online mode",
       android_artifact_type: "APK",
       android_artifact_path: "build/app/outputs/flutter-apk/app-release.apk"
     )

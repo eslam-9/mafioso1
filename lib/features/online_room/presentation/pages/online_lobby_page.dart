@@ -42,7 +42,9 @@ class OnlineLobbyPage extends StatelessWidget {
               Navigator.of(context).popUntil((route) => route.isFirst);
             }
           } else if (state.status == OnlineRoomStatus.inGame) {
-            Navigator.pushReplacementNamed(context, RouteNames.onlineGame);
+            // Navigate to role reveal — NOT directly to the game page.
+            // Each player must privately see their own role before proceeding.
+            Navigator.pushReplacementNamed(context, RouteNames.onlineRoleReveal);
           } else if (state.status == OnlineRoomStatus.idle) {
             // User left the room successfully
             Navigator.of(context).popUntil((route) => route.isFirst);
@@ -53,8 +55,28 @@ class OnlineLobbyPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
+          // Show a full-screen loading indicator during the 'starting' transition
+          // so players can't interact while the server assigns roles.
+          if (state.status == OnlineRoomStatus.loading && state.room != null) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text('game_starting'.tr()),
+                ],
+              ),
+            );
+          }
+
           final room = state.room!;
           final isHost = state.isHost;
+          final memberCount = state.members.length;
+          final requiredPlayers = room.requiredPlayers;
+
+          // canStart: story selected AND member count == required player count
+          final canStart = room.canStart(memberCount);
 
           return Padding(
             padding: EdgeInsets.all(20.w),
@@ -76,9 +98,20 @@ class OnlineLobbyPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20.h),
+                // Show player count with required count if story is selected
                 Text(
-                  'players_count'.tr(args: ['${state.members.length}', '${room.maxPlayers}']),
-                  style: Theme.of(context).textTheme.titleMedium,
+                  requiredPlayers != null
+                      ? 'players_count_required'.tr(
+                          args: ['$memberCount', '$requiredPlayers'],
+                        )
+                      : 'players_count'.tr(
+                          args: ['$memberCount', '${room.maxPlayers}'],
+                        ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: requiredPlayers != null && memberCount != requiredPlayers
+                            ? Theme.of(context).colorScheme.error
+                            : null,
+                      ),
                 ),
                 SizedBox(height: 10.h),
                 Expanded(
@@ -112,14 +145,25 @@ class OnlineLobbyPage extends StatelessWidget {
                 if (isHost) ...[
                   SizedBox(height: 10.h),
                   ElevatedButton(
-                    onPressed: () {
-                      GameSelectionSheet.show(context, room.maxPlayers);
+                    onPressed: () async {
+                      final story = await GameSelectionSheet.show(
+                        context,
+                        currentMemberCount: memberCount,
+                      );
+                      if (story != null && context.mounted) {
+                        context.read<OnlineRoomBloc>().add(
+                          SelectGameRequested(
+                            storyId: story.id,
+                            gameMode: 'standard',
+                          ),
+                        );
+                      }
                     },
                     child: Text(room.selectedStoryId == null ? 'select_game'.tr() : 'change_game'.tr()),
                   ),
                   SizedBox(height: 10.h),
                   ElevatedButton(
-                    onPressed: room.selectedStoryId != null && state.members.length >= 2
+                    onPressed: canStart
                         ? () {
                             context.read<OnlineRoomBloc>().add(StartGameRequested());
                           }
@@ -130,6 +174,20 @@ class OnlineLobbyPage extends StatelessWidget {
                     ),
                     child: Text('start_game'.tr()),
                   ),
+                  // Hint text when story selected but count is wrong
+                  if (room.selectedStoryId != null && !canStart && requiredPlayers != null)
+                    Padding(
+                      padding: EdgeInsets.only(top: 8.h),
+                      child: Text(
+                        'need_players_hint'.tr(
+                          args: ['$requiredPlayers', '$memberCount'],
+                        ),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                 ],
               ],
             ),

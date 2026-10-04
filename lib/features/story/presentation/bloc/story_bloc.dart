@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../core/errors/app_error.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../domain/entities/story.dart';
 import '../../domain/usecases/generate_story_usecase.dart';
 import '../../data/models/story_model.dart';
@@ -10,8 +11,12 @@ import 'story_state.dart';
 
 class StoryBloc extends Bloc<StoryEvent, StoryState> {
   final GenerateStoryUseCase generateStoryUseCase;
+  final AnalyticsService analyticsService;
 
-  StoryBloc({required this.generateStoryUseCase}) : super(const StoryState()) {
+  StoryBloc({
+    required this.generateStoryUseCase,
+    required this.analyticsService,
+  }) : super(const StoryState()) {
     on<GenerateStory>(_onGenerateStory);
     on<UseExistingStory>(_onUseExistingStory);
     on<ResetStory>(_onResetStory);
@@ -52,6 +57,10 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
       );
 
       AppLogger.logBlocState('StoryBloc', 'StoryLoaded: ${story.title}');
+      
+      // Analytics
+      analyticsService.logStoryGenerated(language: event.languageCode);
+      
       emit(state.copyWith(isLoading: false, story: story));
     } catch (e, stackTrace) {
       AppLogger.logError('StoryBloc', e, stackTrace: stackTrace);

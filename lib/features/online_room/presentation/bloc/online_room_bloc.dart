@@ -19,6 +19,7 @@ import '../../../story/domain/entities/story.dart';
 import '../../../story/domain/entities/clue.dart';
 import '../../../story/domain/entities/suspect.dart';
 import '../../domain/entities/room_status.dart';
+import '../../../../core/services/analytics_service.dart';
 import 'online_room_event.dart';
 import 'online_room_state.dart';
 import 'dart:async';
@@ -34,6 +35,7 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
   final GetLiveKitTokenUseCase getLiveKitTokenUseCase;
   final GetStoryByIdUseCase getStoryByIdUseCase;
   final AuthService authService;
+  final AnalyticsService analyticsService;
   final OnlineRoomRealtimeDataSource realtimeDataSource;
   final LiveKitService liveKitService;
 
@@ -41,6 +43,10 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
   StreamSubscription? _membersSubscription;
   StreamSubscription? _sessionSubscription;
   StreamSubscription? _gamePlayersSubscription;
+
+  /// Guard flag: prevents dispatching multiple FetchStoryRequested events
+  /// when the session Realtime fires more than once before the fetch completes.
+  bool _isFetchingStory = false;
 
   OnlineRoomBloc({
     required this.createRoom,
@@ -53,6 +59,7 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
     required this.getLiveKitTokenUseCase,
     required this.getStoryByIdUseCase,
     required this.authService,
+    required this.analyticsService,
     required this.realtimeDataSource,
     required this.liveKitService,
   }) : super(const OnlineRoomState()) {
@@ -90,11 +97,12 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
     realtimeDataSource.unsubscribe();
   }
 
+  /// Subscribes to Realtime streams only — LiveKit is connected separately
+  /// after a successful create/join emit to avoid a re-entrant add() that
+  /// would crash on Android 13+ when the mic-permission dialog fires.
   void _subscribeToRealtime(String roomId) {
     _cancelSubscriptions();
     realtimeDataSource.subscribeToRoom(roomId);
-
-    _connectToLiveKit(roomId);
 
     _roomSubscription = realtimeDataSource.roomStream.listen((room) {
       add(RoomUpdated(room));
@@ -114,12 +122,34 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
   }
 
   void _onRoomUpdated(RoomUpdated event, Emitter<OnlineRoomState> emit) {
-    final isHost = event.room.isHost(authService.currentUserId ?? '');
+    var newRoom = event.room;
+    final oldRoom = state.room;
+    
+    // Postgres triggers with replica identity = default may omit unchanged columns in updates.
+    // Since code, name, and hostId never change during the lifetime of a room, we ALWAYS
+    // preserve them from the old state to avoid any accidental data loss or truncation.
+    if (oldRoom != null && newRoom is RoomModel) {
+      newRoom = newRoom.copyWith(
+        code: oldRoom.code,
+        name: oldRoom.name,
+        hostId: oldRoom.hostId,
+        selectedStoryId: newRoom.selectedStoryId ?? oldRoom.selectedStoryId,
+        gameMode: newRoom.gameMode ?? oldRoom.gameMode,
+        maxPlayers: newRoom.maxPlayers == 8 && oldRoom.maxPlayers != 8 ? oldRoom.maxPlayers : newRoom.maxPlayers,
+        requiredPlayers: newRoom.requiredPlayers ?? oldRoom.requiredPlayers,
+      );
+    }
 
-    if (event.room.status == RoomStatus.playing) {
-      emit(state.copyWith(room: event.room, isHost: isHost, status: OnlineRoomStatus.inGame));
+    final isHost = newRoom.isHost(authService.currentUserId ?? '');
+
+    if (newRoom.status == RoomStatus.playing) {
+      // Game is live — navigate to role reveal
+      emit(state.copyWith(room: newRoom, isHost: isHost, status: OnlineRoomStatus.inGame));
+    } else if (newRoom.status == RoomStatus.starting) {
+      // Brief transition: disable UI while the server assigns roles on the server
+      emit(state.copyWith(room: newRoom, isHost: isHost, status: OnlineRoomStatus.loading));
     } else {
-      emit(state.copyWith(room: event.room, isHost: isHost, status: OnlineRoomStatus.inLobby));
+      emit(state.copyWith(room: newRoom, isHost: isHost, status: OnlineRoomStatus.inLobby));
     }
   }
 
@@ -145,7 +175,10 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
 
   void _onSessionUpdated(SessionUpdated event, Emitter<OnlineRoomState> emit) {
     emit(state.copyWith(session: event.session));
-    if (state.story == null) {
+    // Guard: only dispatch one fetch even if Realtime fires the session event
+    // multiple times before the first fetch completes.
+    if (state.story == null && !_isFetchingStory) {
+      _isFetchingStory = true;
       add(FetchStoryRequested(event.session.storyId));
     }
   }
@@ -181,6 +214,9 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
       add(StoryFetched(story));
     } catch (e, st) {
       AppLogger.logError('OnlineRoomBloc._onFetchStoryRequested', e, stackTrace: st);
+    } finally {
+      // Reset flag whether fetch succeeded or failed so a retry is possible
+      _isFetchingStory = false;
     }
   }
 
@@ -188,6 +224,11 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
     emit(state.copyWith(story: event.story));
   }
 
+  /// Connects to LiveKit for voice chat.
+  ///
+  /// Must be called OUTSIDE any ongoing emit() to avoid re-entrant add() calls
+  /// that crash on Android 13+ when the mic-permission dialog fires mid-emit.
+  /// Intentionally fire-and-forget (non-fatal on failure).
   Future<void> _connectToLiveKit(String roomId) async {
     try {
       final tokenData = await getLiveKitTokenUseCase(roomId);
@@ -195,9 +236,8 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
       const liveKitUrl = String.fromEnvironment('LIVEKIT_URL', defaultValue: 'ws://localhost:7880');
 
       await liveKitService.connect(liveKitUrl, token);
-      // liveKitService.connect() already enables the mic internally.
-      // Dispatch as an event so the Bloc state is updated correctly.
-      add(const ToggleMicRequested(true));
+      // Guard isClosed before dispatching so we never add to a closed BLoC
+      if (!isClosed) add(const ToggleMicRequested(true));
     } catch (e) {
       AppLogger.logError('OnlineRoomBloc', 'LiveKit connection failed: $e');
       // LiveKit failure is non-fatal — user stays in room, just without voice.
@@ -232,7 +272,20 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
         isHost: true,
       ));
 
+      analyticsService.logOnlineRoomCreated();
+
+      // Subscribe to Realtime FIRST (no LiveKit inside)
       _subscribeToRealtime(room.id);
+
+      // Connect to LiveKit AFTER the emit
+      unawaited(_connectToLiveKit(room.id));
+
+      if (event.storyId != null) {
+        add(SelectGameRequested(
+          storyId: event.storyId!,
+          gameMode: 'standard',
+        ));
+      }
     } on AppErrorException catch (e, st) {
       AppLogger.logError('OnlineRoomBloc._onCreateRoom', e, stackTrace: st);
       emit(state.copyWith(
@@ -271,7 +324,13 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
         isHost: room.isHost(authService.currentUserId ?? ''),
       ));
 
+      analyticsService.logOnlineRoomJoined();
+
+      // Subscribe to Realtime FIRST (no LiveKit inside)
       _subscribeToRealtime(room.id);
+
+      // Connect to LiveKit AFTER the emit — fire-and-forget, non-fatal.
+      unawaited(_connectToLiveKit(room.id));
     } on AppErrorException catch (e, st) {
       AppLogger.logError('OnlineRoomBloc._onJoinRoom', e, stackTrace: st);
       emit(state.copyWith(
@@ -305,6 +364,7 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
     } finally {
       // Always clean up and reset — even if the server call fails
       _cancelSubscriptions();
+      _isFetchingStory = false;
       emit(const OnlineRoomState());
     }
   }
@@ -333,6 +393,10 @@ class OnlineRoomBloc extends Bloc<OnlineRoomEvent, OnlineRoomState> {
       await startGameUseCase(state.room!.id);
     } catch (e, st) {
       AppLogger.logError('OnlineRoomBloc._onStartGame', e, stackTrace: st);
+      emit(state.copyWith(
+        status: OnlineRoomStatus.error,
+        error: AppError('error_starting_game'),
+      ));
     }
   }
 

@@ -21,6 +21,10 @@ class OnlineStoryTab extends StatelessWidget {
         }
 
         final isHost = state.isHost;
+        final characterToPlayerMap = {
+          for (var p in state.gamePlayers)
+            if (p.storyCharacterName != null) p.storyCharacterName!: p.displayName,
+        };
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -36,7 +40,10 @@ class OnlineStoryTab extends StatelessWidget {
                 totalClues: state.availableClues.length,
               ),
               const SizedBox(height: 24),
-              SuspectsListWidget(suspects: state.story!.suspects),
+              SuspectsListWidget(
+                suspects: state.story!.suspects,
+                characterToPlayerMap: characterToPlayerMap,
+              ),
               const SizedBox(height: 24),
               CluesListWidget(clues: state.revealedClues),
               const SizedBox(height: 16),

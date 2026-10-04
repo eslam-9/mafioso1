@@ -20,6 +20,11 @@ class StoryTab extends StatelessWidget {
           return Center(child: Text('error_no_story'.tr()));
         }
 
+        final characterToPlayerMap = {
+          for (var p in state.players)
+            if (p.storyCharacterName != null) p.storyCharacterName!: p.name,
+        };
+
         return SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -34,7 +39,10 @@ class StoryTab extends StatelessWidget {
                 totalClues: state.availableClues.length,
               ),
               const SizedBox(height: 24),
-              SuspectsListWidget(suspects: state.story!.suspects),
+              SuspectsListWidget(
+                suspects: state.story!.suspects,
+                characterToPlayerMap: characterToPlayerMap,
+              ),
               const SizedBox(height: 24),
               CluesListWidget(clues: state.revealedClues),
               const SizedBox(height: 16),
