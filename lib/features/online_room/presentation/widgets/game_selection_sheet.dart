@@ -6,29 +6,28 @@ import '../../../../core/di/injection_container.dart';
 import '../../../story_library/presentation/bloc/story_library_bloc.dart';
 import '../../../story_library/presentation/bloc/story_library_event.dart';
 import '../../../story_library/presentation/bloc/story_library_state.dart';
-import '../bloc/online_room_bloc.dart';
-import '../bloc/online_room_event.dart';
+import '../../../story_library/domain/entities/community_story.dart';
 
 class GameSelectionSheet extends StatelessWidget {
-  final int maxPlayers;
-  final OnlineRoomBloc roomBloc;
+  final int? currentMemberCount;
 
   const GameSelectionSheet({
     super.key,
-    required this.maxPlayers,
-    required this.roomBloc,
+    this.currentMemberCount,
   });
 
-  static Future<void> show(BuildContext context, int maxPlayers) {
-    final roomBloc = context.read<OnlineRoomBloc>();
-    return showModalBottomSheet(
+  static Future<CommunityStory?> show(
+    BuildContext context, {
+    int? currentMemberCount,
+  }) {
+    return showModalBottomSheet<CommunityStory>(
       context: context,
       isScrollControlled: true,
       builder: (sheetContext) => BlocProvider(
         create: (_) =>
             getIt<StoryLibraryBloc>()
-              ..add(const LoadCommunityStories(languageCode: 'en')),
-        child: GameSelectionSheet(maxPlayers: maxPlayers, roomBloc: roomBloc),
+              ..add(LoadCommunityStories(languageCode: context.locale.languageCode)),
+        child: GameSelectionSheet(currentMemberCount: currentMemberCount),
       ),
     );
   }
@@ -75,7 +74,7 @@ class GameSelectionSheet extends StatelessWidget {
                         }
 
                         final story = state.stories[index];
-                        final isSuitable = story.suspectCount >= maxPlayers;
+                        final isSuitable = currentMemberCount == null || story.suspectCount == currentMemberCount;
 
                         return ListTile(
                           title: Text(story.title),
@@ -86,13 +85,7 @@ class GameSelectionSheet extends StatelessWidget {
                               ? null
                               : const Icon(Icons.warning, color: Colors.orange),
                           onTap: () {
-                            roomBloc.add(
-                              SelectGameRequested(
-                                storyId: story.id,
-                                gameMode: 'standard',
-                              ),
-                            );
-                            Navigator.pop(context);
+                            Navigator.pop(context, story);
                           },
                         );
                       },
