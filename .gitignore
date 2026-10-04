@@ -53,5 +53,6 @@ android/app/google-services.json
 claude_helper/
 ai/
 secrets.json
+codex_plan.md
 
 docs/
