@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../bloc/online_room_bloc.dart';
-import '../bloc/online_room_event.dart';
 import '../bloc/online_room_state.dart';
 import '../widgets/online_game_tabs.dart';
 
@@ -13,7 +12,8 @@ class OnlineGamePage extends StatefulWidget {
   State<OnlineGamePage> createState() => _OnlineGamePageState();
 }
 
-class _OnlineGamePageState extends State<OnlineGamePage> with SingleTickerProviderStateMixin {
+class _OnlineGamePageState extends State<OnlineGamePage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
