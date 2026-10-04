@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'app.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/localization/app_localization.dart';
+import 'core/services/auth_service.dart';
 
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,12 +19,15 @@ void main() async {
   // Remote backend
   await Supabase.initialize(
     url: const String.fromEnvironment('SUPABASE_URL'),
-    anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY'),
+    publishableKey: const String.fromEnvironment('SUPABASE_ANON_KEY'),
   );
 
   await AppLocalization.init();
 
   await di.init();
+  
+  await di.getIt<AuthService>().signInAnonymouslyIfNeeded();
+  
   runApp(
     EasyLocalization(
       startLocale: const Locale('ar'),

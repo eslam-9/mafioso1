@@ -42,7 +42,7 @@ if (isReleaseTask && !hasReleaseSigning) {
 android {
     namespace = "com.mafioso.game"
     compileSdk = 36
-    ndkVersion = "27.0.12077973"
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -57,8 +57,8 @@ android {
         applicationId = "com.mafioso.game"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 8
-        versionName = "2.2.0"
+        versionCode = 9
+        versionName = "2.2.1"
         multiDexEnabled = true
     }
 

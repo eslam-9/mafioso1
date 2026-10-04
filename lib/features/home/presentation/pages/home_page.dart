@@ -10,6 +10,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../widgets/home_title.dart';
 import '../widgets/home_subtitle.dart';
 import '../widgets/home_start_button.dart';
+import '../widgets/home_play_online_button.dart';
 import '../widgets/home_how_to_play_button.dart';
 import '../widgets/home_saved_stories_button.dart';
 import '../widgets/home_community_library_button.dart';
@@ -39,12 +40,14 @@ class HomePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const HomeTitle(),
-                        SizedBox(height: AppSpacing.medium),
+                        SizedBox(height: 10.h),
                         const HomeSubtitle(),
-                        SizedBox(height: AppSpacing.xxlarge),
-                        HomeStartButton(),
-                        SizedBox(height: AppSpacing.large),
-                        HomeHowToPlayButton(),
+                        SizedBox(height: 50.h),
+                        const HomeStartButton(),
+                        SizedBox(height: 20.h),
+                        const HomePlayOnlineButton(),
+                        SizedBox(height: 20.h),
+                        const HomeHowToPlayButton(),
                         SizedBox(height: AppSpacing.large),
                         HomeSavedStoriesButton(),
                         SizedBox(height: AppSpacing.large),

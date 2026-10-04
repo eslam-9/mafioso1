@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
@@ -8,6 +9,7 @@ import '../../shared/services/sound_service.dart';
 import '../../shared/services/upload_queue_service.dart';
 import '../../core/services/device_id_service.dart';
 import '../../core/services/rating_service.dart';
+import '../../core/services/auth_service.dart';
 import '../../features/story/data/datasources/story_remote_datasource.dart';
 import '../../features/story/domain/repositories/story_repository.dart';
 import '../../features/story/data/repositories/story_repository_impl.dart';
@@ -16,10 +18,12 @@ import '../../features/story/domain/usecases/get_community_fallback_story_usecas
 import '../../features/story/presentation/bloc/story_bloc.dart';
 import '../../features/role_reveal/domain/usecases/assign_roles_usecase.dart';
 import '../../features/story_history/story_history_injection.dart';
+import '../../features/online_room/online_room_injection.dart';
 import '../../features/story_library/data/datasources/story_library_remote_datasource.dart';
 import '../../features/story_library/data/repositories/story_library_repository_impl.dart';
 import '../../features/story_library/domain/repositories/story_library_repository.dart';
 import '../../features/story_library/domain/usecases/get_community_stories_usecase.dart';
+import '../../features/story_library/presentation/bloc/story_library_bloc.dart';
 import '../../features/story_library/domain/usecases/upload_story_usecase.dart';
 import '../../features/story_library/domain/usecases/rate_community_story_usecase.dart';
 import '../../features/story_history/domain/repositories/story_history_repository.dart';
@@ -27,8 +31,12 @@ import '../../features/story_history/domain/repositories/story_history_repositor
 final getIt = GetIt.instance;
 
 Future<void> init() async {
-  // Features — Story History (Hive, no async needed)
+  // Features
   initStoryHistory();
+  initOnlineRoom();
+
+  // Navigation
+  getIt.registerLazySingleton(() => GlobalKey<NavigatorState>());
 
   // External — SharedPreferences (needed for DeviceIdService)
   final prefs = await SharedPreferences.getInstance();
@@ -40,6 +48,9 @@ Future<void> init() async {
   );
   getIt.registerLazySingleton<RatingService>(
     () => RatingService(getIt<SharedPreferences>()),
+  );
+  getIt.registerLazySingleton<AuthService>(
+    () => AuthService(Supabase.instance.client),
   );
   getIt.registerLazySingleton<ConnectivityService>(() => ConnectivityService());
   getIt.registerLazySingleton<SoundService>(() => SoundService()..init());
@@ -131,6 +142,13 @@ Future<void> init() async {
   );
   getIt.registerLazySingleton<RateCommunityStoryUseCase>(
     () => RateCommunityStoryUseCase(getIt<StoryLibraryRepository>()),
+  );
+  getIt.registerFactory<StoryLibraryBloc>(
+    () => StoryLibraryBloc(
+      getCommunityStories: getIt<GetCommunityStoriesUseCase>(),
+      rateCommunityStory: getIt<RateCommunityStoryUseCase>(),
+      deviceIdService: getIt<DeviceIdService>(),
+    ),
   );
 
   // Upload Queue — offline retry service

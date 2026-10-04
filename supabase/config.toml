@@ -1,0 +1,99 @@
+
+[functions.create-room]
+enabled = true
+verify_jwt = false
+import_map = "./functions/create-room/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/create-room/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/create-room/*.html" ]
+
+[functions.join-room]
+enabled = true
+verify_jwt = false
+import_map = "./functions/join-room/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/join-room/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/join-room/*.html" ]
+
+[functions.leave-room]
+enabled = true
+verify_jwt = false
+import_map = "./functions/leave-room/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/leave-room/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/leave-room/*.html" ]
+
+[functions.kick-player]
+enabled = true
+verify_jwt = false
+import_map = "./functions/kick-player/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/kick-player/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/kick-player/*.html" ]
+
+[functions.select-game]
+enabled = true
+verify_jwt = false
+import_map = "./functions/select-game/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/select-game/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/select-game/*.html" ]
+
+[functions.start-game]
+enabled = true
+verify_jwt = false
+import_map = "./functions/start-game/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/start-game/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/start-game/*.html" ]
+
+[functions.submit-game-event]
+enabled = true
+verify_jwt = false
+import_map = "./functions/submit-game-event/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/submit-game-event/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/submit-game-event/*.html" ]
+
+[functions.livekit-token]
+enabled = true
+verify_jwt = false
+import_map = "./functions/livekit-token/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/livekit-token/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/livekit-token/*.html" ]
+
+[functions.cleanup-expired-rooms]
+enabled = true
+verify_jwt = false
+import_map = "./functions/cleanup-expired-rooms/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/cleanup-expired-rooms/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/cleanup-expired-rooms/*.html" ]

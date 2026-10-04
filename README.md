@@ -6,17 +6,46 @@ There is no human moderator: the app guides setup, story, role reveal, investiga
 
 ---
 
+## Screenshots
+
+### 🌗 Dark & Light Mode (English)
+<div align="center">
+  <img src="assets/screenshots/home_dark_en.png" width="200" alt="Home - Dark (EN)"/>&nbsp;
+  <img src="assets/screenshots/home_light_en.png" width="200" alt="Home - Light (EN)"/>&nbsp;
+  <img src="assets/screenshots/gameplay_dark_en.png" width="200" alt="Gameplay - Dark (EN)"/>&nbsp;
+  <img src="assets/screenshots/gameplay_light_en.png" width="200" alt="Gameplay - Light (EN)"/>
+</div>
+
+### 🌍 Dark & Light Mode (Arabic)
+<div align="center">
+  <img src="assets/screenshots/home_dark_ar.png" width="200" alt="Home - Dark (AR)"/>&nbsp;
+  <img src="assets/screenshots/home_light_ar.png" width="200" alt="Home - Light (AR)"/>&nbsp;
+  <img src="assets/screenshots/gameplay_dark_ar.png" width="200" alt="Gameplay - Dark (AR)"/>&nbsp;
+  <img src="assets/screenshots/gameplay_light_ar.png" width="200" alt="Gameplay - Light (AR)"/>
+</div>
+
+### ✨ Features Showcase
+<div align="center">
+  <img src="assets/screenshots/community_library.png" width="200" alt="Community Library"/>&nbsp;
+  <img src="assets/screenshots/saved_stories.png" width="200" alt="Saved Stories"/>&nbsp;
+  <img src="assets/screenshots/role_reveal.png" width="200" alt="Role Reveal"/>&nbsp;
+  <img src="assets/screenshots/role_reveal_name.png" width="200" alt="Role Reveal (Name)"/>
+</div>
+<br/>
+
+---
+
 ## Features
 
-- **AI stories**: Generate a new mystery from the number of suspects (4–6), with clues and a solvable twist. Provider can be **Gemini** and/or **Groq** (see configuration).
-- **Replay without regenerating**: Opening a **saved** story or a **community** story runs player setup, then uses that story as-is (no new AI call for the same play-through).
-- **Offline play**: If remote AI keys are missing or the network fails, the app can load stories from bundled JSON (`assets/data/`).
+- **AI stories**: Generate a new mystery from the number of suspects (4–6), with clues and a solvable twist. Provider can be **Gemini** and/or **Groq**. Includes strict JSON schema enforcement to guarantee safe, parsable generations.
+- **Robust Multi-Language Generation**: Built-in handling for high token usage languages (like Arabic) and custom safety thresholds.
+- **Graceful Offline Fallback**: If remote AI keys are missing or the network fails, the app seamlessly falls back to bundled JSON stories.
+- **Web & Mobile Support**: Completely cross-platform, building reliably for Android, iOS, and Web.
+- **Replay without regenerating**: Opening a **saved** story or a **community** story uses that story as-is (no new AI call).
 - **English & Arabic**: UI and story prompts are localized (`easy_localization`, `assets/translations/`).
 - **Saved stories**: Finished games are stored locally (Hive). You can delete entries, replay them, and rate them. Ratings can queue an upload to the community library when online.
-- **Community library**: Browse community-submitted stories (Supabase), filter by **language** (matches app locale) and by **player count** (4 / 5 / 6). Uploads include `language_code` and `suspect_count` for filtering.
-- **Player count on cards**: Saved and community story cards show how many players the story supports (suspect count; current rules use **no detective**, so players = suspects).
-- **Filters**: Saved stories and the community list support chips for **All**, **4**, **5**, or **6** players.
-- **Dark UI**: Themed layout with `flutter_screenutil` for responsive sizing.
+- **Community library**: Browse community-submitted stories (Supabase), filter by **language** and by **player count**. 
+- **Dark UI**: Premium themed layout using `flutter_screenutil` for responsive sizing across screen sizes.
 
 ---
 

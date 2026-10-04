@@ -4,7 +4,6 @@ import '../../../../core/utils/logger.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../domain/entities/story.dart';
 import '../../domain/usecases/generate_story_usecase.dart';
-import '../../domain/entities/story.dart';
 import '../../data/models/story_model.dart';
 import 'story_event.dart';
 import 'story_state.dart';
@@ -32,7 +31,7 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
       emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: 'Failed to load existing story',
+          error: const AppError('Failed to load existing story'),
         ),
       );
     }
