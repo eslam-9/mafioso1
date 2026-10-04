@@ -48,6 +48,7 @@ app.*.map.json
 # Environment variables
 .env
 android/app/google-services.json
+    
 #ai
 claude_helper/
 ai/
