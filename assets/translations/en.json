@@ -158,7 +158,8 @@
   "change_game": "Change Game",
   "select_story": "Select Story",
   "rating": "Rating",
-  "players_count": "{0}/{1} Players",
+  "players_count": "{}/{} Players",
+  "players_count_required": "{}/{} Required Players",
   "error_creating_room": "Error creating room",
   "error_joining_room": "Error joining room",
   "error_kicked_from_room": "You have been kicked from the room"

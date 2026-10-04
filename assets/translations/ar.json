@@ -159,7 +159,8 @@
   "change_game": "تغيير اللعبة",
   "select_story": "اختيار قصة",
   "rating": "التقييم",
-  "players_count": "{0}/{1} لاعبين",
+  "players_count": "{}/{} لاعبين",
+  "players_count_required": "{}/{} لاعبين مطلوبين",
   "error_creating_room": "خطأ في إنشاء الغرفة",
   "error_joining_room": "خطأ في الانضمام للغرفة",
   "error_kicked_from_room": "تم طردك من الغرفة"
