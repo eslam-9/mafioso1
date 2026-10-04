@@ -10,6 +10,7 @@ import '../../shared/services/upload_queue_service.dart';
 import '../../core/services/device_id_service.dart';
 import '../../core/services/rating_service.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/analytics_service.dart';
 import '../../features/story/data/datasources/story_remote_datasource.dart';
 import '../../features/story/domain/repositories/story_repository.dart';
 import '../../features/story/data/repositories/story_repository_impl.dart';
@@ -43,6 +44,7 @@ Future<void> init() async {
   getIt.registerLazySingleton<SharedPreferences>(() => prefs);
 
   // Core services
+  getIt.registerLazySingleton<AnalyticsService>(() => AnalyticsService());
   getIt.registerLazySingleton<DeviceIdService>(
     () => DeviceIdService(getIt<SharedPreferences>()),
   );
@@ -113,7 +115,10 @@ Future<void> init() async {
     () => GenerateStoryUseCase(getIt<StoryRepository>()),
   );
   getIt.registerFactory<StoryBloc>(
-    () => StoryBloc(generateStoryUseCase: getIt<GenerateStoryUseCase>()),
+    () => StoryBloc(
+      generateStoryUseCase: getIt<GenerateStoryUseCase>(),
+      analyticsService: getIt<AnalyticsService>(),
+    ),
   );
 
   // Role Reveal

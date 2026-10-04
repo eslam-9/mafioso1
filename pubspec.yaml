@@ -56,6 +56,10 @@ dependencies:
   url_launcher: ^6.3.2
   livekit_client: ^2.11.0
   permission_handler: ^11.3.1
+  firebase_core: ^4.15.0
+  firebase_analytics: ^12.6.0
+  firebase_crashlytics: ^5.4.0
+  mocktail: ^1.0.5
 
 
 dev_dependencies:
@@ -63,6 +67,8 @@ dev_dependencies:
   hive_ce_generator: any
   json_serializable: any
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
   flutter_lints: ^5.0.0
   mockito: any
