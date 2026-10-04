@@ -6,8 +6,16 @@ import '../../../story/domain/entities/suspect.dart';
 
 class SuspectsListWidget extends StatelessWidget {
   final List<Suspect> suspects;
+  
+  /// Maps a story character name to a real player's display name.
+  /// Example: {'John Doe': 'Eslam'}
+  final Map<String, String>? characterToPlayerMap;
 
-  const SuspectsListWidget({super.key, required this.suspects});
+  const SuspectsListWidget({
+    super.key, 
+    required this.suspects,
+    this.characterToPlayerMap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +37,12 @@ class SuspectsListWidget extends StatelessWidget {
         ...suspects.asMap().entries.map((entry) {
           final index = entry.key;
           final suspect = entry.value;
+          final playerName = characterToPlayerMap?[suspect.name];
+          
+          final displayName = playerName != null 
+              ? '${suspect.name} ($playerName)' 
+              : suspect.name;
+
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child:
@@ -44,7 +58,7 @@ class SuspectsListWidget extends StatelessWidget {
                           ),
                         ),
                         title: Text(
-                          suspect.name,
+                          displayName,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface,
                             fontSize: 16 * fontScale,
