@@ -33,6 +33,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Install Fastlane Plugins (Bundler)
+        run: |
+          gem install bundler
+          bundle install
+
       - name: Prepare Secrets (secrets.json)
         run: |
           printf '%s\n' "$SECRETS_JSON" > secrets.json
