@@ -132,9 +132,14 @@ class OnlineRoomRemoteDataSource {
           'gameMode': gameMode,
         },
       );
+    } on FunctionException catch (e, st) {
+      AppLogger.logError('FunctionException in selectGame', e, stackTrace: st);
+      AppLogger.logInfo('HTTP Status: ${e.status}');
+      AppLogger.logInfo('Response Details: ${e.details}');
+      throw AppErrorException(AppError('error_selecting_game: ${e.status} - ${e.details}'));
     } catch (e, st) {
       AppLogger.logError('OnlineRoomRemoteDataSource', e, stackTrace: st);
-      throw AppErrorException(AppError('error_selecting_game'));
+      throw AppErrorException(AppError('error_selecting_game: $e'));
     }
   }
 
