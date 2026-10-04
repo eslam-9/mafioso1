@@ -1,0 +1,71 @@
+name: Firebase App Distribution
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-distribute:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Prepare Secrets (secrets.json)
+        run: |
+          printf '%s\n' "$SECRETS_JSON" > secrets.json
+        env:
+          SECRETS_JSON: ${{ secrets.SECRETS_JSON }}
+
+      - name: Prepare Keystore and key.properties
+        run: |
+          echo "$KEYSTORE_JKS_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          printf '%s\n' "$KEY_PROPERTIES" > android/key.properties
+          printf '%s\n' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+        env:
+          KEYSTORE_JKS_BASE64: ${{ secrets.KEYSTORE_JKS_BASE64 }}
+          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+      - name: Prepare Firebase Service Account
+        run: |
+          printf '%s\n' "$FIREBASE_SERVICE_ACCOUNT" > firebase_credentials.json
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Build and Distribute
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/firebase_credentials.json
+        run: bundle exec fastlane android firebase_distribution
+
+      - name: Cleanup Secrets
+        if: always()
+        run: |
+          rm -f secrets.json
+          rm -f android/app/upload-keystore.jks
+          rm -f android/key.properties
+          rm -f android/app/google-services.json
+          rm -f firebase_credentials.json
