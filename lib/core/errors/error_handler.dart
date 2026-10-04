@@ -1,6 +1,7 @@
 import '../utils/logger.dart';
 import 'app_error.dart';
 import 'app_error_exception.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 class ErrorHandler {
   static AppError toAppError(dynamic error, {String? context}) {
@@ -31,6 +32,14 @@ class ErrorHandler {
     String? context,
   }) {
     AppLogger.logError(context ?? 'Unknown', error, stackTrace: stackTrace);
+
+    // Forward to Crashlytics
+    FirebaseCrashlytics.instance.recordError(
+      error,
+      stackTrace,
+      reason: context,
+      fatal: false,
+    );
   }
 
   static AppError _inferKey(dynamic error) {
