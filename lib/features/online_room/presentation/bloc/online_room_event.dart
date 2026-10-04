@@ -16,15 +16,17 @@ class CreateRoomRequested extends OnlineRoomEvent {
   final String name;
   final String? password;
   final String displayName;
+  final String? storyId;
 
   const CreateRoomRequested({
     required this.name,
     this.password,
     required this.displayName,
+    this.storyId,
   });
 
   @override
-  List<Object?> get props => [name, password, displayName];
+  List<Object?> get props => [name, password, displayName, storyId];
 }
 
 class JoinRoomRequested extends OnlineRoomEvent {

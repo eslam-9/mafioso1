@@ -11,6 +11,7 @@ class RoomModel extends OnlineRoom {
     super.selectedStoryId,
     super.gameMode,
     required super.maxPlayers,
+    super.requiredPlayers,
   });
 
   factory RoomModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +24,7 @@ class RoomModel extends OnlineRoom {
       selectedStoryId: json['selected_story_id']?.toString(),
       gameMode: json['game_mode']?.toString(),
       maxPlayers: (json['max_players'] as num?)?.toInt() ?? 8,
+      requiredPlayers: (json['required_players'] as num?)?.toInt(),
     );
   }
 
@@ -37,5 +39,29 @@ class RoomModel extends OnlineRoom {
       'game_mode': gameMode,
       'max_players': maxPlayers,
     };
+  }
+
+  RoomModel copyWith({
+    String? id,
+    String? code,
+    String? name,
+    String? hostId,
+    RoomStatus? status,
+    String? selectedStoryId,
+    String? gameMode,
+    int? maxPlayers,
+    int? requiredPlayers,
+  }) {
+    return RoomModel(
+      id: id ?? this.id,
+      code: code ?? this.code,
+      name: name ?? this.name,
+      hostId: hostId ?? this.hostId,
+      status: status ?? this.status,
+      selectedStoryId: selectedStoryId ?? this.selectedStoryId,
+      gameMode: gameMode ?? this.gameMode,
+      maxPlayers: maxPlayers ?? this.maxPlayers,
+      requiredPlayers: requiredPlayers ?? this.requiredPlayers,
+    );
   }
 }
