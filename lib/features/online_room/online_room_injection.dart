@@ -52,6 +52,7 @@ void initOnlineRoom() {
     joinRoom: sl(),
     leaveRoom: sl(),
     authService: sl(),
+    analyticsService: sl(),
     realtimeDataSource: sl(),
     kickPlayerUseCase: sl(),
     selectGameUseCase: sl(),

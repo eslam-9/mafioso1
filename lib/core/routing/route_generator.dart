@@ -15,6 +15,7 @@ import '../../features/online_room/presentation/pages/online_mode_selection_page
 import '../../features/online_room/presentation/pages/create_room_page.dart';
 import '../../features/online_room/presentation/pages/join_room_page.dart';
 import '../../features/online_room/presentation/pages/online_lobby_page.dart';
+import '../../features/online_room/presentation/pages/online_role_reveal_page.dart';
 import '../../features/online_room/presentation/pages/online_game_page.dart';
 import '../../features/online_room/presentation/bloc/online_room_bloc.dart';
 import '../../core/di/injection_container.dart';
@@ -88,6 +89,15 @@ class RouteGenerator {
           BlocProvider.value(
             value: getIt<OnlineRoomBloc>(),
             child: const OnlineLobbyPage(),
+          ),
+          settings: settings,
+        );
+
+      case RouteNames.onlineRoleReveal:
+        return _buildRoute(
+          BlocProvider.value(
+            value: getIt<OnlineRoomBloc>(),
+            child: const OnlineRoleRevealPage(),
           ),
           settings: settings,
         );

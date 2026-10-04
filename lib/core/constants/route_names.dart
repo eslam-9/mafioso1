@@ -12,5 +12,6 @@ class RouteNames {
   static const String createRoom = '/online/create';
   static const String joinRoom = '/online/join';
   static const String onlineLobby = '/online/lobby';
+  static const String onlineRoleReveal = '/online/role-reveal';
   static const String onlineGame = '/online/game';
 }
